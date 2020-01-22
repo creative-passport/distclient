@@ -1,106 +1,65 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {
   CognitoState,
-  Logout,
-  Login,
   NewPasswordRequired,
   EmailVerification,
-  Confirm,
-} from 'react-cognito';
-import LogoutButton from './LogoutButton';
-import LoginForm from './LoginForm';
+} from 'react-cognito'
+
+import LoginPage from './LoginPage'
 import EmailVerificationForm from './EmailVerificationForm';
 import NewPasswordRequiredForm from './NewPasswordRequiredForm';
-import ConfirmForm from './ConfirmForm';
+import AllProfiles from './AllProfiles'
+import ConfirmPage from './ConfirmPage'
 
-const loggedInPage = (user, attributes) => (
-  <div>
-    <p>logged in as {user.getUsername()}</p>
-    <ul>
-      <li>
-        <Logout>
-          <LogoutButton />
-        </Logout>
-      </li>
-      <li><Link to="/change_password">Change password</Link></li>
-      <li><Link to="/change_email">Change email address</Link></li>
-    </ul>
-    <div>
-      <p>Attributes</p>
-      <table>
-        <thead>
-          <tr>
-            <td>Name</td>
-            <td>Value</td>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(attributes).map(name =>
-            <tr key={name}>
-              <td>{name}</td>
-              <td>{attributes[name]}</td>
-            </tr>,
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
+import Layout from './Layout'
+
+const loggedInProfile = (user, attributes) => (
+  <AllProfiles/>
 );
 
 const loggedOutPage = () => (
-  <div>
-    <p>not logged in</p>
-    <Login>
-      <LoginForm />
-    </Login>
-    <ul>
-      <li><Link to="/register">Register</Link></li>
-      <li><Link to="/reset">Password reset</Link></li>
-    </ul>
-  </div>
-);
-
-const newPasswordPage = () => (
-  <div>
-    <p>New password required, since this is your first login</p>
-    <NewPasswordRequired>
-      <NewPasswordRequiredForm />
-    </NewPasswordRequired>
-  </div>
-);
-
-const emailVerificationPage = () => (
-  <div>
-    <p>You must verify your email address.  Please check your email for a code</p>
-    <EmailVerification>
-      <EmailVerificationForm />
-    </EmailVerification>
-  </div>
+  <LoginPage/>
 );
 
 const confirmForm = () => (
-  <div>
-    <p>A confirmation code has been sent to your email address</p>
-    <Confirm>
-      <ConfirmForm />
-    </Confirm>
-    <Link to="/">Home</Link>
-  </div>
+  <ConfirmPage/>
+)
+
+const newPasswordPage = () => (
+  <Layout>
+    <div>
+      <p>New password required, since this is your first login</p>
+      <NewPasswordRequired>
+        <NewPasswordRequiredForm />
+      </NewPasswordRequired>
+    </div>
+  </Layout>
 );
+
+const emailVerificationPage = () => (
+  <Layout>
+    <div>
+      <p>You must verify your email address.  Please check your email for a code</p>
+      <EmailVerification>
+        <EmailVerificationForm />
+      </EmailVerification>
+    </div>
+  </Layout>
+)
 
 const mfaPage = () => (
   <div>
     <p>You need to enter an MFA, but this library does not yet support them.</p>
   </div>
-);
+)
 
 const BaseDashboard = ({ state, user, attributes }) => {
   switch (state) {
     case CognitoState.LOGGED_IN:
-      return loggedInPage(user, attributes);
+      return loggedInProfile()
+
     case CognitoState.AUTHENTICATED:
     case CognitoState.LOGGING_IN:
       return (
@@ -139,7 +98,6 @@ const mapStateToProps = state => ({
   user: state.cognito.user,
   attributes: state.cognito.attributes,
 });
-
 
 const Dashboard = connect(mapStateToProps, null)(BaseDashboard);
 

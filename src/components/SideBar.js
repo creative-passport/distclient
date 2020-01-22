@@ -3,61 +3,71 @@ import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/core/styles'
 
-import IconButton from '@material-ui/core/IconButton'
 import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
 import TextField from '@material-ui/core/TextField'
 
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
-// import ListItemText from '@material-ui/core/ListItemText'
-import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
-// import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import ShareIcon from '@material-ui/icons/Share'
-// import { Paper } from '@material-ui/core'
-
+import Avatar from '@material-ui/core/Avatar'
+import Typography from '@material-ui/core/Typography'
 
 import sample from '../images/sample.jpg'
+import store from '../reducers/store'
+import * as api from '../scripts'
+import {getUserAttributes} from 'react-cognito/src/attributes.js'
+
 
 const styles = theme => ({
   drawer: {
-    flex: 'auto',
     marginRight: theme.spacing(2),
-    marginLeft: theme.spacing(3),
-    padding: theme.spacing(0)
+    marginLeft: theme.spacing(2),
+    padding: theme.spacing(0),
+    position: 'relative',
+    background: 'none',
+    border: 'none'
   },
-  drawerPaper: {
-    position: 'relative'
+  realName: {
+    textAlign: 'center',
+    padding: theme.spacing(3)
   },
-  content: {
-    flexGrow: 1,
-    padding: 0,
+  dob:{
+    textAlign: 'center',
+    padding: theme.spacing(3)
   },
   cardcontent: {
-    padding: 0
+    padding: theme.spacing(3),
   },
-  toolbar: theme.mixins.toolbar,
   card: {
     maxWidth: 345,
-    root: {
-      padding: 0
-    }
+    root: { padding: 0},
+    borderRadius: '5%'
   },
-  media: {
-    height: 150,
-    width: 150,
-    paddingTop: '56.25%',
-    borderRadius: '50%',
+  cardHeaderStyle: {
+      background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
+      height: '80px',
   },
   essentialFields: {
     paddingBottom: '15%'
+  },
+  imageCropper: {
+    width: '5em',
+    height: '5em',
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: '50%',
+    margin: '-18% auto auto'
+  },
+  secondCardHeaderStyle: {
+    backgroundColor: '#cccccc',
+    color: '#000',
+    margin: '0 auto',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    fontSize: '14pt',
+    fontWeight: '500'
   }
 });
 
@@ -67,8 +77,50 @@ class SideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      userEmail: '',
+      realName: ' ',
+      date_of_birth: ''
     }
     this.handleChange = this.handleChange.bind(this)
+  }
+
+  componentDidMount() {
+
+    var cog = store.getState().cognito
+
+    if (cog.user !== undefined) {
+      cog.user.getSession((err, session) => {
+        if (err) {
+          console.log(err)
+        } else {
+          this.setState({jwtToken: session.getIdToken().getJwtToken()})
+        }
+      })
+
+      cog.user.getSession((err, session) => {
+        if (err) {
+          console.log(err)
+        } else {
+          this.setState({userEmail: session.getIdToken().payload.email})
+        }
+      })
+    }
+
+    getUserAttributes(cog.user).then(res => {
+      api.getProfileData(res.sub).then(res => {
+        if('dob' in res.data.PassportData) {
+          this.setState({'date_of_birth': res.data.PassportData.dob})
+        }
+        if('real_name' in res.data.PassportData) {
+          this.setState({'realName': res.data.PassportData.real_name})
+        }
+      }).catch(function (error) {
+          console.log(error)
+      })
+
+    }).catch(function (error) {
+      console.log(error)
+    })
   }
 
   handleChange(){
@@ -78,73 +130,41 @@ class SideBar extends React.Component {
 
   render() {
     const { classes } = this.props
-
-    const inputProps = {
-      step: 300,
-    } 
-
-    const fields = ['Real Name', 'DOB']
-
-    const imageCropper = {
-      width: '100px',
-      height: '100px',
-      position: 'relative',
-      overflow: 'hidden',
-      borderRadius: '50%',
-      marginLeft: '30%'
-    }
-
-    const profilePic = {
-      display: 'inline',
-      margin: '0 auto',
-      marginLeft: '-25%', //centers the image
-      marginBottom: '25%',
-      height: '200%',
-      width: 'auto'
-    }
+    const state = store.getState();
+    const user = state.cognito.user
+    var user_real_name = this.state.realName.toUpperCase()
 
     return (
-      <Grid container>
-        <CssBaseline />
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-          <Card className={classes.card}>
-          <CardHeader> </CardHeader>
-            <div style={imageCropper} className="image-cropper">
-              <img src={sample} style={profilePic} alt="avatar" className="profile-pic"/>
-            </div>
-          <CardContent className={classes.cardcontent}>
-            <List className={classes.essentialFields}>
-              {fields.map((text, index) => (
-                <ListItem key={text}>
-                  <TextField
-                    fullWidth
-                    id="real-name"
-                    label={text}
-                    name={text}
-                    onChange={this.handleChange}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-          <Divider/>
-          <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
-            </IconButton>
-            <IconButton aria-label="share">
-              <ShareIcon />
-            </IconButton>
-          </CardActions>
-        </Card>
-        </Drawer>
-      </Grid>
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawer,
+        }}
+      >
+      <CssBaseline />
+      <Card className={classes.card} style={{marginBottom: '1em'}}>
+        <CardHeader className={classes.cardHeaderStyle}/>
+        <Avatar alt="Remy Sharp" className={classes.imageCropper} src={sample} />
+        <CardContent className={classes.cardcontent}>
+          <Typography component="h5" variant="h5" className={classes.realName}>{user_real_name}</Typography>
+          <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
+          <Typography component="h5" variant="h5" className={classes.dob}>{this.state.date_of_birth}</Typography>
+        </CardContent>
+        <Divider/>
+      </Card>
+      <Card className={classes.card}>
+        <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}>
+          <Typography gutterBottom variant="h5" component="h2">
+          </Typography>            
+        </CardHeader>
+        <CardContent className={classes.cardcontent}>
+            <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail}/>
+            <TextField fullWidth id="standard-basic" label="Mobile" defaultValue="(99) 99999999999" />
+        </CardContent>
+        <Divider/>
+      </Card>
+    </Drawer>
   )}  
 }
 

@@ -13,7 +13,8 @@ import store from '../reducers/store'
 export class Logout extends React.Component {
 
     constructor(props) {
-        this.onClick = this.onClick.bind(this)      
+      super(props)
+      this.onClick = this.onClick.bind(this)      
     }
 
     /**
@@ -53,14 +54,11 @@ Logout.defaultProps = {
 };
 
 const LogoutButton = ({ onClick }) => (
-  // <button onClick={onClick}>Log out</button>
   <button onClick={(e) => {
-        // const { store } = this.context;
         const state = store.getState();
         state.cognito.user.signOut();
         e.preventDefault();
         store.dispatch(Action.logout());
-        // this.props.onLogout()
     }}> Log out </button>
 );
 

@@ -2,8 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
-import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   text: {
@@ -41,10 +39,7 @@ export default function BottomAppBar() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="fixed" color="primary" className={classes.appBar}>
-        <Paper square className={classes.paper}></Paper>
-        <Toolbar> <div/> </Toolbar>
-      </AppBar>
+      <AppBar position="fixed" color="primary" className={classes.appBar}></AppBar>
     </React.Fragment>
   );
 }

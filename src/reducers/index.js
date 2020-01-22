@@ -1,11 +1,9 @@
-import { combineReducers } from 'redux';
-import { cognito } from 'react-cognito';
-
-import register from './registerReducer';
-import login from './loginReducer';
+import { combineReducers } from 'redux'
+import { cognito } from 'react-cognito'
+import profile from './profileReducer'
 
 const rootReducer = combineReducers({
-  register, login, cognito
+  cognito, profile
 });
 
 export default rootReducer;

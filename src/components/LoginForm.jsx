@@ -1,5 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
+
+import TextField from '@material-ui/core/TextField'
+import CPButton from './CPButton'
 
 class LoginForm extends React.Component {
 
@@ -30,21 +33,36 @@ class LoginForm extends React.Component {
   }
 
   render = () => (
-    <form onSubmit={this.onSubmit}>
+    <div>
+      <form onSubmit={this.onSubmit}>
+        <TextField
+          required
+          fullWidth
+          value={this.state.username}
+          id="standard-basic"
+          label='username'
+          name='username'
+          onChange={this.changeUsername}
+          margin="normal"
+        />
+        <TextField
+          required
+          fullWidth
+          type="password"
+          id="standard-basic"
+          label='password'
+          name='password'
+          onChange={this.changePassword}
+          margin="normal"
+          placeholder="Password"
+        />
+      </form>
+      <CPButton fullWidth style={{marginTop: '1.5em', boxShadow: 'none'}} onClick={this.onSubmit}>Sign in</CPButton>
       <div>{this.props.error}</div>
-      <div>{this.state.email}</div>
-      <label>
-        Username
-        <input placeholder="Username" value={this.state.username} onChange={this.changeUsername} required />
-      </label>
-      <label>
-        Password
-        <input placeholder="Password" onChange={this.changePassword} type="password" required />
-      </label>
-      <button type="submit">Sign in</button>
-    </form>
+    </div>
   )
 }
+
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   clearCache: PropTypes.func,

@@ -7,32 +7,47 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu'
+import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import SettingsIcon from '@material-ui/icons/Settings'
+import { sizing } from '@material-ui/system'
 
 import store from '../reducers/store'
 import logo from '../logo.png'
 
+import {
+  CognitoState,
+  Logout,
+} from 'react-cognito'
+import { Action } from '../actions/authenticationActions'
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      // light: will be calculated from palette.primary.main,
       main: '#ff4400',
-      // dark: will be calculated from palette.primary.main,
-      // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
       light: '#fafafa',
       main: '#fafafa',
       contrastText: '#ffcc00',
     },
-    // error: will use the default color
     typography: {
       fontFamily: [
-        'Roboto'
+        'SAN FRANCISCO TEXT REGULAR'
       ].join(','),
+      '&:hover': {
+        backgroundColor: '#0A941A',
+        borderColor: '#0A941A',
+        boxShadow: 'none',
+      },
+      '&:active': {
+        boxShadow: 'none',
+        backgroundColor: '#0A941A',
+        borderColor: '#0A941A',
+      },
+      '&:focus': {
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+      }
     }
   }
 });
@@ -50,9 +65,12 @@ const styles = theme => ({
     marginLeft: 'auto',
   },
   title: {
-    // flexGrow: 1,
-    width: '9%',
-    lineHeight: '20px'
+    lineHeight: '20px',
+    fontStyle: 'SAN FRANCISCO TEXT BOLD',
+    background: '-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent'
+    
   }
 });
 
@@ -64,7 +82,8 @@ class Header extends React.Component {
     this.state = {
       auth: false,
       open: false,
-      anchorEl: null
+      anchorEl: null,
+      appbarWidth: window.innerWidth
     }
 
     this.openMenu = this.openMenu.bind(this)
@@ -73,16 +92,13 @@ class Header extends React.Component {
   }
 
   componentDidMount() {
-    store.subscribe(() => {
-      var test = store.getState().login.response
-      if (test !== undefined && test.length > 0){
-        this.setState({auth: true})
-      }
-      else {
-        this.setState({auth: false})
-      }
-    })
-
+    if (store.getState().cognito.state == CognitoState.LOGGED_IN){
+      this.setState({auth: true})
+    }
+    else {
+      this.setState({auth: false})
+    }
+    
   }
 
   routeChange(){
@@ -97,22 +113,50 @@ class Header extends React.Component {
     this.setState({open: false, anchorEl: null})
   }
 
+  handleLogout(){
+    const state = store.getState()
+    state.cognito.user.signOut()
+    store.dispatch(Action.logout())
+  }
+
+  refCallback = element => {
+    if (element) {
+      this.setState({currentWidth: element.getBoundingClientRect().width})
+    }
+  }
+
   render(){
-    const { classes } = this.props;  
+    const { classes } = this.props
+
+    let UserStatusMenuItem
+
+    if(this.state.auth == true) {
+      UserStatusMenuItem = <MenuItem onClick={() => {this.handleLogout(); this.handleClose()}} > Logout </MenuItem>
+    }
+    else {
+      UserStatusMenuItem = <MenuItem onClick={() => {this.handleClose()}} >
+        <NavLink to="/signin2">Login</NavLink>
+      </MenuItem>
+    }
+       
+    var logoWidth = '9%'
+    if (this.state.currentWidth <= 450){
+      logoWidth = '35%'
+    }
 
     return (
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
           <AppBar position="static" style={{ background: '#fafafa', color: '#000', boxShadow: 'none'}}>
-            <Toolbar>
+            <Toolbar ref={this.refCallback}>
               <img src={logo} style={{marginTop: 10, marginBottom: 10, marginRight: 10}} className="App-logo" alt="logo" />
 
-              <Typography variant="h6" className={classes.title}>
-                The Creative Passport
+              <Typography variant="h6" className={classes.title} style={{width:logoWidth}}>
+                THE CREATIVE PASSPORT
               </Typography>
 
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.openMenu}>
-                <MenuIcon />
+                <SettingsIcon />
               </IconButton>
               <Menu
                 id="simple-menu"
@@ -122,20 +166,18 @@ class Header extends React.Component {
                 open={this.state.open}
                 onClose={this.handleClose}
               >
+                {UserStatusMenuItem}
                 <MenuItem onClick={() => {this.handleClose()}} >
-                  <NavLink to="/signin">Login</NavLink>
+                  <NavLink to="/change_password">Change password</NavLink>
                 </MenuItem>
                 <MenuItem onClick={() => {this.handleClose()}} >
-                  <NavLink to="/signin2">Login Native</NavLink>
-                </MenuItem>
-                <MenuItem onClick={() => {this.handleClose()}} >
-                  <NavLink to="/" >Home</NavLink>
-                </MenuItem>
-                <MenuItem onClick={() => {this.handleClose()}} >
-                  <NavLink to="/profile">Profile</NavLink>
+                  <NavLink to="/change_email">Change email address</NavLink>
                 </MenuItem>
                 <MenuItem onClick={() => {this.handleClose()}} >
                   <NavLink to="/verify">Verify Me</NavLink>
+                </MenuItem>
+                <MenuItem onClick={() => {this.handleClose()}} >
+                  <NavLink to="/settings">Settings</NavLink>
                 </MenuItem>
               </Menu>
             </Toolbar>

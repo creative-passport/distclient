@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import clsx from 'clsx'
 import { Paper } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -9,6 +8,7 @@ import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
+import CPSwitch from './CPSwitch'
 
 import PublishMenu from './PublishMenu'
 
@@ -23,11 +23,6 @@ const styles = theme => ({
     marginTop: '16px',
     margin: theme.spacing(2),
     color: theme.palette.text.secondary,
-  },
-  paper2: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   }
 });
 
@@ -35,7 +30,7 @@ const styles = theme => ({
 class ProfileRow extends Component {
 
   static propTypes = {
-    // required: PropTypes.bool.isRequired,
+    key: PropTypes.number,
     label: PropTypes.string,
     helper_text: PropTypes.string,
     data: PropTypes.object
@@ -45,13 +40,22 @@ class ProfileRow extends Component {
     super(props);
     this.state = {
       published: false,
-      publishers: {}
+      publishers: {'my_public_profile': false},
+      fieldName: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount() {
+    if ('textValue' in this.props){
+      if (this.props.textValue != undefined && 'value' in this.props.textValue){
+        this.setState({value: this.props.textValue.value})
+        this.setState({published: this.props.textValue.published})
+        this.setState({publishers: this.props.textValue.publishers})
+      }
+    }
+    
   }
 
   componentWillUnmount() {
@@ -60,8 +64,13 @@ class ProfileRow extends Component {
 
 
   handleChange = (e) => {
-      var data = {'value':this.state.value, 'published': this.state.published, 'publishers': this.state.publishers}
-
+      var data = {
+        'fieldName': this.props.fieldName,
+        'value': this.state.value,
+        'published': this.state.published,
+        'publishers': this.state.publishers,
+        'indexValue': this.props.indexValue
+      }
       if (e.hasOwnProperty('target')) {
         if (e.target.name === 'publish_switch') {
           this.setState({published: e.target.checked})
@@ -86,63 +95,46 @@ class ProfileRow extends Component {
 
     const { classes } = this.props
 
+    const SwitchItem = <CPSwitch 
+        name='publish_switch'
+        ref={(ref) => this.switch = ref}
+        checked={this.state.published}
+        onChange={this.handleChange}>
+    </CPSwitch>
+
     const ValueItem = (this.props.required) ? <Grid item xs={8}> <TextField
       ref={(ref) => this.text = ref}
       required
       fullWidth
-      id="outlined-bio"
+      id="standard-basic"
       label={this.props.name}
       name={this.props.name}
-      multiline
-      rowsMax="3"
-      className={clsx(classes.textField, classes.dense)}
       onChange={this.handleChange}
       margin="normal"
-      variant="outlined"
       helperText={this.props.helper_text}
       inputProps={inputProps}
-
+      value={this.state.value}
     /> </Grid> : <Grid item xs={8}> <TextField
       ref={(ref) => this.text = ref}
       fullWidth
-      id="outlined-bio"
+      multiline
+      id="standard-basic"
       label={this.props.name}
       name={this.props.name}
-      multiline
       rowsMax="10"
-      className={clsx(classes.textField, classes.dense)}
       onChange={this.handleChange}
       margin="normal"
-      variant="outlined"
       helperText={this.props.helper_text}
       inputProps={inputProps}
-    /></Grid>;
-
-    const SwitchItem = <Grid item xs={2}>
-      <Paper className={clsx(classes.paper, classes.dense)}>
-        <FormGroup row>
-          <FormControlLabel
-            control={
-              <Switch
-                name='publish_switch'
-                ref={(ref) => this.switch = ref}
-                checked={this.state.checked}
-                onChange={this.handleChange}
-                color="primary"
-              />
-          } label="Public"
-        />
-        </FormGroup>
-      </Paper>
+      value={this.state.value}
+    />
     </Grid>
 
-    const pMenu = <PublishMenu onCheckedChange={this.handleChange} />;
-
     return (
-      <Grid container>
+      <Grid container name={this.props.fieldName} value={this.props.indexValue}>
         {ValueItem}
         {SwitchItem}
-        {pMenu}
+        <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
       </Grid>
     )
   }

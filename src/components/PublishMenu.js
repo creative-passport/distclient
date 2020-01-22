@@ -1,48 +1,35 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
 import Checkbox from '@material-ui/core/Checkbox'
 
+import CPButton from './CPButton'
 
-const StyledMenu = withStyles(theme => ({
-  paper: {
-    border: '1px solid #d3d4d5',
-    padding: '8px',
-    margin: '16px'
-  }
-}))(props => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center',
-    }}
-    {...props}
-  />
-));
 
-const StyledMenuItem = withStyles(theme => ({
+const styles = theme => ({
   root: {
-    '&:focus': {
-      backgroundColor: theme.palette.primary.main,
-      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-        color: theme.palette.common.white,
-      },
-    },
+    flexGrow: 1,
+    margin: 'auto 0'
   },
-}))(MenuItem);
+  button: {
+    height: '20px',
+    border: 'none',
+    padding: 0,
+    backgroundColor: '#00ffcc',
+    color: '#fff',
+    lineHeight: '5px',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    borderRadius: 10,
+    boxShadow: 'none',
+  }
+})
 
-function getPublishers(){
-  return ['1', '2']
-}
+
 
 class PublishMenu extends React.Component  {
 
@@ -50,7 +37,8 @@ class PublishMenu extends React.Component  {
     super(props)
     this.state = {
       anchorEl: null,
-      checkedItems: {}
+      checkedItems: {},
+      publishers: {}
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -59,16 +47,12 @@ class PublishMenu extends React.Component  {
   }
 
   componentDidMount() {
-    // create a state for each of the checkbox states in the publishers list
-    this.publishersState = getPublishers().reduce(function(result, item, index, array) {
-      result[item] = false
-      return result;
-    }, {})
-
-    this.setState({checkedItems: this.publishersState})
-  }
-
-  componentWillUnmount() {
+    if(Object.keys(this.props.publishers).length === 0 && this.props.publishers.constructor === Object) {
+      this.setState({checkedItems: {'my_public_profile': false}})
+    }
+    else {
+      this.setState({checkedItems: this.props.publishers})
+    }
   }
 
   handleChange(event) {
@@ -92,36 +76,44 @@ class PublishMenu extends React.Component  {
 
   render() {
 
-    const menuItems = getPublishers().map(publisher => {
-      return  <StyledMenuItem key={publisher}>
-        <Checkbox label={publisher} name={publisher} onChange={this.handleChange} /> {publisher}
-      </StyledMenuItem>
+    const { classes } = this.props
+    const menuItems = Object.keys(this.props.publishers).map((publisher, i) => {
+      return <MenuItem key={i}>
+        <Checkbox label={publisher} name={publisher} onChange={this.handleChange} checked={this.props.publishers[publisher]}/>{publisher}
+      </MenuItem>
     })
 
+    const smallButton = <CPButton
+      variant="contained"
+      aria-controls="customized-menu"
+      aria-haspopup="true"
+      className={classes.button}
+      onClick={this.handleClick}>
+      ---->
+    </CPButton>
+
+    const checkedValue = Boolean(this.state.anchorEl)
+
     return (
-      <Grid item xs={2}>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        style={{marginTop: '16px', padding: '10px'}}
-        onClick={this.handleClick}
-      >
-        Publishers
-      </Button>
-      <StyledMenu
+      <Grid item xs={1} className={classes.root}>
+      {smallButton}
+      <Menu
         id="customized-menu"
         anchorEl={this.state.anchorEl}
         keepMounted
-        open={Boolean(this.state.anchorEl)}
+        open={checkedValue}
         onClose={this.handleClose}
       >
        {menuItems}
-      </StyledMenu>
+      </Menu>
      </Grid>
     )
   }
 }
 
-export default PublishMenu
+PublishMenu.propTypes = {
+  classes: PropTypes.object.isRequired,
+  publishers: PropTypes.object
+}
+
+export default withStyles(styles)(PublishMenu)

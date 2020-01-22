@@ -1,5 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
+import CPButton from './CPButton'
+import store from '../reducers/store'
+import { updateProfileData, getJWTToken } from '../scripts'
+import {getUserAttributes, updateAttributes} from 'react-cognito/src/attributes.js'
 
 class ConfirmForm extends React.Component {
 
@@ -15,7 +19,40 @@ class ConfirmForm extends React.Component {
     event.preventDefault();
     this.props.onSubmit(this.state.verificationCode)
      .then((user) => {
-       console.log(user);
+      store.subscribe(() => {
+          var profile = store.getState().profile
+          if (profile !== undefined && profile.response !== undefined) {            
+            var walletId = profile.response.PassportDataID
+            var data = profile.response.PassportData
+            
+            if (user !== undefined) {
+              user.getSession((err, session) => {
+                if (err) {
+                  console.log(err)
+                } else {
+                  var jwtToken =  session.getIdToken().getJwtToken()
+
+                  getUserAttributes(user).then(res => {
+                    console.log(res)
+
+                    var currentAttributes = res
+                    //currentAttributes['sub'] = walletId
+
+                    walletId = currentAttributes['sub']
+
+                    updateProfileData(walletId, data, jwtToken)
+
+                    
+                  }).catch(function (error) {
+                      console.log(error)
+                  })
+
+
+                }
+              })
+            }
+          }
+        })
      })
      .catch((error) => {
        this.setState({ error });
@@ -41,14 +78,23 @@ class ConfirmForm extends React.Component {
   render = () => (
     <form onSubmit={this.onSubmit}>
       <div>{this.state.error}</div>
-      <label>
-        Verification Code
-        <input placeholder="code" onChange={this.changeVerificationCode} required />
-      </label>
-      <button type="submit">Submit</button>
-      <button type="button" onClick={this.onResend}>Resend code</button>
-      <button type="button" onClick={this.props.onCancel}>Cancel</button>
-
+      <div>
+        <label>
+          Verification Code
+          <input placeholder="code" style={{width:'170px', height:'30px', verticalAlign: 'middle', margin:'1em'}} onChange={this.changeVerificationCode} required />
+        </label>
+      </div>
+      <div>
+        <CPButton type="submit" variant="contained" style={{width:'170px', height:'30px', verticalAlign: 'middle', marginRight:'1em', marginBottom: '1em'}} onClick={this.onSubmit}>
+          Submit
+        </CPButton>
+        <CPButton variant="contained" style={{height:'30px', verticalAlign: 'middle', marginRight:'1em', marginBottom: '1em'}} onClick={this.onResend}>
+          Resend Verification Code
+        </CPButton>
+        <CPButton variant="contained" style={{width:'170px', height:'30px', verticalAlign: 'middle', marginRight:'1em'}} onClick={this.props.onCancel}>
+          Cancel
+        </CPButton>
+      </div>
     </form>
   )
 }

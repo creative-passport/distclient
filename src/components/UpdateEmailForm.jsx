@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { updateAttributes } from 'react-cognito';
 
+import store from '../reducers/store'
+
 class UpdateEmailForm extends React.Component {
 
   constructor(props) {
@@ -13,7 +15,6 @@ class UpdateEmailForm extends React.Component {
   }
 
   componentWillMount = () => {
-    const { store } = this.context;
     const state = store.getState();
     this.setState({ email: state.cognito.attributes.email });
   }

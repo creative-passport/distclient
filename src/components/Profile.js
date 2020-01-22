@@ -1,65 +1,30 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import axios from 'axios'
 import clsx from 'clsx'
+
 import { loadCSS } from 'fg-loadcss'
 import { withStyles } from '@material-ui/core/styles'
 import { red } from '@material-ui/core/colors'
+import { CognitoState } from 'react-cognito'
 
-import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
-import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 
+
+import * as api from '../scripts'
 import store from '../reducers/store'
-import Layout from './Layout'
 import ProfileRow from './ProfileRow'
 
-
-const BootstrapButton = withStyles(theme => ({
-  root: {
-    boxShadow: 'none',
-    textTransform: 'none',
-    color: '#FFFFFF',
-    fontSize: 16,
-    padding: '6px 12px',
-    border: '1px solid',
-    lineHeight: 1.5,
-    backgroundColor: '#010b3d',
-    borderColor: '#010b3d',
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-    '&:hover': {
-      backgroundColor: '#0A941A',
-      borderColor: '#0A941A',
-      boxShadow: 'none',
-    },
-    '&:active': {
-      boxShadow: 'none',
-      backgroundColor: '#0A941A',
-      borderColor: '#0A941A',
-    },
-    '&:focus': {
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-    },
-  },
-}))(Button);
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+  },
+  indicator: {
+    backgroundColor: '#ffffff',
   },
   paper: {
     padding: theme.spacing(2),
@@ -77,11 +42,21 @@ const styles = theme => ({
       color: red[800],
     },
   },
-  tabs: {
-    backgroundColor: theme.palette.background.paper
+  inactive_tab: {
+    backgroundColor: '#009678',
+    color: '#c9c9c9',
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    marginRight: '0.5em'
   },
-  singleTab: {
-    backgroundColor: theme.palette.background.paper
+  tab_content: {
+    backgroundColor: '#ffffff',
+  },
+  active_tab: {
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    marginRight: '0.5em'
   }
 });
 
@@ -90,12 +65,15 @@ function TabPanel(props) {
 
   return (
     <Typography
-      component="div"
+      style={{width:'100%'}}
       role="tabpanel"
+      id={`nav-tabpanel-${index}`}
+      component={'span'}
       hidden={value !== index}
+      aria-labelledby={`nav-tab-${index}`}
       {...other}
     >
-      <Box p={3}>{children}</Box>
+      <Box m={3}>{children}</Box>
     </Typography>
   )
 }
@@ -107,22 +85,21 @@ TabPanel.propTypes = {
 }
 
 class Profile extends Component {
-
     constructor(props) {
       super(props);
       this.state = {
-          loggedIn: false,
           error: '',
           additionalRows: [],
-          currentData: null,
-          direction: 'ltl',
+          currentData: {},
           value: 0,
-          jwtToken: ''
+          jwtToken: '',
+          walletId: '',
+          cognitue_state: store.getState().cognito
       }
-      this.data = null
       this.addData = this.addData.bind(this)
       this.addRow = this.addRow.bind(this)
       this.saveProfile = this.saveProfile.bind(this)
+      this.addNewProfile = this.addNewProfile.bind(this)
       this.a11yProps = this.a11yProps.bind(this)
       this.handleTabChange = this.handleTabChange.bind(this)
     }
@@ -133,33 +110,33 @@ class Profile extends Component {
         document.querySelector('#font-awesome-css'),
       )
 
-      var cog = store.getState().cognito
-      var user = cog.user; 
+      const user = this.state.cognitue_state.user
+      const attributes = this.state.cognitue_state.attributes
 
-      user.getSession((err, session) => {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log(session)
-          this.setState({jwtToken: session.getIdToken().getJwtToken()})
-        }
-      })
+      if (user !== undefined) {
+        user.getSession((err, session) => {
+          if (err) {
+            console.log(err)
+          } else {
+            this.setState({jwtToken: session.getIdToken().getJwtToken()})
+          }
+        })
+      }
 
-
-      store.subscribe(() => {
-        var test = store.getState().login.response
-        // console.log(test)
-        // if (test.length > 0){
-        //   this.setState({auth: true})
-        // }
-        // else {
-        //   this.setState({auth: false})
-        // }
-      })
+      this.setState({currentData: this.props.artist_data})
     }
 
     addData(event) {
-      this.setState({currentData: event})
+      var currentData = this.state.currentData
+      var newIndex = event['indexValue']
+      var fieldName = event['fieldName']
+      var newEvent = {fieldName: event}
+
+      if ('fieldName' in event && event['fieldName'] !== undefined) {
+        currentData[event['fieldName']] = event
+      }
+
+      this.setState({currentData: currentData})
     }
 
     addRow(){
@@ -167,7 +144,12 @@ class Profile extends Component {
         const list = state.additionalRows.push(' ');
         return list
       })
-      console.log(this.state.additionalRows)
+    }
+
+    handleShowProfile(){
+      this.setState(prevState => ({
+        show_profile: !prevState.show_profile
+      }))
     }
 
     handleTabChange(event, newValue) {
@@ -181,31 +163,17 @@ class Profile extends Component {
       };
     }
 
+    addNewProfile(name){
+      console.log("create new persona profile")
+    }
+
+    deleteProfile(name){
+      console.log("delete the selected profile")
+    }
+
     saveProfile(){
-      console.log("Save Profile")
-      var data = this.data
-
-      var config = {
-          headers: {
-              Authorization: this.state.jwtToken
-              // data: data
-          }
-      }
-
-      //https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod
-      axios.post('https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/storepassportdata', config).then(
-        res => { 
-          console.log(res)
-      }).catch(function (error) {
-        console.log(error)
-      })
-
-      // axios.post('https://0.0.0.0:8080/update_profile', config).then(
-      //     res => { 
-      //       console.log(res)
-      //   }).catch(function (error) {
-      //     console.log(error)
-      //   })
+      var results = api.updateProfileData(this.state.walletId, this.state.currentData, this.state.jwtToken)
+      console.log(results)
     }
 
     render() {
@@ -213,50 +181,52 @@ class Profile extends Component {
 
       const rows = this.state.additionalRows.length >= 1 ? 
         this.state.additionalRows.map((row, index) => {
-          return <ProfileRow key={index} required={false} label={row} name={row} onDataChange={this.addData}/>
+          const trueIndex = index + 7
+          return <ProfileRow key={trueIndex} fieldName={row} indexValue={trueIndex} required={false} label={row} name={row} onDataChange={this.addData}/>
         }) : null
 
       return (
-        <Layout>
-          <Tabs
-            className={classes.tabs}
-            value={this.state.value}
-            onChange={this.handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-          >
-            <Tab label="CP Profile" {...this.a11yProps(0)} />
-            <Tab label="External Data" {...this.a11yProps(1)} />
-            <Tab label="Releases" {...this.a11yProps(2)} />
-          </Tabs>
+          <Box className={classes.root} display="flex" flexWrap="wrap">
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleTabChange}
+              variant="fullWidth"
+            >
+              <Tab className={this.state.value===0 ? classes.active_tab:classes.inactive_tab} label="CP Profile" {...this.a11yProps(0)} />
+              <Tab className={this.state.value===1 ? classes.active_tab:classes.inactive_tab} label="External Data" {...this.a11yProps(1)} />
+              <Tab className={this.state.value===2 ? classes.active_tab:classes.inactive_tab} label="Releases" {...this.a11yProps(2)} />
+            </Tabs>
 
-          <TabPanel className={classes.singleTab} value={this.state.value} index={0}>
-              <div className={classes.root} spacing={1}>
-                <ProfileRow key='0' label='bio' name='Bio' onDataChange={this.addData}/>
-                <ProfileRow key='1' label='short_bio' name='Short Bio' onDataChange={this.addData}/>
-                {rows}
-                <Icon
-                  className={clsx(classes.iconHover, 'fa fa-plus-circle')}
-                  color="primary"
-                  style={{ fontSize: 50 }}
-                  onClick={this.addRow}
-                />
-              </div>
-              <div>
-                <BootstrapButton variant="contained" fullWidth className={classes.margin} onClick={this.saveProfile}>
-                  Save Changes
-                </BootstrapButton>
-              </div>
+            <TabPanel className={classes.tab_content} value={this.state.value} index={0}>
+              <ProfileRow key='0' fieldName='bio' indexValue={0} label='bio' name='Bio' textValue={this.props.artist_data['bio']} onDataChange={this.addData}/>
+              <ProfileRow key='1' fieldName='short_bio' indexValue={1} label='short_bio' textValue={this.props.artist_data['short_bio']} name='Short Bio' onDataChange={this.addData}/>
+              <ProfileRow key='3' fieldName='home_loc' indexValue={3} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='4' fieldName='current_loc' indexValue={4} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
+              {rows}
+              <Icon
+                className={clsx(classes.iconHover, 'fa fa-plus-circle')}
+                style={{ fontSize: 50, color:"#00ffcc" }}
+                onClick={this.addRow}
+              />
             </TabPanel>
-          <TabPanel className={classes.singleTab} value={this.state.value} index={1}>
-              Item Two
+            <TabPanel className={classes.tab_content} value={this.state.value} index={1}>
+              <ProfileRow key='5' fieldName='quote' indexValue={5} label='quote' name='Favortie Quote' textValue={this.props.artist_data['quote']} multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='6' fieldName='metadata' indexValue={6} label='metadata' name='Metadata' textValue={this.props.artist_data['metadata']} multiline='true' onDataChange={this.addData}/>
+              <Icon
+                className={clsx(classes.iconHover, 'fa fa-plus-circle')}
+                style={{ fontSize: 50, color:"#00ffcc" }}
+                onClick={this.addRow}
+              />
             </TabPanel>
-          <TabPanel className={classes.singleTab} value={this.state.value} index={2}>
-              Item Three
-            </TabPanel>
-        </Layout>
+            <TabPanel className={classes.tab_content} value={this.state.value} index={2}>
+              <ProfileRow key='5' fieldName='releases' indexValue={5} label='releases' name='Releases' textValue={this.props.artist_data['releases']} multiline='false' onDataChange={this.addData}/>
+              <Icon
+                className={clsx(classes.iconHover, 'fa fa-plus-circle')}
+                style={{ fontSize: 50, color:"#00ffcc" }}
+                onClick={this.addRow}
+              />
+              </TabPanel>
+          </Box>
       )
     }
 }
@@ -264,6 +234,9 @@ class Profile extends Component {
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
   children: PropTypes.node,
+  profile_id: PropTypes.string,
+  artist_name: PropTypes.string,
+  artist_data: PropTypes.object
 }
 
 export default withStyles(styles)(Profile)

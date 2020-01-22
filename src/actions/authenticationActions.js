@@ -1,18 +1,18 @@
-import * as types from './index';
+// import * as types from './index';
 
-export const registerUserAction = (user) => {
+export const createTempProfile = (user) => {
   return {
-    type: types.REGISTER_USER,
+    type: 'UNCONFIRMED_PROFILE',
     user
   }
-};
+}
 
-export const loginUserAction = (user) => {
+export const confirmedProfile = (user) => {
   return {
-    type: types.LOGIN_USER,
+    type: 'CONFIRMED_PROFILE',
     user
   }
-};
+}
 
 /**
  * container for all the actions
@@ -118,4 +118,4 @@ export const Action = {
   clearCache: () => ({
     type: 'COGNITO_CLEAR_CACHE',
   }),
-};
+}

@@ -4,6 +4,9 @@ import { withRouter } from 'react-router'
 import { registerUser } from 'react-cognito'
 import store from '../reducers/store'
 
+import TextField from '@material-ui/core/TextField'
+import CPButton from './CPButton'
+
 class RegisterForm extends React.Component {
 
   constructor(props) {
@@ -24,9 +27,12 @@ class RegisterForm extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
-    // const { store } = this.context;
 
-    console.log(store)
+    console.log(event)
+    console.log(this.context)
+
+    // const { store } = this.context
+
     const state = store.getState();
     const userPool = state.cognito.userPool;
     const config = state.cognito.config;
@@ -34,8 +40,10 @@ class RegisterForm extends React.Component {
       email: this.state.email,
     }).then(
       (action) => {
+        console.log(store.getState())
         console.log(action)
-        store.dispatch(action);
+
+        store.dispatch(action)
         this.props.history.push('/');
       },
       error => {
@@ -56,22 +64,44 @@ class RegisterForm extends React.Component {
   }
 
   render = () => (
-    <form onSubmit={this.onSubmit}>
-      <div>{this.state.error}</div>
-      <label>
-        Username
-        <input placeholder="username" onChange={this.changeUsername} required />
-      </label>
-      <label>
-        Password
-        <input placeholder="password" onChange={this.changePassword} required />
-      </label>
-      <label>
-        Email Address
-        <input placeholder="email" type="email" onChange={this.changeEmail} required />
-      </label>
-      <button type="submit">Register</button>
-    </form>
+    <div>
+      <form>
+        <TextField
+          required
+          fullWidth
+          value={this.state.username}
+          id="standard-basic"
+          label='username'
+          name='username'
+          onChange={this.changeUsername}
+          margin="normal"
+        />
+        <TextField
+          required
+          fullWidth
+          type="password"
+          id="standard-basic"
+          label='password'
+          name='password'
+          onChange={this.changePassword}
+          margin="normal"
+          placeholder="Password"
+        />
+        <TextField
+          required
+          fullWidth
+          type="email"
+          id="standard-basic"
+          label='Email Address'
+          name='email'
+          onChange={this.changeEmail}
+          margin="normal"
+          placeholder="email"
+        />
+      </form>
+      <CPButton fullWidth style={{marginTop: '1.5em', boxShadow: 'none'}} onClick={this.onSubmit}>Register</CPButton>
+      <div>{this.props.error}</div>
+    </div>
   )
 }
 RegisterForm.contextTypes = {
