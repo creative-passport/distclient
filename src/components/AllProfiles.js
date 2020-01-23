@@ -14,9 +14,17 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
+import {
+  BrowserView,
+  MobileView,
+  isBrowser,
+  isMobile
+} from 'react-device-detect'
+
 import store from '../reducers/store'
 import Layout from './Layout'
 import Profile from './Profile'
+import MobileProfile from './MobileProfile'
 import CPButton from './CPButton'
 
 const styles = theme => ({
@@ -130,36 +138,53 @@ class AllProfiles extends Component {
     }
 
     deleteProfile(name){
+      //TODO Implement
       console.log("delete the selected profile")
     }
 
     saveProfiles(){
-      console.log(this.state.profiles)
-
       var prof = this.state.profiles
       prof['email'] = this.state.email
-
       api.updateProfileData(this.state.walletId, prof, this.state.jwtToken)
     }
 
     profile(key, id, artist_name, artist_data) {
       const { classes } = this.props
 
-      return (
-        <ExpansionPanel key={key} className={classes.expand_group}>
-          <ExpansionPanelSummary
-            className={classes.expand_panel}
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography className={classes.heading}>{artist_name}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.expand_children}>
-            <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      )
+      if (isMobile) {
+        return (
+          <ExpansionPanel key={key} className={classes.expand_group}>
+            <ExpansionPanelSummary
+              className={classes.expand_panel}
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>{artist_name}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.expand_children}>
+              <MobileProfile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          )
+      }
+      else {
+        return (
+          <ExpansionPanel key={key} className={classes.expand_group}>
+            <ExpansionPanelSummary
+              className={classes.expand_panel}
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>{artist_name}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.expand_children}>
+              <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          )
+      }
     }
 
     render() {
@@ -175,7 +200,7 @@ class AllProfiles extends Component {
           this.profile(i, i.toString(), keyName, this.state.profiles['artist_profiles'][keyName])
         ))
       }
-     
+      
       return (
         <Layout>
             <Typography gutterBottom variant="h5" component="h5"> Profiles </Typography>

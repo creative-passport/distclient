@@ -3,13 +3,28 @@ import Grid from '@material-ui/core/Grid'
 import ScrollBar from 'react-perfect-scrollbar'
 import Container from '@material-ui/core/Container'
 
+
+import {
+  BrowserView,
+  MobileView,
+  isBrowser,
+  isMobile
+} from 'react-device-detect'
+
 import Header from './Header'
 import Footer from './Footer'
 import SideBar from './SideBar'
 
 
 export default class Layout extends Component {
+
     render() {
+
+        let menuwidth = 8
+        if (isMobile) {
+            menuwidth=12
+        }
+
         return (
             <ScrollBar component="div">
                 <Header />
@@ -18,7 +33,7 @@ export default class Layout extends Component {
                         <Grid item xs>
                             <SideBar/>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={menuwidth}>
                             {this.props.children}
                         </Grid>
                     </Grid>
