@@ -186,8 +186,7 @@ class SideBar extends React.Component {
         </CardHeader>
         <CardContent className={classes.cardcontent}>
             <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail} onChange={this.changeEmail}/>
-            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} defaultValue="(99) 99999999999" onChange={this.changeMobile} />
-            <Divider/>
+            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} defaultValue="(99) 99999999999" onChange={this.changeMobile}/>
             <div>
               <Fab size='small' disableRipple='false' style={{float:'right', margin: '10px', boxShadow: 'none'}}>
                 <SaveIcon onClick={this.saveData}/>

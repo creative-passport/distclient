@@ -60,7 +60,47 @@ const styles = theme => ({
     marginRight: '0.5em',
     padding: theme.spacing(1)
   }
-});
+})
+
+const AntTabs = withStyles({
+  root: {
+    borderBottom: 'none',
+  },
+  indicator: {
+    backgroundColor: '#ffffff',
+  },
+})(Tabs)
+
+const AntTab = withStyles(theme => ({
+  root: {
+    minWidth: 90,
+    padding: '2em',
+    fontWeight: theme.typography.fontWeightRegular,
+    // marginRight: theme.spacing(4),
+    fontSize: 12,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+      color: '#fff',
+      opacity: 1,
+    },
+    '&$selected': {
+      color: '#029679',
+      fontWeight: theme.typography.fontWeightMedium,
+    }
+  },
+  selected: {},
+}))(props => <Tab disableRipple {...props} />)
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -189,18 +229,18 @@ class Profile extends Component {
 
       return (
           <Box className={classes.root} display="flex" flexWrap="wrap">
-            <Tabs
+            <AntTabs
               value={this.state.value}
               onChange={this.handleTabChange}
               variant="fullWidth"
             >
-              <Tab className={this.state.value===0 ? classes.active_tab:classes.inactive_tab} label="My Passport" {...this.a11yProps(0)} />
-              <Tab className={this.state.value===1 ? classes.active_tab:classes.inactive_tab} label="Representatives" {...this.a11yProps(1)} />
-              <Tab className={this.state.value===2 ? classes.active_tab:classes.inactive_tab} label="Official Links" {...this.a11yProps(2)} />
-              <Tab className={this.state.value===3 ? classes.active_tab:classes.inactive_tab} label="Team, Booking, Licensing" {...this.a11yProps(3)} />
-              <Tab className={this.state.value===4 ? classes.active_tab:classes.inactive_tab} label="Other" {...this.a11yProps(4)} />
-              <Tab className={this.state.value===5 ? classes.active_tab:classes.inactive_tab} label="External Data" {...this.a11yProps(5)} />
-            </Tabs>
+              <AntTab className={this.state.value===0 ? classes.active_tab:classes.inactive_tab} label="My Passport" {...this.a11yProps(0)} />
+              <AntTab className={this.state.value===1 ? classes.active_tab:classes.inactive_tab} label="Representatives" {...this.a11yProps(1)} />
+              <AntTab className={this.state.value===2 ? classes.active_tab:classes.inactive_tab} label="Official Links" {...this.a11yProps(2)} />
+              <AntTab className={this.state.value===3 ? classes.active_tab:classes.inactive_tab} label="Booking, Licensing" {...this.a11yProps(3)} />
+              <AntTab className={this.state.value===4 ? classes.active_tab:classes.inactive_tab} label="Other" {...this.a11yProps(4)} />
+              <AntTab className={this.state.value===5 ? classes.active_tab:classes.inactive_tab} label="External Data" {...this.a11yProps(5)} />
+            </AntTabs>
 
             <TabPanel className={classes.tab_content} value={this.state.value} index={0}>
               <ProfileRow key='0' fieldName='bio' indexValue={0} label='bio' name='Bio' textValue={this.props.artist_data['bio']} multiline='true' onDataChange={this.addData}/>
