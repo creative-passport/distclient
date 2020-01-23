@@ -7,12 +7,15 @@ import Drawer from '@material-ui/core/Drawer'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
 import TextField from '@material-ui/core/TextField'
+import Fab from '@material-ui/core/Fab'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
+import SaveIcon from '@material-ui/icons/Save'
 
 import sample from '../images/sample.jpg'
 import store from '../reducers/store'
@@ -79,9 +82,15 @@ class SideBar extends React.Component {
     this.state = {
       userEmail: '',
       realName: ' ',
-      date_of_birth: ''
+      date_of_birth: '',
+      profile_data: '',
+      mobile: '',
+      walletId: '',
+      jwtToken: ''
     }
-    this.handleChange = this.handleChange.bind(this)
+    this.changeEmail = this.changeEmail.bind(this)
+    this.changeMobile = this.changeMobile.bind(this)
+    this.saveData = this.saveData.bind(this)
   }
 
   componentDidMount() {
@@ -94,26 +103,29 @@ class SideBar extends React.Component {
           console.log(err)
         } else {
           this.setState({jwtToken: session.getIdToken().getJwtToken()})
-        }
-      })
-
-      cog.user.getSession((err, session) => {
-        if (err) {
-          console.log(err)
-        } else {
           this.setState({userEmail: session.getIdToken().payload.email})
         }
       })
     }
 
     getUserAttributes(cog.user).then(res => {
+
+      this.setState({walletId: res.sub})
+
       api.getProfileData(res.sub).then(res => {
+
         if('dob' in res.data.PassportData) {
           this.setState({'date_of_birth': res.data.PassportData.dob})
         }
         if('real_name' in res.data.PassportData) {
           this.setState({'realName': res.data.PassportData.real_name})
         }
+
+        if('mobile' in res.data.PassportData) {
+          this.setState({'mobile': res.data.PassportData.mobile})
+        }
+
+        this.setState({'profile_data': res.data.PassportData})
       }).catch(function (error) {
           console.log(error)
       })
@@ -123,10 +135,24 @@ class SideBar extends React.Component {
     })
   }
 
-  handleChange(){
-    console.log("handle change in SideBar")
+  changeEmail(e) {
+    this.setState({email: e.target.value})
   }
 
+
+  changeMobile(e) {
+    this.setState({mobile: e.target.value})
+  }
+
+  saveData(){
+    var data = this.state.profile_data
+    data['mobile'] = this.state.mobile
+
+    console.log(this.state.walletId)
+    console.log(this.state.jwtToken)
+
+    api.updateProfileData(this.state.walletId, data, this.state.jwtToken)
+  }
 
   render() {
     const { classes } = this.props
@@ -159,10 +185,15 @@ class SideBar extends React.Component {
           </Typography>            
         </CardHeader>
         <CardContent className={classes.cardcontent}>
-            <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail}/>
-            <TextField fullWidth id="standard-basic" label="Mobile" defaultValue="(99) 99999999999" />
+            <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail} onChange={this.changeEmail}/>
+            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} defaultValue="(99) 99999999999" onChange={this.changeMobile} />
+            <Divider/>
+            <div>
+              <Fab size='small' disableRipple='false' style={{float:'right', margin: '10px', boxShadow: 'none'}}>
+                <SaveIcon onClick={this.saveData}/>
+              </Fab>
+            </div>
         </CardContent>
-        <Divider/>
       </Card>
     </Drawer>
   )}  

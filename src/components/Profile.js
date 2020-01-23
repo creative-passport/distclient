@@ -47,7 +47,8 @@ const styles = theme => ({
     color: '#c9c9c9',
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
-    marginRight: '0.5em'
+    marginRight: '0.5em',
+    padding: theme.spacing(1)
   },
   tab_content: {
     backgroundColor: '#ffffff',
@@ -56,7 +57,8 @@ const styles = theme => ({
     backgroundColor: '#ffffff',
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
-    marginRight: '0.5em'
+    marginRight: '0.5em',
+    padding: theme.spacing(1)
   }
 });
 
