@@ -15,6 +15,7 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
 import store from '../reducers/store'
 import generateKey from './bip'
@@ -121,8 +122,6 @@ class RegisterPage extends React.Component {
 
     createNewPassport(action) {
       console.log("New Passport")
-
-      console.log(action)
       
       var userProfile = {
         'PassportDataID': generateKey(),
@@ -229,7 +228,8 @@ class RegisterPage extends React.Component {
                     name='dob'
                     onChange={this.changeDOB}
                     margin="normal"
-                  /> 
+                  />
+                  <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> This information is not made public </Typography>
                   <div>{this.props.error}</div>
                 </CardContent>
                 <CardActions className={classes.cardFooter}>

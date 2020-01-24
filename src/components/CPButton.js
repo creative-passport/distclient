@@ -11,7 +11,7 @@ const styles = {
     color: 'white',
     height: 48,
     padding: '0 30px',
-    backgroundColor: '#00ffcc'
+    backgroundColor: '#02d1a8'
   }
 }
 

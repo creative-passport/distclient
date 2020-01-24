@@ -8,8 +8,6 @@ import { red } from '@material-ui/core/colors'
 import { CognitoState } from 'react-cognito'
 
 import Icon from '@material-ui/core/Icon'
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
@@ -18,6 +16,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Iframe from './iframe.js'
+import Fab from '@material-ui/core/Fab'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import * as api from '../scripts'
 import store from '../reducers/store'
@@ -26,7 +26,7 @@ import ProfileRow from './ProfileRow'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    zIndex: 2000,
+    zIndex: 100,
   },
   indicator: {
     backgroundColor: '#ffffff',
@@ -56,13 +56,12 @@ class MobileProfile extends Component {
           walletId: '',
           cognitue_state: store.getState().cognito,
           expanded: false,
-          src: 'https://streemliner.com/app/proCP/contributor.php?u=imogen%20heap'
+          src: ''
       }
       this.addData = this.addData.bind(this)
       this.addRow = this.addRow.bind(this)
       this.saveProfile = this.saveProfile.bind(this)
       this.addNewProfile = this.addNewProfile.bind(this)
-      this.handleTabChange = this.handleTabChange.bind(this)
       this.handleExpand = this.handleExpand.bind(this)
     }
 
@@ -84,6 +83,16 @@ class MobileProfile extends Component {
           }
         })
       }
+
+      var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
+      var stlUsername = 'imogen%20heap'
+      if(user.username == 'imogenheap') {
+        stlUsername = 'imogen%20heap'
+      }
+      else {
+        stlUsername = user.username.replace('_','%20')
+      }
+      this.setState({src: streemlinerRoot + stlUsername})
 
       this.setState({currentData: this.props.artist_data})
     }
@@ -112,10 +121,6 @@ class MobileProfile extends Component {
       this.setState(prevState => ({
         show_profile: !prevState.show_profile
       }))
-    }
-
-    handleTabChange(event, newValue) {
-      this.setState({value: newValue})
     }
 
     addNewProfile(name){
@@ -157,15 +162,20 @@ class MobileProfile extends Component {
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails className={classes.expand_children}>
                     <Grid container spacing={1} direction="row">
+                      <ProfileRow key='2' fieldName='home_loc' indexValue={2} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
+                      <ProfileRow key='9' fieldName='skills' indexValue={9} label='skills' name='Skills' textValue={this.props.artist_data['skills']} multiline='true' onDataChange={this.addData}/>  
                       <ProfileRow key='0' fieldName='bio' indexValue={0} label='bio' name='Bio' textValue={this.props.artist_data['bio']} multiline='true' onDataChange={this.addData}/>
                       <ProfileRow key='1' fieldName='short_bio' indexValue={1} label='short_bio' textValue={this.props.artist_data['short_bio']} name='Short Bio' onDataChange={this.addData}/>
-                      <ProfileRow key='2' fieldName='home_loc' indexValue={2} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
-                      <ProfileRow key='3' fieldName='current_loc' indexValue={3} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
-                      <ProfileRow key='4' fieldName='quote' indexValue={4} label='quote' name='Favourtie Quote' textValue={this.props.artist_data['quote']} multiline='false' onDataChange={this.addData}/>
-                      <ProfileRow key='5' fieldName='myc' indexValue={5} label='myc' name='MYC ID#' textValue={this.props.artist_data['myc']} multiline='true' onDataChange={this.addData}/>
+                      <ProfileRow key='10' fieldName='roles' indexValue={10} label='roles' textValue={this.props.artist_data['roles']} name='Roles' onDataChange={this.addData}/>
+                      <ProfileRow key='12' fieldName='interests' indexValue={12} label='interests' textValue={this.props.artist_data['interests']} name='Interests' multiline='false' onDataChange={this.addData}/>
+                      <ProfileRow key='13' fieldName='inspirations' indexValue={13} label='inspirations' textValue={this.props.artist_data['inspirations']} name='Inspirations' multiline='false' onDataChange={this.addData}/>
                       <ProfileRow key='6' fieldName='gender' indexValue={6} label='gender' name='Gender' textValue={this.props.artist_data['gender']} multiline='false' onDataChange={this.addData}/>
-                      <ProfileRow key='7' fieldName='religion' indexValue={7} label='religion' name='Religion' textValue={this.props.artist_data['religion']} multiline='true' onDataChange={this.addData}/>
-                      <ProfileRow key='8' fieldName='sexual_orientation' indexValue={8} label='sexual_orientation' name='Sexual Orientation' textValue={this.props.artist_data['sexual_orientation']} multiline='true' onDataChange={this.addData}/>
+                      <ProfileRow key='3' fieldName='current_loc' indexValue={3} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
+                      {rows}
+                      <Fab size='medium' className={classes.cardcontent} style={{boxShadow: 'none', marginTop:'1em', backgroundColor:"#fff"}}>
+                        <AddCircleIcon style={{fontSize: 'large', color:'#02d1a8', width:'3em', height:'3em'}} onClick={this.addRow}/>
+                      </Fab>
+                      <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> Suggested categories: religion, sexual orientation, projects, favourite quote, favourite songs/book/films </Typography>
                     </Grid>
                   </ExpansionPanelDetails>
                 </ExpansionPanel>

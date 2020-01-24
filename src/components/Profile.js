@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import Fab from '@material-ui/core/Fab'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import { loadCSS } from 'fg-loadcss'
 import { withStyles } from '@material-ui/core/styles'
@@ -22,7 +24,7 @@ import Iframe from './iframe.js'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    zIndex: 2000,
+    zIndex: 100,
     margin: 0
   },
   indicator: {
@@ -158,6 +160,17 @@ class Profile extends Component {
         })
       }
 
+      var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
+      var stlUsername = 'imogen%20heap'
+      console.log(user.username)
+      if(user.username === 'imogenheap') {
+        stlUsername = 'imogen%20heap'
+      }
+      else {
+        stlUsername = user.username.replace('_','%20')
+      }
+      this.setState({src: streemlinerRoot + stlUsername})
+
       this.setState({currentData: this.props.artist_data})
     }
 
@@ -236,27 +249,21 @@ class Profile extends Component {
             </AntTabs>
 
             <TabPanel className={classes.tab_content} value={this.state.value} index={0}>
+              <ProfileRow key='2' fieldName='home_loc' indexValue={2} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='9' fieldName='skills' indexValue={9} label='skills' name='Skills' textValue={this.props.artist_data['skills']} multiline='true' onDataChange={this.addData}/>  
               <ProfileRow key='0' fieldName='bio' indexValue={0} label='bio' name='Bio' textValue={this.props.artist_data['bio']} multiline='true' onDataChange={this.addData}/>
               <ProfileRow key='1' fieldName='short_bio' indexValue={1} label='short_bio' textValue={this.props.artist_data['short_bio']} name='Short Bio' onDataChange={this.addData}/>
-              <ProfileRow key='2' fieldName='home_loc' indexValue={2} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='3' fieldName='current_loc' indexValue={3} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='4' fieldName='quote' indexValue={4} label='quote' name='Favourtie Quote' textValue={this.props.artist_data['quote']} multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='5' fieldName='myc' indexValue={5} label='myc' name='MYC ID#' textValue={this.props.artist_data['myc']} multiline='true' onDataChange={this.addData}/>
-              <ProfileRow key='6' fieldName='gender' indexValue={6} label='gender' name='Gender' textValue={this.props.artist_data['gender']} multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='7' fieldName='religion' indexValue={7} label='religion' name='Religion' textValue={this.props.artist_data['religion']} multiline='true' onDataChange={this.addData}/>
-              <ProfileRow key='8' fieldName='sexual_orientation' indexValue={8} label='sexual_orientation' name='Sexual Orientation' textValue={this.props.artist_data['sexual_orientation']} multiline='true' onDataChange={this.addData}/>
-              <ProfileRow key='9' fieldName='skills' indexValue={9} label='skills' name='Skills' textValue={this.props.artist_data['skills']} multiline='true' onDataChange={this.addData}/>
               <ProfileRow key='10' fieldName='roles' indexValue={10} label='roles' textValue={this.props.artist_data['roles']} name='Roles' onDataChange={this.addData}/>
-              <ProfileRow key='11' fieldName='projects' indexValue={11} label='projects' textValue={this.props.artist_data['projects']} name='Projects' multiline='true' onDataChange={this.addData}/>
               <ProfileRow key='12' fieldName='interests' indexValue={12} label='interests' textValue={this.props.artist_data['interests']} name='Interests' multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='13' fieldName='inspirations' indexValue={13} label='inspirations' textValue={this.props.artist_data['inspirations']} name='Inspirations' multiline='false' onDataChange={this.addData}/>
-                  
+              <ProfileRow key='6' fieldName='gender' indexValue={6} label='gender' name='Gender' textValue={this.props.artist_data['gender']} multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='3' fieldName='current_loc' indexValue={3} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
               {rows}
-              <Icon
-                className={clsx(classes.iconHover, 'fa fa-plus-circle')}
-                style={{ fontSize: 50, color:"#00ffcc" }}
-                onClick={this.addRow}
-              />
+
+              <Fab size='medium' className={classes.cardcontent} style={{boxShadow: 'none', marginTop:'1em', backgroundColor:"#fff"}}>
+                <AddCircleIcon style={{fontSize: 'large', color:'#02d1a8', width:'3em', height:'3em'}} onClick={this.addRow}/>
+              </Fab>
+              <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> Suggested categories: religion, sexual orientation, projects, favourite quote, favourite songs/book/films </Typography>
             </TabPanel>
             <TabPanel className={classes.tab_content} value={this.state.value} index={1}>
               <ProfileRow key='14' fieldName='isni' indexValue={14} label='isni' name='ISNI' textValue={this.props.artist_data['isni']} multiline='false' onDataChange={this.addData}/>

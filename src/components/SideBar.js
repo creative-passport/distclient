@@ -124,6 +124,8 @@ class SideBar extends React.Component {
 
       api.getProfileData(res.sub).then(res => {
 
+        console.log(res.data)
+
         if('dob' in res.data.PassportData) {
           this.setState({'date_of_birth': res.data.PassportData.dob})
         }
@@ -186,6 +188,7 @@ class SideBar extends React.Component {
           <Typography component="h5" variant="h5" className={classes.realName}>{user_real_name}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
           <Typography component="h5" variant="h5" className={classes.dob}>{this.state.date_of_birth}</Typography>
+          <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> This information is not made public </Typography>
           <Fab size='small' className={classes.cardcontent} style={{boxShadow: 'none', marginLeft:'42%', marginTop:'1em', marginBottom:'1.5em'}}>
             <CropFreeOutlinedIcon />
           </Fab>

@@ -19,7 +19,7 @@ const styles = theme => ({
   button: {
     border: 'none',
     padding: 0,
-    backgroundColor: '#00ffcc',
+    backgroundColor: '#02d1a8',
     color: '#fff',
     textAlign: 'center',
     verticalAlign: 'middle',
@@ -49,7 +49,7 @@ class PublishMenu extends React.Component  {
 
   componentDidMount() {
     if(Object.keys(this.props.publishers).length === 0 && this.props.publishers.constructor === Object) {
-      this.setState({checkedItems: {'my_public_profile': false}})
+      this.setState({checkedItems: {'Who am I': false}})
     }
     else {
       this.setState({checkedItems: this.props.publishers})

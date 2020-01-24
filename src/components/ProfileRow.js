@@ -6,9 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import CPSwitch from './CPSwitch'
 
 import PublishMenu from './PublishMenu'
@@ -16,6 +14,8 @@ import PublishMenu from './PublishMenu'
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    zIndex: 2500,
+    marginLeft:'1em'
   },
   paper: {
     padding: theme.spacing(1),
@@ -41,7 +41,7 @@ class ProfileRow extends Component {
     super(props);
     this.state = {
       published: false,
-      publishers: {'my_public_profile': false},
+      publishers: {'Who am I': false},
       fieldName: ''
     }
 
@@ -130,7 +130,7 @@ class ProfileRow extends Component {
     </Grid>
 
     return (
-      <Grid container name={this.props.fieldName} value={this.props.indexValue} style={{marginLeft:'1em'}}>
+      <Grid container name={this.props.fieldName} value={this.props.indexValue}>
         {ValueItem}
         {SwitchItem}
         <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
