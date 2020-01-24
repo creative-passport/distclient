@@ -13,7 +13,7 @@ import CPButton from './CPButton'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    margin: 'auto 0'
+    margin: 'auto 0',
   },
   button: {
     height: '20px',
@@ -26,6 +26,7 @@ const styles = theme => ({
     verticalAlign: 'middle',
     borderRadius: 10,
     boxShadow: 'none',
+    marginBottom:'-1.4em'
   }
 })
 

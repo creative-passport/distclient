@@ -125,23 +125,10 @@ class MobileProfile extends Component {
 
     saveProfile(){
       var results = api.updateProfileData(this.state.walletId, this.state.currentData, this.state.jwtToken)
-
-      // xpansionPanel key={0} square onChange={this.handleExpand('panel1')}>
-                  // <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
-                  //   <Typography>Creative Passport Data</Typography>
-                  // </ExpansionPanelSummary>
-                  // <ExpansionPanelDetails>
-                  //   
-                  //onChange={this.handleExpand}
     }
 
     handleExpand(panel){
       console.log(panel)
-
-      // if (this.state.isExpanded == panel){
-
-      // }
-      // this.setState({isExpanded: panel})
     }
 
   //   const handleChange = panel => (event, isExpanded) => {

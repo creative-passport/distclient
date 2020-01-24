@@ -56,13 +56,11 @@ class ProfileRow extends Component {
         this.setState({publishers: this.props.textValue.publishers})
       }
     }
-    
   }
 
   componentWillUnmount() {
     console.log(this.props.name)
   }
-
 
   handleChange = (e) => {
       var data = {
@@ -97,13 +95,13 @@ class ProfileRow extends Component {
     const { classes } = this.props
 
     const SwitchItem = <CPSwitch 
-        name='publish_switch'
-        ref={(ref) => this.switch = ref}
-        checked={this.state.published}
-        onChange={this.handleChange}>
-    </CPSwitch>
+          name='publish_switch'
+          ref={(ref) => this.switch = ref}
+          checked={this.state.published}
+          onChange={this.handleChange}>
+      </CPSwitch>
 
-    const ValueItem = (this.props.required) ? <Grid item xs={8}> <TextField
+    const ValueItem = (this.props.required) ? <Grid item xs={9}> <TextField
       ref={(ref) => this.text = ref}
       required
       fullWidth
@@ -115,7 +113,8 @@ class ProfileRow extends Component {
       helperText={this.props.helper_text}
       inputProps={inputProps}
       value={this.state.value}
-    /> </Grid> : <Grid item xs={8}> <TextField
+    />
+    </Grid> : <Grid item xs={9}> <TextField
       ref={(ref) => this.text = ref}
       fullWidth
       multiline
@@ -132,7 +131,7 @@ class ProfileRow extends Component {
     </Grid>
 
     return (
-      <Grid container name={this.props.fieldName} value={this.props.indexValue}>
+      <Grid container name={this.props.fieldName} value={this.props.indexValue} style={{marginLeft:'2em'}}>
         {ValueItem}
         {SwitchItem}
         <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>

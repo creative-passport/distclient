@@ -86,7 +86,9 @@ class SideBar extends React.Component {
       profile_data: '',
       mobile: '',
       walletId: '',
-      jwtToken: ''
+      jwtToken: '',
+      username: '',
+      imageSrc: ''
     }
     this.changeEmail = this.changeEmail.bind(this)
     this.changeMobile = this.changeMobile.bind(this)
@@ -97,7 +99,12 @@ class SideBar extends React.Component {
 
     var cog = store.getState().cognito
 
+    console.log(cog.user.username)
+
     if (cog.user !== undefined) {
+      this.setState({username: cog.user.username})
+      this.setState({imageSrc: "https://creativepassport-shoebox.s3.eu-west-2.amazonaws.com/" + cog.user.username + ".jpg"})
+      
       cog.user.getSession((err, session) => {
         if (err) {
           console.log(err)
@@ -171,7 +178,7 @@ class SideBar extends React.Component {
       <CssBaseline />
       <Card className={classes.card} style={{marginBottom: '1em'}}>
         <CardHeader className={classes.cardHeaderStyle}/>
-        <Avatar alt="Remy Sharp" className={classes.imageCropper} src={sample} />
+        <Avatar alt="Remy Sharp" className={classes.imageCropper} src={this.state.imageSrc} />
         <CardContent className={classes.cardcontent}>
           <Typography component="h5" variant="h5" className={classes.realName}>{user_real_name}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>

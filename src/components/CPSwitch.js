@@ -44,7 +44,7 @@ const AntSwitch = withStyles(theme => ({
 function CPSwitch(props) {
   const { classes, ...other } = props
 
-  return <FormGroup row>
+  return <FormGroup row style={{margin: '0 0.5em -1.5em 0.5em'}}>
     <FormControlLabel
       control={
         <AntSwitch

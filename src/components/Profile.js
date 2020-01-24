@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 
@@ -12,12 +13,11 @@ import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
-import Iframe from 'react-iframe'
 
 import * as api from '../scripts'
 import store from '../reducers/store'
 import ProfileRow from './ProfileRow'
-
+import Iframe from './iframe.js'
 
 const styles = theme => ({
   root: {
@@ -136,7 +136,8 @@ class Profile extends Component {
           value: 0,
           jwtToken: '',
           walletId: '',
-          cognitue_state: store.getState().cognito
+          cognitue_state: store.getState().cognito,
+          src: 'https://streemliner.com/app/proCP/contributor.php?u=imogen%20heap' 
       }
       this.addData = this.addData.bind(this)
       this.addRow = this.addRow.bind(this)
@@ -166,6 +167,9 @@ class Profile extends Component {
       }
 
       this.setState({currentData: this.props.artist_data})
+
+      // const obj = ReactDOM.findDOMNode(this);
+      // this.setState({iFrameHeight:  obj.contentWindow.document.body.scrollHeight + 'px'})
     }
 
     addData(event) {
@@ -278,7 +282,7 @@ class Profile extends Component {
               <ProfileRow key='21' fieldName='facebook' indexValue={21} label='facebook' name='Facebook' textValue={this.props.artist_data['facebook']} multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='22' fieldName='twitter' indexValue={22} label='twitter' textValue={this.props.artist_data['twitter']} name='Twitter' onDataChange={this.addData}/>
               <ProfileRow key='23' fieldName='merch' indexValue={23} label='merch' textValue={this.props.artist_data['merch']} name='Merch' multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='24' fieldName='instagram' indexValue={24} label='instagram' textValue={this.props.artist_data['instagram']} name='i=Instagram' multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='24' fieldName='instagram' indexValue={24} label='instagram' textValue={this.props.artist_data['instagram']} name='Instagram' multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='25' fieldName='apple' indexValue={25} label='apple' textValue={this.props.artist_data['apple']} name='Apple' multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='26' fieldName='spotify' indexValue={26} label='spotify' textValue={this.props.artist_data['spotify']} name='Spotify' multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='27' fieldName='youtube' indexValue={27} label='youtube' textValue={this.props.artist_data['youtube']} name='Youtube' multiline='false' onDataChange={this.addData}/>
@@ -303,12 +307,10 @@ class Profile extends Component {
               <ProfileRow key='42' fieldName='sponsors' indexValue={42} label='sponsors' textValue={this.props.artist_data['sponsors']} name='Sponsors / Brands' onDataChange={this.addData}/>
             </TabPanel>
             <TabPanel className={classes.tab_content} value={this.state.value} index={5}>
-              <Iframe url="https://streemliner.com/app/proCP/contributor.php?u=imogen%20heap"
-                width="450px"
-                height="450px"
-                id="myId"
-                position="relative"/>
-              </TabPanel>
+              <div style={{maxWidth:640, width:'100%', height:this.state.iFrameHeight, overflow:'auto'}}>
+                <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'100%', position:'relative'}}/>
+              </div>
+            </TabPanel>
           </Box>
       )
     }
