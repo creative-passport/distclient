@@ -22,19 +22,11 @@ import Iframe from './iframe.js'
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    zIndex: 2000,
+    margin: 0
   },
   indicator: {
     backgroundColor: '#ffffff',
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  paper2: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   },
   iconHover: {
     margin: theme.spacing(2),
@@ -304,7 +296,7 @@ class Profile extends Component {
               <ProfileRow key='42' fieldName='sponsors' indexValue={42} label='sponsors' textValue={this.props.artist_data['sponsors']} name='Sponsors / Brands' onDataChange={this.addData}/>
             </TabPanel>
             <TabPanel className={classes.tab_content} value={this.state.value} index={5}>
-              <div style={{maxWidth:640, width:'100%', height:'auto', overflow:'auto'}}>
+              <div style={{width:'100%', height:'auto', overflow:'auto'}}>
                 <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'600px', position:'relative'}}/>
               </div>
             </TabPanel>

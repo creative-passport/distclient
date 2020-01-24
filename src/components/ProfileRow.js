@@ -94,11 +94,11 @@ class ProfileRow extends Component {
     const { classes } = this.props
 
     const SwitchItem = <CPSwitch 
-          name='publish_switch'
-          ref={(ref) => this.switch = ref}
-          checked={this.state.published}
-          onChange={this.handleChange}>
-      </CPSwitch>
+        name='publish_switch'
+        ref={(ref) => this.switch = ref}
+        checked={this.state.published}
+        onChange={this.handleChange}>
+    </CPSwitch>
 
     const ValueItem = (this.props.required) ? <Grid item xs={9}> <TextField
       ref={(ref) => this.text = ref}
@@ -130,7 +130,7 @@ class ProfileRow extends Component {
     </Grid>
 
     return (
-      <Grid container name={this.props.fieldName} value={this.props.indexValue} style={{marginLeft:'2em'}}>
+      <Grid container name={this.props.fieldName} value={this.props.indexValue} style={{marginLeft:'1em'}}>
         {ValueItem}
         {SwitchItem}
         <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>

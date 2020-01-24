@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
 import Checkbox from '@material-ui/core/Checkbox'
+import ArrowRightAltOutlinedIcon from '@material-ui/icons/ArrowRightAltOutlined'
 
 import CPButton from './CPButton'
 
@@ -16,17 +17,16 @@ const styles = theme => ({
     margin: 'auto 0',
   },
   button: {
-    height: '20px',
     border: 'none',
     padding: 0,
     backgroundColor: '#00ffcc',
     color: '#fff',
-    lineHeight: '5px',
     textAlign: 'center',
     verticalAlign: 'middle',
     borderRadius: 10,
     boxShadow: 'none',
-    marginBottom:'-1.4em'
+    marginBottom:'-1.4em',
+    marginLeft: '-1em'
   }
 })
 
@@ -90,7 +90,7 @@ class PublishMenu extends React.Component  {
       aria-haspopup="true"
       className={classes.button}
       onClick={this.handleClick}>
-      ---->
+      <ArrowRightAltOutlinedIcon/>
     </CPButton>
 
     const checkedValue = Boolean(this.state.anchorEl)

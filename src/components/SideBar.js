@@ -16,6 +16,7 @@ import CardActions from '@material-ui/core/CardActions'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import SaveIcon from '@material-ui/icons/Save'
+import CropFreeOutlinedIcon from '@material-ui/icons/CropFreeOutlined'
 
 import sample from '../images/sample.jpg'
 import store from '../reducers/store'
@@ -34,14 +35,16 @@ const styles = theme => ({
   },
   realName: {
     textAlign: 'center',
-    padding: theme.spacing(3)
+    padding: theme.spacing(1)
   },
   dob:{
     textAlign: 'center',
-    padding: theme.spacing(3)
+    padding: theme.spacing(1)
   },
   cardcontent: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(1),
+    alignItems: 'center',
+    justifyContent: "center"
   },
   card: {
     maxWidth: 345,
@@ -183,6 +186,9 @@ class SideBar extends React.Component {
           <Typography component="h5" variant="h5" className={classes.realName}>{user_real_name}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
           <Typography component="h5" variant="h5" className={classes.dob}>{this.state.date_of_birth}</Typography>
+          <Fab size='small' className={classes.cardcontent} style={{boxShadow: 'none', marginLeft:'42%', marginTop:'1em', marginBottom:'1.5em'}}>
+            <CropFreeOutlinedIcon />
+          </Fab>
         </CardContent>
         <Divider/>
       </Card>
@@ -193,9 +199,9 @@ class SideBar extends React.Component {
         </CardHeader>
         <CardContent className={classes.cardcontent}>
             <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail} onChange={this.changeEmail}/>
-            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} defaultValue="(99) 99999999999" onChange={this.changeMobile}/>
+            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} onChange={this.changeMobile}/>
             <div>
-              <Fab size='small' disableRipple='false' style={{float:'right', margin: '10px', boxShadow: 'none'}}>
+              <Fab size='small' style={{float:'right', margin: '10px', boxShadow: 'none'}}>
                 <SaveIcon onClick={this.saveData}/>
               </Fab>
             </div>
