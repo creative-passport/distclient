@@ -17,6 +17,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Iframe from './iframe.js'
 
 import * as api from '../scripts'
 import store from '../reducers/store'
@@ -53,7 +54,8 @@ class MobileProfile extends Component {
           jwtToken: '',
           walletId: '',
           cognitue_state: store.getState().cognito,
-          expanded: false
+          expanded: false,
+          src: 'https://streemliner.com/app/proCP/contributor.php?u=imogen%20heap'
       }
       this.addData = this.addData.bind(this)
       this.addRow = this.addRow.bind(this)
@@ -130,17 +132,6 @@ class MobileProfile extends Component {
     handleExpand(panel){
       console.log(panel)
     }
-
-  //   const handleChange = panel => (event, isExpanded) => {
-  //   setExpanded(isExpanded ? panel : false);
-  // };
-
-  // {rows}
-  //               <Icon
-  //                 className={clsx(classes.iconHover, 'fa fa-plus-circle')}
-  //                 style={{ fontSize: 50, color:"#00ffcc" }}
-  //                 onClick={this.addRow}
-  //               />
 
     render() {
       const { classes } = this.props
@@ -277,6 +268,20 @@ class MobileProfile extends Component {
                         <ProfileRow key='37' fieldName='charities' indexValue={1} label='charities' textValue={this.props.artist_data['charities']} name='Charities Supported' onDataChange={this.addData}/>
                         <ProfileRow key='37' fieldName='sponsors' indexValue={1} label='sponsors' textValue={this.props.artist_data['sponsors']} name='Sponsors / Brands' onDataChange={this.addData}/>
                       </Grid>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+                  <ExpansionPanel>
+                    <ExpansionPanelSummary
+                      className={classes.expand_panel}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                    <Typography className={classes.heading}>EXTERNAL DATA</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.expand_children}>
+                    <div style={{maxWidth:640, width:'100%', height:'auto', overflow:'auto'}}>
+                      <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'600px', position:'relative'}}/>
+                    </div>
                     </ExpansionPanelDetails>
                   </ExpansionPanel>
               </Grid>

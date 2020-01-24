@@ -167,9 +167,6 @@ class Profile extends Component {
       }
 
       this.setState({currentData: this.props.artist_data})
-
-      // const obj = ReactDOM.findDOMNode(this);
-      // this.setState({iFrameHeight:  obj.contentWindow.document.body.scrollHeight + 'px'})
     }
 
     addData(event) {
@@ -307,8 +304,8 @@ class Profile extends Component {
               <ProfileRow key='42' fieldName='sponsors' indexValue={42} label='sponsors' textValue={this.props.artist_data['sponsors']} name='Sponsors / Brands' onDataChange={this.addData}/>
             </TabPanel>
             <TabPanel className={classes.tab_content} value={this.state.value} index={5}>
-              <div style={{maxWidth:640, width:'100%', height:this.state.iFrameHeight, overflow:'auto'}}>
-                <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'100%', position:'relative'}}/>
+              <div style={{maxWidth:640, width:'100%', height:'auto', overflow:'auto'}}>
+                <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'600px', position:'relative'}}/>
               </div>
             </TabPanel>
           </Box>
