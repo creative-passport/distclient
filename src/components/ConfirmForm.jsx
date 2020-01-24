@@ -33,21 +33,14 @@ class ConfirmForm extends React.Component {
                   var jwtToken =  session.getIdToken().getJwtToken()
 
                   getUserAttributes(user).then(res => {
-                    console.log(res)
-
                     var currentAttributes = res
-                    //currentAttributes['sub'] = walletId
 
                     walletId = currentAttributes['sub']
-
                     updateProfileData(walletId, data, jwtToken)
-
                     
                   }).catch(function (error) {
                       console.log(error)
                   })
-
-
                 }
               })
             }

@@ -10,7 +10,7 @@ import PageNotFound from './PageNotFound'
 import { PasswordReset } from 'react-cognito'
 
 import Dashboard from './Dashboard'
-import ChangePasswordForm from './ChangePasswordForm'
+import ChangePasswordPage from './ChangePasswordPage'
 import UpdateEmailForm from './UpdateEmailForm'
 import PasswordResetForm from './PasswordResetForm'
 import RegisterPage from './RegisterPage'
@@ -20,8 +20,7 @@ import './App.css'
 
 const changePassword = () => (
     <div>
-      <ChangePasswordForm />
-      <Link to="/">Home</Link>
+      <ChangePasswordPage />
     </div>
 )
 
@@ -34,8 +33,8 @@ const updateEmail = () => (
 
 const passwordReset = () => (
   <PasswordReset>
-      <PasswordResetForm/>
-    </PasswordReset>
+    <PasswordResetForm/>
+  </PasswordReset>
 )
 
 export default class App extends Component {

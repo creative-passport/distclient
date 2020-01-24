@@ -103,7 +103,7 @@ const styles = theme => ({
   }
 })
 
-class ConfirmPage extends React.Component {
+class PasswordResetPage extends React.Component {
 
     constructor(props) {
       super(props);
@@ -130,8 +130,6 @@ class ConfirmPage extends React.Component {
     }
 
     createNewPassport(action) {
-      console.log("New Passport")
-
       var userProfile = {
         'PassportDataID': generateKey(),
         'PassportData': {
@@ -231,7 +229,7 @@ class ConfirmPage extends React.Component {
   }
 }
 
-ConfirmPage.propTypes = {
+RegisterPage.propTypes = {
   classes: PropTypes.object.isRequired,
   onSubmit: PropTypes.func,
   clearCache: PropTypes.func,
@@ -242,8 +240,8 @@ ConfirmPage.propTypes = {
   attributes: PropTypes.object
 }
 
-ConfirmPage.contextTypes = {
+RegisterPage.contextTypes = {
   store: PropTypes.object,
 };
 
-export default withRouter(withStyles(styles)(ConfirmPage))
+export default withRouter(withStyles(styles)(RegisterPage))

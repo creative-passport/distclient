@@ -248,7 +248,7 @@ class Profile extends Component {
               <ProfileRow key='1' fieldName='short_bio' indexValue={1} label='short_bio' textValue={this.props.artist_data['short_bio']} name='Short Bio' onDataChange={this.addData}/>
               <ProfileRow key='2' fieldName='home_loc' indexValue={2} label='home_loc' textValue={this.props.artist_data['home_loc']} name='Home Location' multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='3' fieldName='current_loc' indexValue={3} label='current_loc' textValue={this.props.artist_data['current_loc']} name='Current Location' multiline='false' onDataChange={this.addData}/>
-              <ProfileRow key='4' fieldName='quote' indexValue={4} label='quote' name='Favortie Quote' textValue={this.props.artist_data['quote']} multiline='false' onDataChange={this.addData}/>
+              <ProfileRow key='4' fieldName='quote' indexValue={4} label='quote' name='Favourtie Quote' textValue={this.props.artist_data['quote']} multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='5' fieldName='myc' indexValue={5} label='myc' name='MYC ID#' textValue={this.props.artist_data['myc']} multiline='true' onDataChange={this.addData}/>
               <ProfileRow key='6' fieldName='gender' indexValue={6} label='gender' name='Gender' textValue={this.props.artist_data['gender']} multiline='false' onDataChange={this.addData}/>
               <ProfileRow key='7' fieldName='religion' indexValue={7} label='religion' name='Religion' textValue={this.props.artist_data['religion']} multiline='true' onDataChange={this.addData}/>

@@ -59,7 +59,6 @@ class ProfileRow extends Component {
   }
 
   componentWillUnmount() {
-    console.log(this.props.name)
   }
 
   handleChange = (e) => {
