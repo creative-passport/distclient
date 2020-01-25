@@ -105,7 +105,7 @@ class ProfileRow extends Component {
       required
       fullWidth
       id="standard-basic"
-      label={this.props.name}
+      label={this.props.label}
       name={this.props.name}
       onChange={this.handleChange}
       margin="normal"
@@ -118,7 +118,7 @@ class ProfileRow extends Component {
       fullWidth
       multiline
       id="standard-basic"
-      label={this.props.name}
+      label={this.props.label}
       name={this.props.name}
       rowsMax="10"
       onChange={this.handleChange}

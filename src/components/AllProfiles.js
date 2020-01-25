@@ -13,6 +13,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Switch from '@material-ui/core/Switch'
 
 import {
   BrowserView,
@@ -27,6 +28,42 @@ import Profile from './Profile'
 import MobileProfile from './MobileProfile'
 import CPButton from './CPButton'
 
+const AntSwitch = withStyles(theme => ({
+  root: {
+    width: 36,
+    height: 16,
+    padding: 0,
+    display: 'flex',
+    marginTop: '0.2em',
+    marginLeft: '1em'
+  },
+  switchBase: {
+    padding: 2,
+    color: theme.palette.grey[500],
+    '&$checked': {
+      transform: 'translateX(12px)',
+      color: theme.palette.common.white,
+      '& + $track': {
+        opacity: 1,
+        backgroundColor: theme.palette.primary.main,
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: {
+    width: 12,
+    height: 12,
+    boxShadow: 'none',
+  },
+  track: {
+    width: 36,
+    border: `1px solid ${theme.palette.grey[500]}`,
+    borderRadius: 16 / 2,
+    opacity: 1,
+    backgroundColor: theme.palette.common.white,
+  }
+}))(Switch)
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -38,14 +75,14 @@ const styles = theme => ({
     color: 'white',
     boxShadow: 'none',
     height: 35,
-    backgroundColor: '#00ffcc'
+    backgroundColor: '#02d1a8'
   },
   expand_group: {
     height: '3em',
     boxShadow: 'none',
   },
   expand_children: {
-    backgroundColor: '#00ffcc',
+    backgroundColor: '#02d1a8',
     padding: 0,
   }
 });
@@ -170,19 +207,21 @@ class AllProfiles extends Component {
       }
       else {
         return (
-          <ExpansionPanel key={key} className={classes.expand_group}>
-            <ExpansionPanelSummary
-              className={classes.expand_panel}
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className={classes.heading}>{artist_name}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.expand_children}>
-              <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          <div>
+            <ExpansionPanel key={key} className={classes.expand_group}>
+              <ExpansionPanelSummary
+                className={classes.expand_panel}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>{artist_name}</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails className={classes.expand_children}>
+                <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </div>
           )
       }
     }
@@ -200,7 +239,7 @@ class AllProfiles extends Component {
           this.profile(i, i.toString(), keyName, this.state.profiles['artist_profiles'][keyName])
         ))
       }
-      
+
       return (
         <Layout>
             <Typography gutterBottom variant="h5" component="h5"> Profiles </Typography>
