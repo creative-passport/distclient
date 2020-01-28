@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { updateAttributes } from 'react-cognito';
-
+import React from 'react'
+import PropTypes from 'prop-types'
+import { updateAttributes } from 'react-cognito'
 import store from '../reducers/store'
 
 class UpdateEmailForm extends React.Component {
@@ -20,7 +19,6 @@ class UpdateEmailForm extends React.Component {
   }
 
   onSubmit = (event) => {
-    const { store } = this.context;
     const state = store.getState();
     const user = state.cognito.user;
     const config = state.cognito.config;

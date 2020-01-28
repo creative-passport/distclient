@@ -11,7 +11,7 @@ import { PasswordReset } from 'react-cognito'
 
 import Dashboard from './Dashboard'
 import ChangePasswordPage from './ChangePasswordPage'
-import UpdateEmailForm from './UpdateEmailForm'
+import UpdateEmailPage from './UpdateEmailPage'
 import PasswordResetForm from './PasswordResetForm'
 import RegisterPage from './RegisterPage'
 import ConfirmPage from './ConfirmPage'
@@ -26,8 +26,7 @@ const changePassword = () => (
 
 const updateEmail = () => (
     <div>
-      <UpdateEmailForm />
-      <Link to="/">Home</Link>
+      <UpdateEmailPage />
     </div>
 )
 
