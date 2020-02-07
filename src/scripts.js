@@ -40,8 +40,10 @@ export function updateProfileData(walletId, data, jwtToken) {
         'Authorization': jwtToken
     }
 
-    var data = {"PassportId": walletId, "PassportData": data}
-    axios.post(proxyurl + url + 'storepassportdata', data, {headers: headers}).then(
+    axios.post(proxyurl + url + 'storepassportdata',
+        {"PassportId": walletId, "PassportData": data},
+        {headers: headers}
+    ).then(
         res => { 
           return res
         }).catch(function (error) {

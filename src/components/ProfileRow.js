@@ -1,11 +1,8 @@
-import React, { Component } from 'react'
+  import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
 import TextField from '@material-ui/core/TextField'
 import CPSwitch from './CPSwitch'
 
@@ -50,7 +47,7 @@ class ProfileRow extends Component {
 
   componentDidMount() {
     if ('textValue' in this.props){
-      if (this.props.textValue != undefined && 'value' in this.props.textValue){
+      if (this.props.textValue !== undefined && 'value' in this.props.textValue){
         this.setState({value: this.props.textValue.value})
         this.setState({published: this.props.textValue.published})
         this.setState({publishers: this.props.textValue.publishers})

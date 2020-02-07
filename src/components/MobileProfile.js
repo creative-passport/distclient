@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import clsx from 'clsx'
 
 import { loadCSS } from 'fg-loadcss'
 import { withStyles } from '@material-ui/core/styles'
 import { red } from '@material-ui/core/colors'
-import { CognitoState } from 'react-cognito'
 
-import Icon from '@material-ui/core/Icon'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
@@ -86,7 +83,7 @@ class MobileProfile extends Component {
 
       var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
       var stlUsername = 'imogen%20heap'
-      if(user.username == 'imogenheap') {
+      if(user.username === 'imogenheap') {
         stlUsername = 'imogen%20heap'
       }
       else {
@@ -100,8 +97,8 @@ class MobileProfile extends Component {
     addData(event) {
       var currentData = this.state.currentData
       var newIndex = event['indexValue']
-      var fieldName = event['fieldName']
-      var newEvent = {fieldName: event}
+      // var fieldName = event['fieldName']
+      // var newEvent = {fieldName: event}
 
       if ('fieldName' in event && event['fieldName'] !== undefined) {
         currentData[event['fieldName']] = event

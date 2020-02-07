@@ -4,22 +4,16 @@ import 'date-fns'
 
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router'
-import { changePassword } from 'react-cognito'
 import { Link } from 'react-router-dom'
 
 import Paper from '@material-ui/core/Paper'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 
 import store from '../reducers/store'
 
-import { createTempProfile } from '../actions/authenticationActions'
 import ChangePasswordForm from './ChangePasswordForm'
 
 import logo from '../logo.png'

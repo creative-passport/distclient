@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import clsx from 'clsx'
 import Fab from '@material-ui/core/Fab'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import { loadCSS } from 'fg-loadcss'
 import { withStyles } from '@material-ui/core/styles'
 import { red } from '@material-ui/core/colors'
-import { CognitoState } from 'react-cognito'
 
-import Icon from '@material-ui/core/Icon'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'

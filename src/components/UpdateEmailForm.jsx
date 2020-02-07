@@ -10,7 +10,7 @@ class UpdateEmailForm extends React.Component {
     this.state = {
       error: '',
       email: '',
-    };
+    }
   }
 
   componentWillMount = () => {

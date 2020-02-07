@@ -91,7 +91,6 @@ class LoginPage extends React.Component {
     }
 
     render() {
-      const attributes = this.attributes
       const { classes } = this.props
 
     return (

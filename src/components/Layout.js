@@ -3,13 +3,7 @@ import Grid from '@material-ui/core/Grid'
 import ScrollBar from 'react-perfect-scrollbar'
 import Container from '@material-ui/core/Container'
 
-
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile
-} from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 
 import Header from './Header'
 import Footer from './Footer'
