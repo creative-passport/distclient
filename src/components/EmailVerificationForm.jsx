@@ -22,6 +22,7 @@ class EmailVerificationForm extends React.Component {
 
   render = () => (
     <form onSubmit={this.onSubmit}>
+      <p>You must verify your email address.  Please check your email for a code</p>
       <div>{this.props.error}</div>
       <label>
         Verification Code

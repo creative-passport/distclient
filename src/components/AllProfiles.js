@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { loadCSS } from 'fg-loadcss'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, makeStyles } from '@material-ui/core/styles'
 import * as api from '../scripts'
-import {getUserAttributes} from 'react-cognito/src/attributes.js'
 
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -13,64 +12,21 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-// import Switch from '@material-ui/core/Switch'
-import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { blue, geekblue, purple, magenta} from '@ant-design/colors'
 
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile
-} from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 
-import store from '../reducers/store'
 import Layout from './Layout'
 import Profile from './Profile'
 import MobileProfile from './MobileProfile'
 import CPButton from './CPButton'
 import { Switch } from 'antd'
+import { Auth } from 'aws-amplify'
 
 import 'antd/dist/antd.css'
 import './App.css'
 
-// const AntSwitch = withStyles(theme => ({
-//   root: {
-//     width: 36,
-//     height: 16,
-//     padding: 0,
-//     display: 'flex',
-//     marginLeft: '2em'
-//   },
-//   switchBase: {
-//     padding: 2,
-//     color: theme.palette.grey[500],
-//     '&$checked': {
-//       transform: 'translateX(12px)',
-//       color: theme.palette.common.white,
-//       '& + $track': {
-//         opacity: 1,
-//         backgroundColor: theme.palette.primary.main,
-//         borderColor: theme.palette.primary.main,
-//       },
-//     },
-//   },
-//   thumb: {
-//     width: 12,
-//     height: 12,
-//     boxShadow: 'none'
-//   },
-//   track: {
-//     width: 36,
-//     border: `1px solid ${theme.palette.grey[500]}`,
-//     borderRadius: 16 / 2,
-//     opacity: 1,
-//     backgroundColor: theme.palette.common.white,
-//   }
-// }))(Switch)
-
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
   },
@@ -95,7 +51,85 @@ const styles = theme => ({
     backgroundColor: '#02d1a8',
     padding: 0,
   }
-});
+}))
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+  expand_children: {
+    backgroundColor: '#02d1a8',
+    padding: 0,
+  }
+})
+
+const ControlledExpansionPanels = ({all_profiles}) => {
+  const classes = useStyles()
+  const [expanded, setExpanded] = React.useState(false)
+
+  const handleChange = panel => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  }
+
+  const profiles = Object.keys(all_profiles['artist_profiles']).map((keyName, i) => {
+    const id = i.toString()
+    const artist_data = all_profiles['artist_profiles'][keyName]
+    var currentPanel = 'panel'+i
+    const ariaContent = "additional-actions"+i+"-content"
+    const panelId = "additional-actions"+i+"-header"
+    const artist_name = keyName
+
+    let singleProfile
+    if (isMobile) {
+      singleProfile = <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
+        <ExpansionPanelSummary
+          className={classes.expand_panel}
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={ariaContent}
+          id={panelId}
+        >
+          <Typography className={classes.heading}>{artist_name}</Typography>
+          <FormControlLabel
+            aria-label="Acknowledge"
+            className={classes.heading}
+            onClick={event => event.stopPropagation()}
+            onFocus={event => event.stopPropagation()}
+            control={<Switch size="small" className={classes.public_switch}/>}
+          />
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.expand_children}>
+          <MobileProfile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    }
+    else {
+      singleProfile = <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
+        <ExpansionPanelSummary
+          className={classes.expand_panel}
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={ariaContent}
+          id={panelId}
+        >
+        <Typography className={classes.heading}>{artist_name}</Typography>
+          <FormControlLabel
+            aria-label="Acknowledge"
+            className={classes.heading}
+            onClick={event => event.stopPropagation()}
+            onFocus={event => event.stopPropagation()}
+            control={<Switch size="small" className={classes.public_switch}/>}
+          />
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.expand_children}>
+          <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    }
+
+    return (singleProfile)
+  })
+
+  return (profiles)
+}
 
 
 class AllProfiles extends Component {
@@ -110,16 +144,14 @@ class AllProfiles extends Component {
           jwtToken: '',
           walletId: '',
           show_profile: false,
+          expanded: false,
           profiles: {},
           new_profile_name: null
       }
       this.saveProfiles = this.saveProfiles.bind(this)
       this.addNewProfile = this.addNewProfile.bind(this)
       this.handleNewProfileName = this.handleNewProfileName.bind(this)
-
-      this.proxyurl = "https://cors-anywhere.herokuapp.com/"
-      this.urldev = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
-      this.urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
+      this.createNewPassport = this.createNewPassport.bind(this)
 
     }
 
@@ -129,49 +161,46 @@ class AllProfiles extends Component {
         document.querySelector('#font-awesome-css'),
       )
 
-      var cog = store.getState().cognito
-      var user = cog.user
+      Auth.currentAuthenticatedUser().then(
+        user => {
+          this.setState({walletId: user.attributes.sub})
+          this.setState({email: user.attributes.email})
+          this.setState({jwtToken: user.signInUserSession.idToken.jwtToken})
 
-      if (user !== undefined) {
-        user.getSession((err, session) => {
-          if (err) {
-            console.log(err)
-          } else {
-            this.setState({jwtToken: session.getIdToken().getJwtToken()})
-          }
-        })
-      }
-
-      getUserAttributes(cog.user).then(res => {
-        this.setState({walletId: res.sub})
-        this.setState({email: res.email})
-        
-        api.getProfileData(res.sub).then(res => {
-          console.log(res.data.PassportData)
-
-          let dataToUpdate = res.data.PassportData
-          if (!('artist_profiles' in res.data.PassportData)){
-            dataToUpdate['artist_profiles'] = {}
-          }
-
-          this.setState({
-            profiles: dataToUpdate
+          api.getProfileData(user.attributes.sub).then(res => {
+            if(res.data.length === 0) {
+              console.log("new passport")
+              this.createNewPassport()
+            } else {
+              this.setState({
+                profiles: res.data.PassportData
+              })
+            }
+          }).catch(function (error) {
+              console.log(error)
           })
-        }).catch(function (error) {
-            console.log(error)
-        })
-      }).catch(function (error) {
-        console.log(error)
-      })
-
-      console.log(blue); // ['#E6F7FF', '#BAE7FF', '#91D5FF', ''#69C0FF', '#40A9FF', '#1890FF', '#096DD9', '#0050B3', '#003A8C', '#002766']
-      console.log(blue.primary); // '#1890FF'
+        }
+      ).catch(
+        error => {
+          console.log("NO AUTH USER " + error)
+        }
+      )
     }
 
-    handleShowProfile(){
-      this.setState(prevState => ({
-        show_profile: !prevState.show_profile
-      }))
+    createNewPassport() {
+      var userProfile = {
+        'PassportId': this.state.walletId,
+        'PassportData': {
+          'email': this.state.email,
+          'artist_profiles' : {}
+        }
+      }
+
+      api.updateProfileData(userProfile['PassportId'], userProfile['PassportData'], this.state.jwtToken)
+
+      this.setState({
+        profiles: userProfile.PassportData
+      })
     }
 
     handleNewProfileName(e){
@@ -180,15 +209,18 @@ class AllProfiles extends Component {
 
     addNewProfile(){
       if (this.state.new_profile_name !== undefined && this.state.new_profile_name !== null && this.state.new_profile_name.length > 1) {
+        console.log(this.state.new_profile_name)
+
         var artist_name = this.state.new_profile_name
         var currentProfiles = this.state.profiles
+
         currentProfiles['artist_profiles'][artist_name] = {'artist_name': artist_name}
         this.setState({profiles: currentProfiles})
       }
     }
 
+    //TODO Implement
     deleteProfile(name){
-      //TODO Implement
       console.log("delete the selected profile")
     }
 
@@ -198,100 +230,37 @@ class AllProfiles extends Component {
       api.updateProfileData(this.state.walletId, prof, this.state.jwtToken)
     }
 
-    profile(key, id, artist_name, artist_data) {
-      const { classes } = this.props
-
-      console.log("KEY" + key)
-      const expandID = key + 1
-      const ariaContent = "additional-actions"+expandID+"-content"
-      const panelId = "additional-actions"+expandID+"-header"
-
-      if (isMobile) {
-        return (
-          <ExpansionPanel key={key} className={classes.expand_group}>
-            <ExpansionPanelSummary
-              className={classes.expand_panel}
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={ariaContent}
-              id={panelId}
-            >
-              <Typography className={classes.heading}>{artist_name}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.expand_children}>
-              <MobileProfile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          )
-      }
-      else {
-        return (
-          <div className={classes.root}>
-            <ExpansionPanel key={key} className={classes.expand_group}>
-              <ExpansionPanelSummary
-                className={classes.expand_panel}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={ariaContent}
-                id={panelId}
-              >
-              <Typography className={classes.heading}>{artist_name}</Typography>
-                <FormControlLabel
-                  aria-label="Acknowledge"
-                  className={classes.heading}
-                  onClick={event => event.stopPropagation()}
-                  onFocus={event => event.stopPropagation()}
-                  control={<Switch size="small" className={classes.public_switch}/>}
-                />
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails className={classes.expand_children}>
-                <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </div>
-          )
-      }
-    }
-
     render() {
       const { classes } = this.props
 
-      const state = store.getState()
-      const user = state.cognito.user
-      const attributes = state.cognito.attributes
-
       let profiles
       if('artist_profiles' in this.state.profiles) {
-        profiles = Object.keys(this.state.profiles['artist_profiles']).map((keyName, i) => (
-          this.profile(i, i.toString(), keyName, this.state.profiles['artist_profiles'][keyName])
-        ))
+        profiles = <ControlledExpansionPanels all_profiles={this.state.profiles}/>
       }
 
       return (
         <Layout>
-            <Typography gutterBottom variant="h5" component="h5"> Profiles </Typography>
-            <Grid container spacing={1} direction="row" justify="flex-end" alignItems="center">
-              <Grid item xs={8}>
-                <InputBase
-                  fullWidth
-                  className={classes.input}
-                  placeholder="ARTIST NAME ..."
-                  inputProps={{ 'aria-label': 'Add new profile' }}
-                  onChange={this.handleNewProfileName}
-                />
-              </Grid>
-              <Grid item xs>
-                <CPButton variant="contained" style={{width:'30px', height:'30px', marginRight: '15%'}} onClick={this.addNewProfile}>
-                  Add
-                </CPButton>
-              </Grid>
-              <Grid item xs>
-                <CPButton variant="contained" style={{width:'170px', height:'30px'}} onClick={this.saveProfiles}>
-                    Save Changes
-                </CPButton>
-              </Grid>
+          <Typography gutterBottom variant="h5" component="h5"> Profiles </Typography>
+          <Grid container spacing={1} direction="row" justify="flex-end" alignItems="center">
+            <Grid item xs={8}>
+              <InputBase
+                fullWidth
+                className={classes.input}
+                placeholder="ARTIST NAME ..."
+                inputProps={{ 'aria-label': 'Add new profile' }}
+                onChange={this.handleNewProfileName}
+              />
             </Grid>
-            <div style={{marginTop:'0.5em'}}>
-              {profiles}
-            </div>
+            <Grid item xs>
+              <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'30px', height:'30px', marginRight: '5%'}}> Add </CPButton>
+            </Grid>
+            <Grid item xs>
+              <CPButton variant="contained" style={{width:'170px', height:'30px'}} onClick={this.saveProfiles}> Save Changes </CPButton>
+            </Grid>
+          </Grid>
+          <div style={{marginTop:'0.5em'}}>
+            {profiles}
+          </div>
         </Layout>
       )
     }

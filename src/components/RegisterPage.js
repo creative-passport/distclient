@@ -4,33 +4,60 @@ import 'date-fns'
 
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router'
-import { registerUser } from 'react-cognito'
+import { Redirect } from "react-router-dom"
+import { Auth } from 'aws-amplify'
 
 import Paper from '@material-ui/core/Paper'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 import store from '../reducers/store'
-import generateKey from './bip'
-
-import { createTempProfile } from '../actions/authenticationActions'
-
 import logo from '../logo.png'
+
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '32ch',
+    },
+    '& .MuiInput-underline': {
+      borderRadius: '25%'
+    },
+    '& .MuiInput-underline:before': {
+      marginTop: '2em',
+      borderRadius: '5em'
+    },
+    '& .MuiInputBase-input': {
+      paddingTop: '1em'
+    },
+    '& .MuiFormLabel-root': {
+      fontSize: '10pt',
+      position: 'absolute',
+      top: '-10pt'
+    },
+    '& .MuiInputLabel-shrink': {
+      transform: 'none',
+      position: 'absolute',
+      top: '5pt'
+    },
+    '& .MuiTypography-root': {
+      margin: theme.spacing(2),
+      color: '#9e9e9e',
+      alignItems:'center',
+      alignSelf: 'center',
+      textAlign: 'center'
+    }
+  },
+  disableTransition: {
+    transition: 'none',
   },
   paper: {
     flexGrow: 1,
-    padding: theme.spacing(2),
     margin: 'auto',
     maxWidth: 345,
     height: '100%'
@@ -47,47 +74,18 @@ const styles = theme => ({
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
   },
-  card: {
-    borderRadius: '5%',
-    width: '100%'
-  },
-  cardHeader: {
-    background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
-    height: '80px',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    padding: theme.spacing(2),
-    lineHeight: '50px',
-    fontWeight: '500',
-    color: '#fff'
-  },
-  extraLinks: {
-    flexGrow: 1,
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    display: 'inline-grid',
-    float: 'right'
-  },
-  cardFooter: {
-    padding: 0,
-  },
-  secondCardHeader: {
-    backgroundColor: '#cccccc',
-    color: '#000',
-    margin: '0 auto',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    fontSize: '14pt',
-    fontWeight: '500'
+  inputForm: {
+    padding: '2em',
+    marginBottom: '2em'
   },
   nextButton: {
-    marginTop: '1.5em', 
-    borderRadius: '0', 
     color:'#fff', 
     boxShadow: 'none', 
-    backgroundColor: '#02d1a8', 
-    marginLeft:'0', 
-    marginRight:'0'
+    backgroundColor: '#02d1a8',
+    // margin:'1.5em auto 3.5em auto',
+    verticalAlign: 'middle',
+    width: '10em',
+    borderRadius: '0.5em'
   }
 })
 
@@ -97,20 +95,17 @@ class RegisterPage extends React.Component {
       super(props);
       this.state = {
         realName: '',
-        dob: '',
+        verified: false,
         error: '',
         username: '',
         password: '',
         email: '',
         contacts_entered: false,
-        jwtToken: ''
+        jwtToken: '',
+        confirmationCode: null
       }
 
       this.onSubmit = this.onSubmit.bind(this)
-
-      this.proxyurl = "https://cors-anywhere.herokuapp.com/"
-      this.urldev = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
-      this.urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
     }
 
     static propTypes = {
@@ -120,72 +115,46 @@ class RegisterPage extends React.Component {
     componentDidMount() {
     }
 
-    createNewPassport(action) {
-      console.log("New Passport")
-      
-      var userProfile = {
-        'PassportDataID': generateKey(),
-        'PassportData': {
-          'real_name': this.state.realName,
-          'email': this.state.email,
-          'dob': this.state.dob
-        }
-      }
-
-      store.dispatch({
-        type: "UNCONFIRMED_PROFILE",
-        response: userProfile
-      })
-    }
-
     onSubmit = (event) => {
-      event.preventDefault();
-
-      const state = store.getState();
-      const userPool = state.cognito.userPool;
-      const config = state.cognito.config;
-
-      if (this.state.realName.length > 0 && this.state.dob != null) {
-        this.setState({'error': ''})
-        registerUser(userPool, config, this.state.username, this.state.password, {
-          email: this.state.email,
-        }).then(
-          (action) => {
-            this.createNewPassport(action)
-            store.dispatch(action)
-            this.props.history.push('/')
-          },
-          error => {
-            console.log(error)
-            this.setState({ error })
-        })
-      } 
-      else {
-        this.setState({'error': 'You need to enter your real name and date of birth'})
-      }      
-    }
-
-    onShowNextSection = (event) => {
       event.preventDefault()
-      this.setState(prevState => ({
-        contacts_entered: !prevState.contacts_entered
-      }))
-    }
 
-    changeRealName = (event) => {
-      this.setState({ realName: event.target.value });
-    }
-
-    changeDOB = (event) => {
-      this.setState({ dob: event.target.value });
-    }
-
-    changeUsername = (event) => {
-      this.setState({ username: event.target.value });
+      if (this.state.error.length === 0) {
+        Auth.signUp({
+          username: this.state.email,
+          password: this.state.password
+        })
+        .then((action) => {
+          store.dispatch({
+            type: "NEW_USER",
+            response: action
+          })
+          console.log(action)
+          localStorage.setItem('unconfirmedUser', action.user.username)
+          localStorage.setItem('unconfirmedSub', action.userSub)
+          console.log('Signed userr up, need to confirm')
+          
+          this.props.history.push('/confirm')
+          return <Redirect to="/confirm" />
+        })
+        .catch((err) => {
+          this.setState({'error': err.message})
+          console.log(err)
+        })
+      }
     }
 
     changePassword = (event) => {
       this.setState({ password: event.target.value });
+    }
+
+    confirmPassword = (event) => {
+      var confirmedPWD = event.target.value
+      if (this.state.password !== confirmedPWD) {
+        this.setState({'error': 'passwords do not match'})
+      }
+      else {
+        this.setState({'error': ''})
+      }
     }
 
     changeEmail = (event) => {
@@ -193,7 +162,6 @@ class RegisterPage extends React.Component {
     }
 
     render() {
-      const attributes = this.attributes
       const { classes } = this.props
 
     return (
@@ -201,91 +169,50 @@ class RegisterPage extends React.Component {
         <Paper className={classes.paper}>
           <Grid container>
             <CssBaseline />
-              <div style={{margin:'0 auto 1.5em auto'}}>
+              <div style={{margin:'1.5em auto 1.5em auto'}}>
                 <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
                 <span className={classes.title}> THE CREATIVE PASSPORT</span>
               </div>
-              <Card className={classes.card}>
-                <CardHeader title="NEW PASSPORT" className={classes.cardHeader} classes={{ title: classes.cardHeader }}/>              
-                <CardContent className={classes.cardcontent}>
-                   <TextField
+                <form className={classes.inputForm}>
+                  <Typography align="center"  variant="body1">Register New User</Typography>
+                  <TextField
                     required
                     fullWidth
-                    value={this.state.realName}
-                    id="standard-basic"
-                    helperText='Real Name'
-                    name='real_name'
-                    onChange={this.changeRealName}
+                    type="email"
+                    label='E-MAIL'
+                    name='email'
+                    className={classes.inputField}
+                    onChange={this.changeEmail}
                     margin="normal"
+                    placeholder="email"
                   />
-
                   <TextField
+                    required
                     fullWidth
-                    type='date'
-                    value={this.state.dob}
-                    id="standard-basic"
-                    helperText='Date of Birth'
-                    name='dob'
-                    onChange={this.changeDOB}
+                    type="password"
+                    label='PASSWORD'
+                    name='password'
+                    className={classes.inputField}
+                    onChange={this.changePassword}
                     margin="normal"
+                    placeholder="Password"
                   />
-                  <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> This information is not made public </Typography>
-                  <div>{this.props.error}</div>
-                </CardContent>
-                <CardActions className={classes.cardFooter}>
-                  <Button fullWidth className={classes.nextButton} onClick={this.onShowNextSection}>
-                    Next
-                  </Button>
-                </CardActions>
-              </Card>
-
-              {this.state.contacts_entered?
-              <Card className={classes.card}>
-                <CardHeader title="Contact" className={classes.secondCardHeader} classes={{ title: classes.secondCardHeader }}/>
-                <CardContent className={classes.cardcontent}>
-                  <form>
-                    <TextField
-                      required
-                      fullWidth
-                      type="email"
-                      id="standard-basic"
-                      label='Email Address'
-                      name='email'
-                      onChange={this.changeEmail}
-                      margin="normal"
-                      placeholder="email"
-                    />
-                    <TextField
-                      required
-                      fullWidth
-                      value={this.state.username}
-                      id="standard-basic"
-                      label='username'
-                      name='username'
-                      onChange={this.changeUsername}
-                      margin="normal"
-                    />
-                    <TextField
-                      required
-                      fullWidth
-                      type="password"
-                      id="standard-basic"
-                      label='password'
-                      name='password'
-                      onChange={this.changePassword}
-                      margin="normal"
-                      placeholder="Password"
-                    />
-                  </form>
-                </CardContent>
-                <CardActions className={classes.cardFooter}>
-                  <Button fullWidth className={classes.nextButton} onClick={this.onSubmit}>
-                    Next
-                  </Button>
-                </CardActions>
-              </Card>
-              : null}
-              <div style={{color:'#b20000', textAlign:'center', marginTop: '1em'}}> {this.state.error} </div>
+                  <TextField
+                    required
+                    fullWidth
+                    type="password"
+                    label='CONFIRM PASSWORD'
+                    name='confirm_password'
+                    className={classes.inputField}
+                    onChange={this.confirmPassword}
+                    margin="normal"
+                    placeholder=""
+                  />
+                </form>
+                <div style={{margin:'auto 30%'}}>
+                    <Button className={classes.nextButton} onClick={this.onSubmit}> Sign Up </Button>
+                </div>
+                <div style={{color:'#b20000', textAlign:'center', margin: '1em auto 5em auto'}}> {this.state.error} </div>
           </Grid>
         </Paper>
       </div>
@@ -300,8 +227,7 @@ RegisterPage.propTypes = {
   username: PropTypes.string,
   error: PropTypes.string,
   email: PropTypes.string,
-  user: PropTypes.object,
-  attributes: PropTypes.object
+  user: PropTypes.object
 }
 
 RegisterPage.contextTypes = {

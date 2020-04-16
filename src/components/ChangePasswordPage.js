@@ -4,17 +4,13 @@ import 'date-fns'
 
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
-
-import Paper from '@material-ui/core/Paper'
+import { Link, Redirect } from 'react-router-dom'
+import { Auth } from 'aws-amplify'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
-import Button from '@material-ui/core/Button'
-
-import store from '../reducers/store'
-
-import ChangePasswordForm from './ChangePasswordForm'
+import CPButton from './CPButton'
 
 import logo from '../logo.png'
 
@@ -90,14 +86,9 @@ class ChangePasswordPage extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        realName: '',
-        dob: '',
         error: '',
-        username: '',
-        password: '',
-        email: '',
-        contacts_entered: false,
-        jwtToken: ''
+        oldPassword: '',
+        newPassword: '',
       }
     }
 
@@ -105,8 +96,31 @@ class ChangePasswordPage extends React.Component {
       history: PropTypes.object.isRequired,
     }
 
-    changePassword = (event) => {
-      this.setState({ password: event.target.value });
+    onSubmit = (event) => {
+      event.preventDefault()
+
+      Auth.currentAuthenticatedUser().then(
+        user => {
+          Auth.changePassword(user, this.state.oldPassword, this.state.newPassword).then(
+            () => {
+              this.setState({ error: 'Password changed' })
+              return <Redirect to="/login" />
+            }).catch((error) => {
+              this.setState({ error });
+            })
+        }).catch(
+        error => {
+          console.log(error)
+        }
+      )
+    }
+
+    changeOldPassword = (event) => {
+      this.setState({ oldPassword: event.target.value });
+    }
+
+    changeNewPassword = (event) => {
+      this.setState({ newPassword: event.target.value });
     }
 
     render() {
@@ -122,9 +136,18 @@ class ChangePasswordPage extends React.Component {
                 <span className={classes.title}> THE CREATIVE PASSPORT</span>
               </div>
               <Card style={{margin: '0 auto', border: 'none', boxShadow: 'none'}}>
-              <div>
-                <ChangePasswordForm/>
-              </div>
+                <form>
+                  <div>{this.state.error}</div>
+                  <label>
+                    Old Password
+                    <input required type="password" placeholder="old password" onChange={this.changeOldPassword} required style={{width:'180px', height:'30px', verticalAlign: 'middle', margin:'1em'}} />
+                  </label>
+                  <label>
+                    New Password
+                    <input type="password" placeholder="new password" onChange={this.changeNewPassword} required style={{width:'180px', height:'30px', verticalAlign: 'middle', margin:'1em'}} />
+                  </label>
+                  <CPButton type="submit" variant="contained" style={{width:'100%', verticalAlign: 'middle', marginRight:'1em', marginBottom: '1em'}} onClick={this.onSubmit}> Set new password </CPButton>
+                </form>
               </Card>
               <Link style={{marginTop:'1.5em'}} to="/">Home</Link>
               <div style={{color:'#b20000', textAlign:'center', marginTop: '1em'}}> {this.state.error} </div>

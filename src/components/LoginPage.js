@@ -1,29 +1,64 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
-import { Login } from 'react-cognito'
-
-import LoginForm from './LoginForm'
-import Paper from '@material-ui/core/Paper'
+import { withRouter } from 'react-router'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
 
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
+import TextField from '@material-ui/core/TextField'
+import CPButton from './CPButton'
+import { Auth } from 'aws-amplify'
 
 import logo from '../logo.png'
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '32ch',
+    },
+    '& .MuiInput-underline': {
+      borderRadius: '25%'
+    },
+    '& .MuiInput-underline:before': {
+      marginTop: '2em',
+      borderRadius: '5em'
+    },
+    '& .MuiInputBase-input': {
+      paddingTop: '1em'
+    },
+    '& .MuiFormLabel-root': {
+      fontSize: '10pt',
+      position: 'absolute',
+      top: '-10pt'
+    },
+    '& .MuiInputLabel-shrink': {
+      transform: 'none',
+      position: 'absolute',
+      top: '5pt'
+    },
+    '& .MuiTypography-root': {
+      margin: theme.spacing(2),
+      color: '#9e9e9e',
+      alignItems:'center',
+      alignSelf: 'center',
+      textAlign: 'center'
+    }
+  },
+  disableTransition: {
+    transition: 'none',
   },
   paper: {
     flexGrow: 1,
-    padding: theme.spacing(2),
     margin: 'auto',
     maxWidth: 345,
     height: '100%'
@@ -40,24 +75,28 @@ const styles = theme => ({
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
   },
-  card: {
-    borderRadius: '5%',
-    width: '100%'
+  inputForm: {
+    padding: '2em'
   },
-  cardHeader: {
-    background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
-    height: '80px',
-    textAlign: 'center',
+  submitButton: {
+    color:'#fff', 
+    boxShadow: 'none', 
+    backgroundColor: '#02d1a8',
+    margin:'1.5em auto 1.5em auto',
     verticalAlign: 'middle',
-    padding: theme.spacing(2),
-    lineHeight: '50px',
-    fontWeight: '500',
-    color: '#fff'
+    width: '10em',
+    borderRadius: '0.5em'
   },
   extraLinks: {
     flexGrow: 1,
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
+    padding: theme.spacing(2),
+    margin: theme.spacing(2),
+    display: 'inline-grid'
+  },
+  extraLinks2: {
+    flexGrow: 1,
+    padding: theme.spacing(2),
+    margin: theme.spacing(2),
     display: 'inline-grid',
     float: 'right'
   }
@@ -68,15 +107,39 @@ class LoginPage extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        email: props.email,
-        username: props.username,
-        password: '',
-      };
+        email: '',
+        password: ''
+      }
+    }
+
+    static propTypes = {
+      history: PropTypes.object.isRequired,
     }
 
     onSubmit = (event) => {
-      event.preventDefault();
-      this.props.onSubmit(this.state.username, this.state.password)
+      event.preventDefault()
+      Auth.signIn({
+        username: this.state.email,
+        password: this.state.password
+      })
+      .then(
+        (action) => {
+          Auth.currentAuthenticatedUser().then((user) => {
+            this.props.history.push('/profile')
+            return <Redirect to="/profile" />
+          }).catch((error) => {
+            console.log(error)
+          })
+        },
+        error => {
+          console.log( error )
+          this.setState({ error })
+        }
+      )
+    }
+
+    changeEmail = (event) => {
+      this.setState({ email: event.target.value });
     }
 
     changeUsername = (event) => {
@@ -91,33 +154,49 @@ class LoginPage extends React.Component {
     }
 
     render() {
-      const { classes } = this.props
+      const { classes, history } = this.props
 
-    return (
-      <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <Grid container>
-            <CssBaseline />
-              <div style={{margin:'0 auto'}}>
-                <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
-                <span className={classes.title}> THE CREATIVE PASSPORT</span>
-              </div>
-              <Card className={classes.card}>
-                <CardHeader title="LOGIN" className={classes.cardHeader} classes={{ title: classes.cardHeader }}/>              
-                <CardContent className={classes.cardcontent}>
-                  <Login>
-                    <LoginForm />
-                  </Login>
-                </CardContent>
-                <Divider/>
-                  <div>
-                    <Link className={classes.extraLinks} to="/register">New User</Link>
-                    <Link className={classes.extraLinks} to="/reset">Reset Password</Link>
-                  </div>
-              </Card>
-          </Grid>
-        </Paper>
-      </div>
+      return (
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <Grid container>
+              <CssBaseline />
+                <div style={{margin:'1.5em auto 1.5em auto'}}>
+                  <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
+                  <span className={classes.title}> THE CREATIVE PASSPORT</span>
+                </div>
+                  <form className={classes.inputForm} onSubmit={this.onSubmit}>
+                    <Typography align="center" variant="body1"> Login to the Creative Passport</Typography>
+                    <TextField
+                      required
+                      fullWidth
+                      value={this.state.email}
+                      label='email'
+                      name='email'
+                      onChange={this.changeEmail}
+                      margin="normal"
+                    />
+                    <TextField
+                      required
+                      fullWidth
+                      type="password"
+                      label='password'
+                      name='password'
+                      onChange={this.changePassword}
+                      margin="normal"
+                      placeholder="Password"
+                    />
+                  </form>
+                  <CPButton fullWidth className={classes.submitButton} onClick={this.onSubmit}>Sign in</CPButton>
+              <Divider/>
+                <div style={{margin:'0 auto'}}>
+                  <Link className={classes.extraLinks} to="/register">New User</Link>
+                  <Link className={classes.extraLinks2} to="/reset">Reset Password</Link>
+                </div>
+                <div>{this.props.error}</div>
+            </Grid>
+          </Paper>
+        </div>
     )
   }
 }
@@ -133,4 +212,4 @@ LoginPage.propTypes = {
   attributes: PropTypes.object
 }
 
-export default withStyles(styles)(LoginPage)
+export default withRouter(withStyles(styles)(LoginPage))

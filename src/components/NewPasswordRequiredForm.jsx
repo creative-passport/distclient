@@ -22,6 +22,7 @@ class NewPasswordRequiredForm extends React.Component {
 
   render = () => (
     <form onSubmit={this.onSubmit}>
+      <p>New password required, since this is your first login</p>
       <div>{this.props.error}</div>
       <label>
         Password

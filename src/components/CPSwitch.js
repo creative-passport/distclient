@@ -1,58 +1,33 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Switch from '@material-ui/core/Switch'
-import TextField from '@material-ui/core/TextField'
+import { Switch } from 'antd'
+import { makeStyles } from '@material-ui/core/styles'
+import './App.css'
 
-import { withStyles } from '@material-ui/core/styles'
 
-const AntSwitch = withStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
+    margin: '0 0.5em -1.5em 1em'
+  },
+  public_switch: {
     width: 36,
     height: 16,
-    padding: 0,
-    display: 'flex'
-  },
-  switchBase: {
-    padding: 2,
-    color: theme.palette.grey[500],
-    '&$checked': {
-      transform: 'translateX(12px)',
-      color: theme.palette.common.white,
-      '& + $track': {
-        opacity: 1,
-        backgroundColor: theme.palette.primary.main,
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  },
-  thumb: {
-    width: 12,
-    height: 12,
-    boxShadow: 'none',
-  },
-  track: {
-    width: 36,
-    border: `1px solid ${theme.palette.grey[500]}`,
-    borderRadius: 16 / 2,
-    opacity: 1,
-    backgroundColor: theme.palette.common.white,
+    marginLeft: '2em',
+    border: 'none'
   }
-}))(Switch)
+}))
 
 function CPSwitch(props) {
-  const { classes, ...other } = props
+  const { ...other } = props
+  const classes = useStyles()
 
-  return <FormGroup row style={{margin: '0 0.5em -1.5em 1em'}}>
+  return <FormGroup row className={classes.root}>
     <FormControlLabel
-      control={
-        <AntSwitch
-          name='publish_switch'
-          {...other}
-        />} {...other}/>
+      control = {
+        <Switch size="small" name='publish_switch' className={classes.public_switch} {...other}/>          
+      }/>
     </FormGroup>
 }
-
 
 export default CPSwitch

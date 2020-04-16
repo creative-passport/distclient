@@ -1,60 +1,42 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
-import AbsoluteRedirect from './AbsoluteRedirect'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Home from './Home'
 import AllProfiles from './AllProfiles'
 import Verify from './Verify'
 import Settings from './Settings'
 import PageNotFound from './PageNotFound'
 
-import { PasswordReset } from 'react-cognito'
-
 import Dashboard from './Dashboard'
-import ChangePasswordPage from './ChangePasswordPage'
-import UpdateEmailPage from './UpdateEmailPage'
-import PasswordResetForm from './PasswordResetForm'
 import RegisterPage from './RegisterPage'
+import LoginPage from './LoginPage'
 import ConfirmPage from './ConfirmPage'
+import ChangePasswordPage from './ChangePasswordPage'
+
+import Amplify from 'aws-amplify'
+
+import awsmobile from '../aws-exports'
+import store from '../reducers/store'
 
 import './App.css'
 
-const changePassword = () => (
-    <div>
-      <ChangePasswordPage />
-    </div>
-)
+Amplify.configure(awsmobile)
 
-const updateEmail = () => (
-    <div>
-      <UpdateEmailPage />
-    </div>
-)
-
-const passwordReset = () => (
-  <PasswordReset>
-    <PasswordResetForm/>
-  </PasswordReset>
-)
-
-export default class App extends Component {
+class App extends Component {
 
   render() {
+    const { history } = this.props
+
     return (
       <Router>
           <Switch>
             <Route exact path="/register" component={RegisterPage}/>
-            <Route exact path="/reset" component={passwordReset}/>
-            <Route exact path="/change_password" component={changePassword}/>
-            <Route exact path="/change_email" component={updateEmail}/>
             <Route exact path="/" component={Dashboard} />
-            <Route exact path="/auth/callback" component={Home}/>
             <Route exact path="/verify" component={Verify}/>
             <Route exact path="/yoti/callback" component={Home} />
             <Route exact path="/profile" component={AllProfiles} />
+            <Route exact path="/change_password" component={ChangePasswordPage} />
             <Route exact path="/settings" component={Settings} />
-            <Route exact path="/signin" component={
-               () => <AbsoluteRedirect to={'https://cp.auth.eu-west-2.amazoncognito.com/login?response_type=token&client_id=242gellvv421kdgdicvcs1q3fv&redirect_uri=https://localhost:3000/auth/callback'}/>} />
-            <Route exact path="/signin2" component={Dashboard} />
+            <Route exact path="/login" component={LoginPage} />
             <Route exact path="/confirm" component={ConfirmPage} />
             <Route exact path="*" component={PageNotFound} />
           </Switch>
@@ -62,3 +44,5 @@ export default class App extends Component {
     )
   }
 }
+
+export default App

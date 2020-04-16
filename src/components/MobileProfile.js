@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Iframe from './iframe.js'
 import Fab from '@material-ui/core/Fab'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
 import store from '../reducers/store'
@@ -68,28 +69,23 @@ class MobileProfile extends Component {
         document.querySelector('#font-awesome-css'),
       )
 
-      const user = this.state.cognitue_state.user
-      const attributes = this.state.cognitue_state.attributes
+      Auth.currentSession()
+        .then((response) => {
+          this.setState({jwtToken: response.idToken.jwtToken})
+      })
+        .catch((error) => {
+            console.log(error);
+      })
 
-      if (user !== undefined) {
-        user.getSession((err, session) => {
-          if (err) {
-            console.log(err)
-          } else {
-            this.setState({jwtToken: session.getIdToken().getJwtToken()})
-          }
-        })
-      }
-
-      var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
-      var stlUsername = 'imogen%20heap'
-      if(user.username === 'imogenheap') {
-        stlUsername = 'imogen%20heap'
-      }
-      else {
-        stlUsername = user.username.replace('_','%20')
-      }
-      this.setState({src: streemlinerRoot + stlUsername})
+      // var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
+      // var stlUsername = 'imogen%20heap'
+      // if(user.username === 'imogenheap') {
+      //   stlUsername = 'imogen%20heap'
+      // }
+      // else {
+      //   stlUsername = user.username.replace('_','%20')
+      // }
+      // this.setState({src: streemlinerRoot + stlUsername})
 
       this.setState({currentData: this.props.artist_data})
     }
@@ -97,8 +93,6 @@ class MobileProfile extends Component {
     addData(event) {
       var currentData = this.state.currentData
       var newIndex = event['indexValue']
-      // var fieldName = event['fieldName']
-      // var newEvent = {fieldName: event}
 
       if ('fieldName' in event && event['fieldName'] !== undefined) {
         currentData[event['fieldName']] = event

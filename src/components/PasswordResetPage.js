@@ -7,10 +7,8 @@ import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import {
-  CognitoState,
   registerUser,
   Logout,
-  Login,
   NewPasswordRequired,
   EmailVerification,
   Confirm,
@@ -40,11 +38,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 
-import LogoutButton from './LogoutButton'
-import LoginForm from './LoginForm';
 import EmailVerificationForm from './EmailVerificationForm'
 import NewPasswordRequiredForm from './NewPasswordRequiredForm'
-import RegisterForm from './RegisterForm'
 import CPButton from './CPButton'
 
 import store from '../reducers/store'

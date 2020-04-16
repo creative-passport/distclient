@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router'
 import { NavLink } from 'react-router-dom'
 import { createMuiTheme, withStyles } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
@@ -11,14 +12,11 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { sizing } from '@material-ui/system'
+import { Auth } from 'aws-amplify'
+import MediaQuery from 'react-responsive'
 
 import store from '../reducers/store'
 import logo from '../logo.png'
-
-import {
-  CognitoState,
-  Logout,
-} from 'react-cognito'
 import { Action } from '../actions/authenticationActions'
 
 const theme = createMuiTheme({
@@ -87,22 +85,25 @@ class Header extends React.Component {
     }
 
     this.openMenu = this.openMenu.bind(this)
-    this.routeChange = this.routeChange.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+      this.handleClose = this.handleClose.bind(this)
+  }
+
+  static propTypes = {
+    history: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
-    if (store.getState().cognito.state == CognitoState.LOGGED_IN){
-      this.setState({auth: true})
-    }
-    else {
-      this.setState({auth: false})
-    }
-    
-  }
-
-  routeChange(){
-    window.location = 'https://cp.auth.eu-west-2.amazoncognito.com/login?response_type=token&client_id=242gellvv421kdgdicvcs1q3fv&redirect_uri=https://localhost:3000/auth/callback'
+    Auth.currentAuthenticatedUser().then(
+      user => {
+        if (user.username.length > 5) {
+          this.setState({auth: true})
+        }
+    }).catch(
+      error => {
+        console.log(error)
+        this.setState({auth: false})
+      }
+    )
   }
 
   openMenu(event) {
@@ -113,10 +114,13 @@ class Header extends React.Component {
     this.setState({open: false, anchorEl: null})
   }
 
-  handleLogout(){
-    const state = store.getState()
-    state.cognito.user.signOut()
-    store.dispatch(Action.logout())
+  handleLogout() {
+    Auth.signOut().then( 
+      data => {
+        console.log("log out")
+        this.props.history.push('/login')
+      }
+    ).catch(err => console.log(err))
   }
 
   refCallback = element => {
@@ -130,7 +134,7 @@ class Header extends React.Component {
 
     let UserStatusMenuItem
 
-    if(this.state.auth == true) {
+    if(this.state.auth === true) {
       UserStatusMenuItem = <MenuItem onClick={() => {this.handleLogout(); this.handleClose()}} > Logout </MenuItem>
     }
     else {
@@ -171,13 +175,13 @@ class Header extends React.Component {
                   <NavLink to="/change_password">Change password</NavLink>
                 </MenuItem>
                 <MenuItem onClick={() => {this.handleClose()}} >
-                  <NavLink to="/change_email">Change email address</NavLink>
-                </MenuItem>
-                <MenuItem onClick={() => {this.handleClose()}} >
                   <NavLink to="/verify">Verify Me</NavLink>
                 </MenuItem>
                 <MenuItem onClick={() => {this.handleClose()}} >
                   <NavLink to="/settings">Settings</NavLink>
+                </MenuItem>
+                <MenuItem onClick={() => {this.handleClose()}} >
+                  <NavLink to="/">Home</NavLink>
                 </MenuItem>
               </Menu>
             </Toolbar>
@@ -192,4 +196,4 @@ Header.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(Header)
+export default withRouter(withStyles(styles)(Header))

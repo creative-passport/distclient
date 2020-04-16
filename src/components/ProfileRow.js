@@ -66,15 +66,14 @@ class ProfileRow extends Component {
         'publishers': this.state.publishers,
         'indexValue': this.props.indexValue
       }
-      if (e.hasOwnProperty('target')) {
-        if (e.target.name === 'publish_switch') {
-          this.setState({published: e.target.checked})
-          data['published'] = e.target.checked
-        }
-        else {
+      if (typeof e === "boolean") {
+          console.log("published")
+          this.setState({published: e})
+          data['published'] = e
+      }
+      else if (e.hasOwnProperty('target')) {
           this.setState({value: e.target.value})
           data['value'] = e.target.value
-        }
       } else {
         this.setState({publishers: e})
         data['publishers'] = e
@@ -88,11 +87,8 @@ class ProfileRow extends Component {
       step: 300,
     }
 
-    const { classes } = this.props
-
     const SwitchItem = <CPSwitch 
         name='publish_switch'
-        ref={(ref) => this.switch = ref}
         checked={this.state.published}
         onChange={this.handleChange}>
     </CPSwitch>

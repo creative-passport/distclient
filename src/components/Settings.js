@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Switch from '@material-ui/core/Switch'
+import Layout from './Layout'
 
 const styles = theme => ({
   root: {
@@ -72,9 +73,11 @@ class Settings extends Component {
         </Grid>
 
       return (
-        <div className={classes.root}>
-          {row}
-        </div>
+        <Layout>
+          <div className={classes.root}>
+            {row}
+          </div>
+        </Layout>
       )
     }
 }

@@ -1,8 +1,14 @@
-// import * as types from './index';
 
 export const createTempProfile = (user) => {
   return {
     type: 'UNCONFIRMED_PROFILE',
+    user
+  }
+}
+
+export const tempUsername = (user) => {
+  return {
+    type: 'NEW_USER',
     user
   }
 }

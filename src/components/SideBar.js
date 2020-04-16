@@ -12,17 +12,13 @@ import Fab from '@material-ui/core/Fab'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import SaveIcon from '@material-ui/icons/Save'
 import CropFreeOutlinedIcon from '@material-ui/icons/CropFreeOutlined'
 
-import sample from '../images/sample.jpg'
-import store from '../reducers/store'
 import * as api from '../scripts'
-import {getUserAttributes} from 'react-cognito/src/attributes.js'
-
+import { Auth } from 'aws-amplify'
 
 const styles = theme => ({
   drawer: {
@@ -49,7 +45,8 @@ const styles = theme => ({
   card: {
     maxWidth: 345,
     root: { padding: 0},
-    borderRadius: '5%'
+    borderRadius: '5%',
+    marginBottom: '1em'
   },
   cardHeaderStyle: {
       background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
@@ -74,6 +71,11 @@ const styles = theme => ({
     verticalAlign: 'middle',
     fontSize: '14pt',
     fontWeight: '500'
+  },
+  saveDataButton: {
+    float:'right',
+    margin: '10px',
+    boxShadow: 'none'
   }
 });
 
@@ -83,74 +85,53 @@ class SideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userEmail: '',
+      email: '',
+      mobile: '',
       realName: ' ',
       date_of_birth: '',
       profile_data: '',
-      mobile: '',
       walletId: '',
       jwtToken: '',
-      username: '',
       imageSrc: ''
     }
-    this.changeEmail = this.changeEmail.bind(this)
     this.changeMobile = this.changeMobile.bind(this)
     this.saveData = this.saveData.bind(this)
   }
 
   componentDidMount() {
 
-    var cog = store.getState().cognito
+    Auth.currentAuthenticatedUser().then(
+      user => {
+        this.setState({walletId: user.attributes.sub})
+        this.setState({email: user.attributes.email})
+        this.setState({jwtToken: user.signInUserSession.idToken.jwtToken})
 
-    console.log(cog.user.username)
+        api.getProfileData(user.attributes.sub).then(res => {
 
-    if (cog.user !== undefined) {
-      this.setState({username: cog.user.username})
-      this.setState({imageSrc: "https://creativepassport-shoebox.s3.eu-west-2.amazonaws.com/" + cog.user.username + ".jpg"})
-      
-      cog.user.getSession((err, session) => {
-        if (err) {
-          console.log(err)
-        } else {
-          this.setState({jwtToken: session.getIdToken().getJwtToken()})
-          this.setState({userEmail: session.getIdToken().payload.email})
-        }
-      })
-    }
+          if('dob' in res.data.PassportData) {
+            this.setState({'date_of_birth': res.data.PassportData.dob})
+          }
+          if('real_name' in res.data.PassportData) {
+            this.setState({'realName': res.data.PassportData.real_name})
+          }
 
-    getUserAttributes(cog.user).then(res => {
+          if('mobile' in res.data.PassportData) {
+            this.setState({'mobile': res.data.PassportData.mobile})
+          }
 
-      this.setState({walletId: res.sub})
+          this.setState({'profile_data': res.data.PassportData})
 
-      api.getProfileData(res.sub).then(res => {
+        }).catch(function (error) {
+            console.log(error)
+        })
 
-        console.log(res.data)
-
-        if('dob' in res.data.PassportData) {
-          this.setState({'date_of_birth': res.data.PassportData.dob})
-        }
-        if('real_name' in res.data.PassportData) {
-          this.setState({'realName': res.data.PassportData.real_name})
-        }
-
-        if('mobile' in res.data.PassportData) {
-          this.setState({'mobile': res.data.PassportData.mobile})
-        }
-
-        this.setState({'profile_data': res.data.PassportData})
-      }).catch(function (error) {
-          console.log(error)
-      })
-
-    }).catch(function (error) {
-      console.log(error)
-    })
+      }
+    ).catch(
+      error => {
+        console.log("NO AUTH USER " + error)
+      }
+    )
   }
-
-  changeEmail(e) {
-    this.setState({email: e.target.value})
-  }
-
 
   changeMobile(e) {
     this.setState({mobile: e.target.value})
@@ -160,17 +141,14 @@ class SideBar extends React.Component {
     var data = this.state.profile_data
     data['mobile'] = this.state.mobile
 
-    console.log(this.state.walletId)
-    console.log(this.state.jwtToken)
-
     api.updateProfileData(this.state.walletId, data, this.state.jwtToken)
   }
 
   render() {
     const { classes } = this.props
-    const state = store.getState();
-    const user = state.cognito.user
-    var user_real_name = this.state.realName.toUpperCase()
+    var realName = this.state.realName.toUpperCase()
+    const mobile = this.state.mobile
+    const email = this.state.email
 
     return (
       <Drawer
@@ -181,11 +159,11 @@ class SideBar extends React.Component {
         }}
       >
       <CssBaseline />
-      <Card className={classes.card} style={{marginBottom: '1em'}}>
+      <Card className={classes.card}>
         <CardHeader className={classes.cardHeaderStyle}/>
         <Avatar alt="Remy Sharp" className={classes.imageCropper} src={this.state.imageSrc} />
         <CardContent className={classes.cardcontent}>
-          <Typography component="h5" variant="h5" className={classes.realName}>{user_real_name}</Typography>
+          <Typography component="h5" variant="h5" className={classes.realName}>{realName}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
           <Typography component="h5" variant="h5" className={classes.dob}>{this.state.date_of_birth}</Typography>
           <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> This information is not made public </Typography>
@@ -196,18 +174,13 @@ class SideBar extends React.Component {
         <Divider/>
       </Card>
       <Card className={classes.card}>
-        <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}>
-          <Typography gutterBottom variant="h5" component="h2">
-          </Typography>            
-        </CardHeader>
+        <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}></CardHeader>
         <CardContent className={classes.cardcontent}>
-            <TextField fullWidth id="standard-basic" label="Email" value={this.state.userEmail} onChange={this.changeEmail}/>
-            <TextField fullWidth id="standard-basic" label="Mobile" value={this.state.mobile} onChange={this.changeMobile}/>
-            <div>
-              <Fab size='small' style={{float:'right', margin: '10px', boxShadow: 'none'}}>
-                <SaveIcon onClick={this.saveData}/>
-              </Fab>
-            </div>
+          <TextField fullWidth label="Email" value={email} />
+          <TextField fullWidth label="Mobile" value={mobile} onChange={this.changeMobile}/>
+          <Fab size='small' className={classes.saveDataButton}>
+            <SaveIcon onClick={this.saveData}/>
+          </Fab>
         </CardContent>
       </Card>
     </Drawer>

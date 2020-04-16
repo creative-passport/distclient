@@ -5,58 +5,69 @@ import 'date-fns'
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
+import { Auth } from 'aws-amplify'
 
-import {
-  CognitoState,
-  registerUser,
-  Logout,
-  Login,
-  NewPasswordRequired,
-  EmailVerification,
-  Confirm,
-} from 'react-cognito'
-
-import ConfirmForm from './ConfirmForm'
 import Paper from '@material-ui/core/Paper'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import List from '@material-ui/core/List'
-import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import Typography from '@material-ui/core/Typography'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import ShareIcon from '@material-ui/icons/Share'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 import DateFnsUtils from '@date-io/date-fns'
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
+import * as api from '../scripts'
 
-import LogoutButton from './LogoutButton'
-import LoginForm from './LoginForm';
-import EmailVerificationForm from './EmailVerificationForm'
-import NewPasswordRequiredForm from './NewPasswordRequiredForm'
-import RegisterForm from './RegisterForm'
 import CPButton from './CPButton'
 
 import store from '../reducers/store'
 import generateKey from './bip'
-
-import { createTempProfile } from '../actions/authenticationActions'
 
 import logo from '../logo.png'
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '32ch',
+    },
+    '& .MuiInput-underline': {
+      borderRadius: '25%'
+    },
+    '& .MuiInput-underline:before': {
+      marginTop: '2em',
+      borderRadius: '5em'
+    },
+    '& .MuiInputBase-input': {
+      paddingTop: '1em'
+    },
+    '& .MuiFormLabel-root': {
+      fontSize: '10pt',
+      position: 'absolute',
+      top: '-10pt'
+    },
+    '& .MuiInputLabel-shrink': {
+      transform: 'none',
+      position: 'absolute',
+      top: '5pt'
+    },
+    '& .MuiTypography-root': {
+      margin: theme.spacing(2),
+      color: '#9e9e9e',
+      alignItems:'center',
+      alignSelf: 'center',
+      textAlign: 'center'
+    },
+    '& .MuiTypography-h5': {
+      color: '#000',
+      fontSize: '14pt',
+      fontWeight: 'bold',
+      marginBottom: '2em'
+    }
   },
   paper: {
     flexGrow: 1,
@@ -77,133 +88,97 @@ const styles = theme => ({
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
   },
-  card: {
-    borderRadius: '5%',
-    width: '100%'
-  },
-  cardHeader: {
-    background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
-    height: '80px',
-    textAlign: 'center',
+  nextButton: {
+    color:'#fff', 
+    boxShadow: 'none', 
+    backgroundColor: '#02d1a8',
+    margin:'2em 25%',
     verticalAlign: 'middle',
-    padding: theme.spacing(2),
-    lineHeight: '50px',
-    fontWeight: '500',
-    color: '#fff'
-  },
-  extraLinks: {
-    flexGrow: 1,
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    display: 'inline-grid',
-    float: 'right'
-  },
-  cardFooter: {
-    padding: 0,
+    width: '10em',
+    borderRadius: '0.5em'
   }
 })
 
 class ConfirmPage extends React.Component {
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        realName: '',
-        dob: '',
-        error: '',
-        username: '',
-        password: '',
-        email: '',
-        contacts_entered: false,
-        jwtToken: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      verificationCode: null,
+      sub: '',
+      username: '',
+      error: ''
+    }
+
+    this.onSubmit = this.onSubmit.bind(this)
+  }
+
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  }
+
+  componentDidMount() {
+
+    let tempUser
+    var state = store.getState()
+    if (state.hasOwnProperty('newUser') && state.newUser.hasOwnProperty('response')){
+      tempUser = state.newUser.response
+      this.setState({username: tempUser.user.username, sub: tempUser.user.userSub})
+    }
+
+    store.subscribe(() => {
+      console.log("hi new user")
+      tempUser = store.getState().newUser
+      console.log(tempUser.response)
+
+      this.setState({username: tempUser.response.user.username, sub: tempUser.response.user.userSub})
+    })
+
+    tempUser = localStorage.getItem('unconfirmedUser')
+    var tempSub = localStorage.getItem('unconfirmedSub')
+    this.setState({username: tempUser, sub: tempSub})
+
+  }
+
+  onSubmit = (event) => {
+    event.preventDefault()
+    
+    Auth.confirmSignUp(this.state.username, this.state.verificationCode).then((user) => {
+      console.log('Confirm sign up successful, created initial passport profile')
+      localStorage.removeItem('unconfirmedUser')
+      localStorage.removeItem('unconfirmedSub')
+      this.props.history.push('/login')
+    })
+    .catch(err => {
+      if (! err.message) {
+        console.log('Error when entering confirmation code: ', err)
+      } else {
+        console.log('Error when entering confirmation code: ', err.message)
       }
+    })
+  }
 
-      this.onSubmit = this.onSubmit.bind(this)
+  onResend = (event) => {
+    event.preventDefault()
+    Auth.resendSignUp(this.state.username).then((user) => {
+      this.setState({ error: 'Code resent' });
+    }).catch((error) => {
+      this.setState({ error });
+    })
+  }
 
-      this.proxyurl = "https://cors-anywhere.herokuapp.com/"
-      this.urldev = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
-      this.urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
-    }
+  onCancel = (event) => {
+    event.preventDefault()
+    this.props.history.push('/register')
+  }
 
-    static propTypes = {
-      history: PropTypes.object.isRequired,
-    }
+  changeVerificationCode = (event) => {
+    this.setState({ verificationCode: event.target.value });
+  }
 
-    createNewPassport(action) {
-      console.log("New Passport")
-
-      var userProfile = {
-        'PassportDataID': generateKey(),
-        'PassportData': {
-          'real_name': this.state.realName,
-          'email': this.state.email,
-          'dob': this.state.dob
-        }
-      }
-
-      store.dispatch({
-          type: "UNCONFIRMED_PROFILE",
-          response: userProfile
-      })
-    }
-
-    onSubmit = (event) => {
-      event.preventDefault();
-
-      const state = store.getState();
-      const userPool = state.cognito.userPool;
-      const config = state.cognito.config;
-
-      if (this.state.realName.length > 0 && this.state.dob != null) {
-        this.setState({'error': ''})
-        registerUser(userPool, config, this.state.username, this.state.password, {
-          email: this.state.email,
-        }).then(
-          (action) => {
-            this.createNewPassport(action)
-            store.dispatch(action)
-            this.props.history.push('/')
-          },
-          error => {
-            console.log(error)
-            this.setState({ error })
-        })
-      } 
-      else {
-        this.setState({'error': 'You need to enter your real name and date of birth'})
-      }      
-    }
-
-    onShowNextSection = (event) => {
-      event.preventDefault()
-      this.setState(prevState => ({
-        contacts_entered: !prevState.contacts_entered
-      }))
-    }
-
-    changeRealName = (event) => {
-      this.setState({ realName: event.target.value });
-    }
-
-    changeDOB = (event) => {
-      this.setState({ dob: event.target.value });
-    }
-
-    changeUsername = (event) => {
-      this.setState({ username: event.target.value });
-    }
-
-    changePassword = (event) => {
-      this.setState({ password: event.target.value });
-    }
-
-    changeEmail = (event) => {
-      this.setState({ email: event.target.value });
-    }
-
-    render() {
-      const attributes = this.attributes
-      const { classes } = this.props
+  render() {
+    const attributes = this.attributes
+    const { classes } = this.props
 
     return (
       <div className={classes.root}>
@@ -216,13 +191,33 @@ class ConfirmPage extends React.Component {
               </div>
               <Card style={{margin: '0 auto', border: 'none', boxShadow: 'none'}}>
               <div>
-                <p>A confirmation code has been sent to your email address</p>
-                <Confirm>
-                  <ConfirmForm />
-                </Confirm>
+                <Typography component='h5' variant='h5'> We have sent you an email! </Typography>
+                <Typography variant='body1'> Please complete your registration by entering your code below </Typography>
+                <form onSubmit={this.onSubmit}>
+                    <TextField
+                        required
+                        fullWidth
+                        label='code'
+                        name='code'
+                        onChange={this.changeVerificationCode}
+                        margin="normal"
+                        placeholder="code"
+                      />
+                </form>
+                <Button className={classes.nextButton} onClick={this.onSubmit}>
+                  Register
+                </Button>
+                <CPButton variant="contained" style={{height:'30px', verticalAlign: 'middle', marginRight:'1em', marginBottom: '1em'}} onClick={this.onResend}>
+                  Resend Code
+                </CPButton>
+                <CPButton variant="contained" style={{width:'120px', height:'30px', verticalAlign: 'middle', marginRight:'1em', float: 'right'}} onClick={this.onCancel}>
+                  Cancel
+                </CPButton>
               </div>
               </Card>
-            <Link style={{marginTop:'1.5em'}} to="/">Home</Link>
+              <div style={{margin:'0 auto'}}>
+                <Link style={{marginTop:'1.5em'}} to="/">Home</Link>
+              </div>
             <div style={{color:'#b20000', textAlign:'center', marginTop: '1em'}}> {this.state.error} </div>
           </Grid>
         </Paper>
@@ -233,13 +228,11 @@ class ConfirmPage extends React.Component {
 
 ConfirmPage.propTypes = {
   classes: PropTypes.object.isRequired,
+  attributes: PropTypes.object,
   onSubmit: PropTypes.func,
-  clearCache: PropTypes.func,
-  username: PropTypes.string,
+  onCancel: PropTypes.func,
+  onResend: PropTypes.func,
   error: PropTypes.string,
-  email: PropTypes.string,
-  user: PropTypes.object,
-  attributes: PropTypes.object
 }
 
 ConfirmPage.contextTypes = {

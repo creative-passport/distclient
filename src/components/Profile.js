@@ -11,6 +11,7 @@ import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
+import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
 import store from '../reducers/store'
@@ -66,7 +67,6 @@ const AntTab = withStyles(theme => ({
     minWidth: 90,
     padding: '2em',
     fontWeight: theme.typography.fontWeightRegular,
-    // marginRight: theme.spacing(4),
     fontSize: 12,
     fontFamily: [
       '-apple-system',
@@ -143,36 +143,29 @@ class Profile extends Component {
         document.querySelector('#font-awesome-css'),
       )
 
-      const user = this.state.cognitue_state.user
-      const attributes = this.state.cognitue_state.attributes
+      Auth.currentSession()
+        .then((response) => {
+          this.setState({jwtToken: response.idToken.jwtToken})
+      })
+        .catch((error) => {
+            console.log(error);
+      })
 
-      if (user !== undefined) {
-        user.getSession((err, session) => {
-          if (err) {
-            console.log(err)
-          } else {
-            this.setState({jwtToken: session.getIdToken().getJwtToken()})
-          }
-        })
-      }
-
-      var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
-      var stlUsername = 'imogen%20heap'
-      console.log(user.username)
-      if(user.username === 'imogenheap') {
-        stlUsername = 'imogen%20heap'
-      }
-      else {
-        stlUsername = user.username.replace('_','%20')
-      }
-      this.setState({src: streemlinerRoot + stlUsername})
-
+      // var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
+      // var stlUsername = 'imogen%20heap'
+      // console.log(user.username)
+      // if(user.username === 'imogenheap') {
+      //   stlUsername = 'imogen%20heap'
+      // }
+      // else {
+      //   stlUsername = user.username.replace('_','%20')
+      // }
+      // this.setState({src: streemlinerRoot + stlUsername})
       this.setState({currentData: this.props.artist_data})
     }
 
     addData(event) {
       var currentData = this.state.currentData
-      var newIndex = event['indexValue']
       var fieldName = event['fieldName']
       var newEvent = {fieldName: event}
 
