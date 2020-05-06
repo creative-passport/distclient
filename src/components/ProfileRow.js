@@ -1,10 +1,11 @@
-  import React, { Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import CPSwitch from './CPSwitch'
+import LongText from './LongText'
 
 import PublishMenu from './PublishMenu'
 
@@ -12,7 +13,8 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 2500,
-    marginLeft:'1em'
+    marginLeft:theme.spacing(1),
+    marginTop: theme.spacing(2)
   },
   paper: {
     padding: theme.spacing(1),
@@ -21,6 +23,9 @@ const styles = theme => ({
     marginTop: '16px',
     margin: theme.spacing(2),
     color: theme.palette.text.secondary,
+  },
+  container_grid: {
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -59,6 +64,7 @@ class ProfileRow extends Component {
   }
 
   handleChange = (e) => {
+
       var data = {
         'fieldName': this.props.fieldName,
         'value': this.state.value,
@@ -72,8 +78,8 @@ class ProfileRow extends Component {
           data['published'] = e
       }
       else if (e.hasOwnProperty('target')) {
-          this.setState({value: e.target.value})
-          data['value'] = e.target.value
+        this.setState({value: e.target.value})
+        data['value'] = e.target.value
       } else {
         this.setState({publishers: e})
         data['publishers'] = e
@@ -82,7 +88,9 @@ class ProfileRow extends Component {
       this.props.onDataChange(data)
   }
 
+
   render() {
+    const { classes } = this.props
     const inputProps = {
       step: 300,
     }
@@ -91,9 +99,25 @@ class ProfileRow extends Component {
         name='publish_switch'
         checked={this.state.published}
         onChange={this.handleChange}>
-    </CPSwitch>
+    </CPSwitch>  
 
-    const ValueItem = (this.props.required) ? <Grid item xs={9}> <TextField
+    const ValueItem = (this.props.longText) ? 
+    <Grid item xs={9} className={classes.container_grid}>
+      <TextField
+        ref={(ref) => this.text = ref}
+        id="outlined-multiline-flexible"
+        label={this.props.label}
+        fullWidth
+        multiline
+        rowsMax={4}
+        variant="outlined"
+        onChange={this.handleChange}
+        helperText={this.props.helper_text}
+        inputProps={inputProps}
+        value={this.state.value}/>
+      </Grid>
+      : (this.props.required) ? 
+      <Grid item xs={9}> <TextField
       ref={(ref) => this.text = ref}
       required
       fullWidth

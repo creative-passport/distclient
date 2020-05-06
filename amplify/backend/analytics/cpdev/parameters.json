@@ -1,0 +1,21 @@
+{
+    "appName": "cpdev",
+    "roleName": "pinpointLambdaRole28e8f86a",
+    "cloudformationPolicyName": "cloudformationPolicy28e8f86a",
+    "cloudWatchPolicyName": "cloudWatchPolicy28e8f86a",
+    "pinpointPolicyName": "pinpointPolicy28e8f86a",
+    "authPolicyName": "pinpoint_amplify_28e8f86a",
+    "unauthPolicyName": "pinpoint_amplify_28e8f86a",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

@@ -20,6 +20,8 @@ import CropFreeOutlinedIcon from '@material-ui/icons/CropFreeOutlined'
 import * as api from '../scripts'
 import { Auth } from 'aws-amplify'
 
+import ProfileImage from './ProfileImage'
+
 const styles = theme => ({
   drawer: {
     marginRight: theme.spacing(2),
@@ -55,14 +57,6 @@ const styles = theme => ({
   essentialFields: {
     paddingBottom: '15%'
   },
-  imageCropper: {
-    width: '5em',
-    height: '5em',
-    position: 'relative',
-    overflow: 'hidden',
-    borderRadius: '50%',
-    margin: '-18% auto auto'
-  },
   secondCardHeaderStyle: {
     backgroundColor: '#cccccc',
     color: '#000',
@@ -76,6 +70,14 @@ const styles = theme => ({
     float:'right',
     margin: '10px',
     boxShadow: 'none'
+  },
+  profileImage: {
+    width: '5em',
+    height: '5em',
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: '50%',
+    margin: '0 auto'
   }
 });
 
@@ -91,15 +93,13 @@ class SideBar extends React.Component {
       date_of_birth: '',
       profile_data: '',
       walletId: '',
-      jwtToken: '',
-      imageSrc: ''
+      jwtToken: ''
     }
     this.changeMobile = this.changeMobile.bind(this)
     this.saveData = this.saveData.bind(this)
   }
 
   componentDidMount() {
-
     Auth.currentAuthenticatedUser().then(
       user => {
         this.setState({walletId: user.attributes.sub})
@@ -161,7 +161,7 @@ class SideBar extends React.Component {
       <CssBaseline />
       <Card className={classes.card}>
         <CardHeader className={classes.cardHeaderStyle}/>
-        <Avatar alt="Remy Sharp" className={classes.imageCropper} src={this.state.imageSrc} />
+        <ProfileImage className={classes.profileImage} walletId={this.state.walletId}/>
         <CardContent className={classes.cardcontent}>
           <Typography component="h5" variant="h5" className={classes.realName}>{realName}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>

@@ -14,17 +14,9 @@ import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import DateFnsUtils from '@date-io/date-fns'
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
-import * as api from '../scripts'
 
 import CPButton from './CPButton'
-
 import store from '../reducers/store'
-import generateKey from './bip'
 
 import logo from '../logo.png'
 

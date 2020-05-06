@@ -12,7 +12,7 @@ import LoginPage from './LoginPage'
 import ConfirmPage from './ConfirmPage'
 import ChangePasswordPage from './ChangePasswordPage'
 
-import Amplify from 'aws-amplify'
+import Amplify, { Storage } from 'aws-amplify'
 
 import awsmobile from '../aws-exports'
 import store from '../reducers/store'

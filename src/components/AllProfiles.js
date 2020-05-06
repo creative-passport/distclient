@@ -20,38 +20,16 @@ import Layout from './Layout'
 import Profile from './Profile'
 import MobileProfile from './MobileProfile'
 import CPButton from './CPButton'
+import Fab from '@material-ui/core/Fab'
+import IconButton from '@material-ui/core/IconButton'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { Switch } from 'antd'
 import { Auth } from 'aws-amplify'
+import { ControlledExpansionPanels } from './ControlledExpansionPanels'
 
 import 'antd/dist/antd.css'
 import './App.css'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  public_switch: {
-    width: 36,
-    height: 16,
-    marginLeft: '2em'
-  },
-  expand_panel: {
-    border: 0,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-    color: 'white',
-    boxShadow: 'none',
-    height: 35,
-    backgroundColor: '#02d1a8'
-  },
-  expand_group: {
-    boxShadow: 'none',
-  },
-  expand_children: {
-    backgroundColor: '#02d1a8',
-    padding: 0,
-  }
-}))
 
 const styles = theme => ({
   root: {
@@ -60,77 +38,14 @@ const styles = theme => ({
   expand_children: {
     backgroundColor: '#02d1a8',
     padding: 0,
+  },
+  show_profile_button: {
+    boxShadow: 'none',
+    marginLeft: theme.spacing(3),
+    height: 0,
+    width: 0
   }
 })
-
-const ControlledExpansionPanels = ({all_profiles}) => {
-  const classes = useStyles()
-  const [expanded, setExpanded] = React.useState(false)
-
-  const handleChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  }
-
-  const profiles = Object.keys(all_profiles['artist_profiles']).map((keyName, i) => {
-    const id = i.toString()
-    const artist_data = all_profiles['artist_profiles'][keyName]
-    var currentPanel = 'panel'+i
-    const ariaContent = "additional-actions"+i+"-content"
-    const panelId = "additional-actions"+i+"-header"
-    const artist_name = keyName
-
-    let singleProfile
-    if (isMobile) {
-      singleProfile = <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
-        <ExpansionPanelSummary
-          className={classes.expand_panel}
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls={ariaContent}
-          id={panelId}
-        >
-          <Typography className={classes.heading}>{artist_name}</Typography>
-          <FormControlLabel
-            aria-label="Acknowledge"
-            className={classes.heading}
-            onClick={event => event.stopPropagation()}
-            onFocus={event => event.stopPropagation()}
-            control={<Switch size="small" className={classes.public_switch}/>}
-          />
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.expand_children}>
-          <MobileProfile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    }
-    else {
-      singleProfile = <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
-        <ExpansionPanelSummary
-          className={classes.expand_panel}
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls={ariaContent}
-          id={panelId}
-        >
-        <Typography className={classes.heading}>{artist_name}</Typography>
-          <FormControlLabel
-            aria-label="Acknowledge"
-            className={classes.heading}
-            onClick={event => event.stopPropagation()}
-            onFocus={event => event.stopPropagation()}
-            control={<Switch size="small" className={classes.public_switch}/>}
-          />
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.expand_children}>
-          <Profile profile_id={id} artist_name={artist_name} artist_data={artist_data}/>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    }
-
-    return (singleProfile)
-  })
-
-  return (profiles)
-}
-
 
 class AllProfiles extends Component {
 
@@ -146,12 +61,14 @@ class AllProfiles extends Component {
           show_profile: false,
           expanded: false,
           profiles: {},
-          new_profile_name: null
+          new_profile_name: null,
+          show_add_profile: false
       }
       this.saveProfiles = this.saveProfiles.bind(this)
       this.addNewProfile = this.addNewProfile.bind(this)
       this.handleNewProfileName = this.handleNewProfileName.bind(this)
       this.createNewPassport = this.createNewPassport.bind(this)
+      this.showAddProfile = this.showAddProfile.bind(this)
 
     }
 
@@ -209,7 +126,6 @@ class AllProfiles extends Component {
 
     addNewProfile(){
       if (this.state.new_profile_name !== undefined && this.state.new_profile_name !== null && this.state.new_profile_name.length > 1) {
-        console.log(this.state.new_profile_name)
 
         var artist_name = this.state.new_profile_name
         var currentProfiles = this.state.profiles
@@ -217,6 +133,12 @@ class AllProfiles extends Component {
         currentProfiles['artist_profiles'][artist_name] = {'artist_name': artist_name}
         this.setState({profiles: currentProfiles})
       }
+    }
+
+    showAddProfile() {
+      this.setState(prevState => ({
+        show_add_profile: !prevState.show_add_profile
+      }))
     }
 
     //TODO Implement
@@ -232,7 +154,7 @@ class AllProfiles extends Component {
 
     render() {
       const { classes } = this.props
-
+      //              
       let profiles
       if('artist_profiles' in this.state.profiles) {
         profiles = <ControlledExpansionPanels all_profiles={this.state.profiles}/>
@@ -240,27 +162,38 @@ class AllProfiles extends Component {
 
       return (
         <Layout>
-          <Typography gutterBottom variant="h5" component="h5"> Profiles </Typography>
-          <Grid container spacing={1} direction="row" justify="flex-end" alignItems="center">
-            <Grid item xs={8}>
-              <InputBase
-                fullWidth
-                className={classes.input}
-                placeholder="ARTIST NAME ..."
-                inputProps={{ 'aria-label': 'Add new profile' }}
-                onChange={this.handleNewProfileName}
-              />
+          <Grid container spacing={1} direction="row" justify="flex-start" alignItems="flex-start">
+            <Grid item xs={2}>
+              <Typography gutterBottom variant="h5" component="h5"> PERSONAS </Typography>
             </Grid>
-            <Grid item xs>
-              <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'30px', height:'30px', marginRight: '5%'}}> Add </CPButton>
-            </Grid>
-            <Grid item xs>
-              <CPButton variant="contained" style={{width:'170px', height:'30px'}} onClick={this.saveProfiles}> Save Changes </CPButton>
+            <Grid item>
+              <Fab size='small' component="span" onClick={this.showAddProfile} className={classes.show_profile_button}>
+                <AddCircleIcon style={{ color:'#02d1a8', marginTop: '-0.2em'}}/>
+              </Fab>
             </Grid>
           </Grid>
+          { this.state.show_add_profile ? 
+            <Grid container spacing={1} direction="row" justify="flex-end" alignItems="center">
+              <Grid item xs={8}>
+                <InputBase
+                  fullWidth
+                  className={classes.input}
+                  placeholder="ARTIST NAME ..."
+                  inputProps={{ 'aria-label': 'Add new profile' }}
+                  onChange={this.handleNewProfileName}
+                />
+              </Grid>
+              <Grid item xs>
+                <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'30px', height:'30px', marginRight: '5%'}}> Add </CPButton>
+              </Grid>
+            </Grid>
+          : null }
           <div style={{marginTop:'0.5em'}}>
             {profiles}
           </div>
+          <Grid item xs style={{marginTop: '1em'}}>
+            <CPButton variant="contained" style={{width:'170px', height:'30px'}} onClick={this.saveProfiles}> Save Changes </CPButton>
+          </Grid>
         </Layout>
       )
     }

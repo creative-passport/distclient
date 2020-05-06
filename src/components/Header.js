@@ -11,13 +11,9 @@ import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import SettingsIcon from '@material-ui/icons/Settings'
-import { sizing } from '@material-ui/system'
 import { Auth } from 'aws-amplify'
-import MediaQuery from 'react-responsive'
 
-import store from '../reducers/store'
 import logo from '../logo.png'
-import { Action } from '../actions/authenticationActions'
 
 const theme = createMuiTheme({
   palette: {
