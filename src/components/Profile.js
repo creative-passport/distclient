@@ -125,6 +125,7 @@ class Profile extends Component {
     }
 
     addData(event) {
+      console.log(event)
       var currentData = this.state.currentData
       var fieldName = event['fieldName']
 
@@ -170,31 +171,31 @@ class Profile extends Component {
             if (detailed_fields[subfield]['type'] === 'bubble') {
               let currentKey = actualKey
               actualKey ++
-              return <ChipsArray key={currentKey} label={detailed_fields[subfield].label} name={detailed_fields[subfield].name} onDataChange={this.addData} />
+              return <ChipsArray key={currentKey} indexValue={currentKey} fieldName={subfield} label={detailed_fields[subfield].label} name={detailed_fields[subfield].name} onDataChange={this.addData} />
             }
             else if (detailed_fields[subfield]['type'] == 'typing_bubble') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return (<ProfileRow key={currentKey} fieldName={field.name} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
+              return (<ProfileRow key={currentKey} indexValue={currentKey} fieldName={subfield} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
             }
             else if (detailed_fields[subfield]['type'] == 'long_text') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return (<ProfileRow key={currentKey} fieldName={field.name} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
+              return (<ProfileRow key={currentKey} indexValue={currentKey} fieldName={subfield} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
             }
             else if (detailed_fields[subfield]['type'] == 'single_text') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return <ProfileRow key={currentKey} fieldName={field.name} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={false}/>
+              return <ProfileRow key={currentKey} indexValue={currentKey} fieldName={subfield} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={false}/>
             }
             else if (detailed_fields[subfield]['type'] == 'unique_list') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return <UniqueList key={currentKey} fieldName={field.name} label={field.label} name={field.name} onDataChange={this.addData}/>
+              return <UniqueList key={currentKey} indexValue={currentKey} fieldName={subfield} label={field.label} name={field.name} onDataChange={this.addData}/>
             }
           })
         }
