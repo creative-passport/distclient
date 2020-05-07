@@ -18,7 +18,6 @@ import { avs } from '../text_fields'
 
 const styles = theme => ({
   formControl: {
-    margin: theme.spacing(1),
     minWidth: 300,
   },
   selectEmpty: {
@@ -46,9 +45,7 @@ class MultipleBubbleList extends Component {
       selected_values: [],
       all_values: [],
       value: '',
-      name: '',
-      published: false,
-      publishers: {'Public Profile': false},
+      name: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.getOptions = this.getOptions.bind(this)
@@ -62,11 +59,26 @@ class MultipleBubbleList extends Component {
   }
 
   componentDidMount() {
+    if (this.props.value !== null && this.props.value !== '') {
+      this.setState({selected_values: this.props.value})
+    }
+    else if (this.props.textValue !== undefined && 'value' in this.props.textValue){
+      this.setState({selected_values: this.props.textValue.value})
+    }
     this.getOptions()
   }
   
   handleChange = (event) => {
     this.setState({selected_values: event.target.value})
+
+    var data = {
+      'type': 'multiple_bubble_list',
+      'fieldName': this.props.fieldName,
+      'value': event.target.value,
+      'indexValue': this.props.indexValue
+    }
+
+    this.props.onDataChange(data)
   }
 
   getOptions() {
@@ -80,8 +92,9 @@ class MultipleBubbleList extends Component {
     const { classes } = this.props
     const options = this.state.values.map((val, i) => <option value={i}>{val}</option>)
 
-    return (
-      <Grid container name={this.props.fieldName}>
+    let result = null
+    if (this.props.value != null) {
+      result = <Grid container name={this.props.fieldName}>
         <FormControl className={classes.formControl}>
         <InputLabel id="demo-mutiple-chip-label">{this.props.label}</InputLabel>
         <Select
@@ -109,6 +122,12 @@ class MultipleBubbleList extends Component {
         </Select>
       </FormControl>
     </Grid>
+    }
+
+    return (
+    <div>
+      { result }
+    </div>
     )
   }
 }

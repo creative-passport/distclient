@@ -16,19 +16,10 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 2500,
-    marginLeft:theme.spacing(1),
     marginTop: theme.spacing(2)
   },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    verticalAlight: 'middle',
-    marginTop: '16px',
-    margin: theme.spacing(2),
-    color: theme.palette.text.secondary,
-  },
   container_grid: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(0.5),
   }
 });
 
@@ -47,7 +38,8 @@ class ProfileRow extends Component {
     this.state = {
       published: false,
       publishers: {'Who am I': false},
-      fieldName: ''
+      fieldName: '',
+      value: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -73,6 +65,7 @@ class ProfileRow extends Component {
   handleChange = (e) => {
     var data = {
       'fieldName': this.props.fieldName,
+      'type': e.type,
       'value': this.state.value,
       'published': this.state.published,
       'publishers': this.state.publishers,
@@ -81,6 +74,10 @@ class ProfileRow extends Component {
 
     if(e.type == 'typing_bubble') {
       data = e
+      this.setState({value: e.value})
+    }
+    else if (e.type == 'multiple_bubble_list'){
+      data['value'] = e.value
       this.setState({value: e.value})
     }
     else if (typeof e === "boolean") {
@@ -103,7 +100,7 @@ class ProfileRow extends Component {
     let comp
     if (this.props.type == 'single_text') {
       if (this.props.required) {
-        comp = <Grid container direction="row" justify="flex-start"> 
+        comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
           <Grid item xs={9}> <TextField
             ref={(ref) => this.text = ref}
             required
@@ -129,7 +126,7 @@ class ProfileRow extends Component {
             </Grid>
           </Grid> 
       } else {
-        comp = <Grid container direction="row" justify="flex-start"> 
+        comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
           <Grid item xs={9}> <TextField
             ref={(ref) => this.text = ref}
             fullWidth
@@ -158,7 +155,7 @@ class ProfileRow extends Component {
       }
     }
     else if (this.props.type == 'long_text') {
-      comp = <Grid container direction="row" justify="flex-start"> 
+      comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={9} className={classes.container_grid}>
           <TextField
             ref={(ref) => this.text = ref}
@@ -186,7 +183,7 @@ class ProfileRow extends Component {
       </Grid>
     }
     else if (this.props.type == 'unique_list') {
-      comp = <Grid container direction="row" justify="flex-start"> 
+      comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
@@ -198,6 +195,7 @@ class ProfileRow extends Component {
             fieldName = {this.props.fieldName}
             label = {this.props.label}
             name = {this.props.name}
+            value={this.state.value}
             onDataChange={this.handleChange}
           />
         </Grid>
@@ -214,7 +212,7 @@ class ProfileRow extends Component {
       </Grid>
     }
     else if (this.props.type == 'multiple_bubble_list') {
-      comp = <Grid container direction="row" justify="flex-start"> 
+      comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
@@ -226,6 +224,7 @@ class ProfileRow extends Component {
           fieldName = {this.props.fieldName}
           label = {this.props.label}
           name = {this.props.name}
+          value = {this.state.value}
           onDataChange={this.handleChange}
         />
         </Grid>
@@ -242,7 +241,7 @@ class ProfileRow extends Component {
       </Grid>
     }
     else if (this.props.type == 'typing_bubble') {
-      comp = <Grid container direction="row" justify="flex-start"> 
+      comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
@@ -254,6 +253,7 @@ class ProfileRow extends Component {
             fieldName = {this.props.fieldName}
             label = {this.props.label}
             name = {this.props.name}
+            value = {this.state.value}
             onDataChange={this.handleChange}
           />
           </Grid>

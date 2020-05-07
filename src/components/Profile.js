@@ -123,7 +123,6 @@ class Profile extends Component {
     }
 
     addData(event) {
-      console.log(event)
       var currentData = this.state.currentData
       var fieldName = event['fieldName']
 

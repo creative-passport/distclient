@@ -32,8 +32,8 @@ const styles = theme => ({
     backgroundColor: 'white',
     marginRight: theme.spacing(0.5),
     height: '22px',
-    paddingTop: theme.spacing(0.1),
-    paddingBottom: theme.spacing(0.1),
+    // paddingTop: theme.spacing(0.1),
+    // paddingBottom: theme.spacing(0.1),
     fontSize: '8pt',
     '& .MuiChip-root': {
       height: '28px'
@@ -41,28 +41,28 @@ const styles = theme => ({
     '& .MuiChip-deleteIcon': {
       color: 'red',
       margin: theme.spacing(0)
-    }    
+    },
+    '& .MuiChip-label': {
+      margin: theme.spacing(0.1)
+    }
   },
   container_grid: {
     marginTop: theme.spacing(2),
   },
   text_field_add_chip: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '15ch',
     '& .MuiInputBase-root': {
       border: 'solid 0.5px',
       borderRadius: '25px',
       fontSize: '8pt',
-      height: '23px'
+      height: '22px'
     },
     '& .MuiInputBase-input:focus:hover': {
       outline: 0,
-      border: 'none',
-      paddingRight: '0.5em'
+      border: 'none'
     },
     '& .MuiFormControl-root': {
-      marginTop: 0
+      marginTop: 0,
+      marginBottom: 0
     },
     '& .MuiFormLabel-root': {
       transition: 'none'
@@ -70,20 +70,22 @@ const styles = theme => ({
     '& .MuiInput-underline:before': {
       border: 'none',
       fontSize: '8pt',
-      paddingRight: '0.5em'
-    },
-    '& .MuiInputBase-input:before:input': {
-      paddingLeft: '0.5em',
-      paddingRight: '0.5em'
-    },
-    '& .MuiInput-underline:hover': {
-      textDecoration: 'none'
     },
     '& .MuiInput-formControl': {
       marginTop: 0,
-      paddingLeft: '0.6em',
       transform: 'none',
-      position: 'relative'
+      position: 'relative',
+      paddingLeft: theme.spacing(1)
+    },
+    '& .MuiInput-formControl:before': {
+      fontSize: '8pt',
+      height: '22px',
+    },
+    '& .MuiInputBase-formControl:before:input': {
+      paddingRight: theme.spacing(1)
+    },
+    '& .MuiInput-underline:hover': {
+      textDecoration: 'none'
     },
     '& .MuiInputLabel-formControl':{
       transform: 'none',
@@ -91,16 +93,19 @@ const styles = theme => ({
       top: 0,
     },
     '& .MuiIconButton-root': {
-      paddingRight: 0,
       color: '#02d1a8'
     },
-    '& .MuiInput-formControl:before': {
-      fontSize: '8pt',
-      paddingLeft: '0.5em',
-      height: '22px',
+    '& .MuiSvgIcon-root': {
+      width: '22px',
+      padding: 0
+    },
+    '& .MuiIconButton-edgeEnd': {
+      marginRight: '-13px'
     }
   }
 })
+
+// MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedEnd
 
 class ChipsArray extends Component {
 
@@ -114,8 +119,6 @@ class ChipsArray extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      published: false,
-      publishers: {'Public Profile': false},
       fieldName: '',
       chipData : [],
       newChipText: null
@@ -127,7 +130,12 @@ class ChipsArray extends Component {
   }
 
   componentDidMount() {
-    this.setState({chipData: [{ key: 0, label: 'example', value: 'example' }]})
+    if (this.props.value !== null && this.props.value !== '') {
+      this.setState({chipData: this.props.value})
+    }
+    else if (this.props.textValue !== undefined && 'value' in this.props.textValue){
+      this.setState({chipData: this.props.textValue.value})
+    }
   }
 
   handleChange = (e) => {
@@ -142,9 +150,6 @@ class ChipsArray extends Component {
       'type': 'typing_bubble',
       'fieldName': this.props.fieldName,
       'value': newChips,
-      'published': this.state.published,
-      'publishers': this.state.publishers,
-      'indexValue': this.props.indexValue
     }
     this.props.onDataChange(data)
   }
@@ -158,10 +163,7 @@ class ChipsArray extends Component {
     var data = {
       'type': 'typing_bubble',
       'fieldName': this.props.fieldName,
-      'value': oldChips,
-      'published': this.state.published,
-      'publishers': this.state.publishers,
-      'indexValue': this.props.indexValue
+      'value': oldChips
     }
     this.props.onDataChange(data)
   }
@@ -198,29 +200,31 @@ class ChipsArray extends Component {
         />
       )
     })
+
+    const result = <Grid container direction="row" justify="flex-start">
+      {currentChips}
+      <FormControl className={classes.text_field_add_chip}>
+        <Input
+          id="adornment-add"
+          defaultValue="Add New"
+          onChange={this.handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                disableRipple={true}
+                edge='end'
+                aria-label="Add new value"
+                onClick={this.addToChips}
+              >
+              <AddCircleIcon/>
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+    </Grid>
     
-    return (
-        <Grid container direction="row" justify="flex-start">
-          {currentChips}
-          <FormControl className={classes.text_field_add_chip}>
-            <Input
-              id="adornment-add"
-              defaultValue="Add New"
-              onChange={this.handleChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Add new value"
-                    onClick={this.addToChips}
-                  >
-                  <AddCircleIcon/>
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </Grid>
-    )
+    return (<div> { result } </div>)
   }
 }
 
