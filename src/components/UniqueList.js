@@ -8,6 +8,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
+import { avs } from '../text_fields'
+
 const styles = theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -23,10 +25,14 @@ class UniqueList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      age: '',
-      name: ''
+      values: [],
+      value: '',
+      name: '',
+      published: false,
+      publishers: {'Public Profile': false},
     }
     this.handleChange = this.handleChange.bind(this)
+    this.getOptions = this.getOptions.bind(this)
   }
 
   static propTypes = {
@@ -35,14 +41,55 @@ class UniqueList extends Component {
     name: PropTypes.string,
     classes: PropTypes.object
   }
+
+  componentDidMount() {
+    this.getOptions()
+  }
   
   handleChange = (event) => {
     const name = event.target.name
     this.setState({name:event.target.value})
+
+    var data = {
+      'fieldName': this.props.fieldName,
+      'value': name,
+      'published': this.state.published,
+      'publishers': this.state.publishers,
+      'indexValue': this.props.indexValue
+    }
+    this.props.onDataChange(data)
+  }
+
+  getOptions() {
+    console.log(this.props.fieldName)
+
+    if (this.props.fieldName in avs) {
+      const key = this.props.fieldName
+      this.setState({values: avs[key].values})
+    }
+  }
+
+  updatePublishers(e) {
+    if (typeof e === "boolean") {
+        console.log("published")
+        this.setState({published: e})
+        data['published'] = e
+    }
+    else if (e.hasOwnProperty('target')) {
+      this.setState({value: e.target.value})
+      data['value'] = e.target.value
+    } else {
+      this.setState({publishers: e})
+      data['publishers'] = e
+    }
+
+    this.props.onDataChange(data)
   }
 
   render() {
     const { classes } = this.props
+
+    const options = this.state.values.map((val, i) => <option value={i}>{val}</option>)
 
     return (
       <Grid container name={this.props.fieldName}>
@@ -54,9 +101,7 @@ class UniqueList extends Component {
             onChange={this.handleChange}
           >
             <option aria-label="None" value="" />
-            <option value={10}>Ten</option>
-            <option value={20}>Twenty</option>
-            <option value={30}>Thirty</option>
+            {options}
           </Select>
         </FormControl>
       </Grid>

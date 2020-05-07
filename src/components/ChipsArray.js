@@ -91,7 +91,8 @@ const styles = theme => ({
       top: 0,
     },
     '& .MuiIconButton-root': {
-      paddingRight: 0
+      paddingRight: 0,
+      color: '#02d1a8'
     },
     '& .MuiInput-formControl:before': {
       fontSize: '8pt',
@@ -122,6 +123,7 @@ class ChipsArray extends Component {
 
     this.handleChange = this.handleChange.bind(this)
     this.addToChips = this.addToChips.bind(this)
+    this.updatePublishers = this.updatePublishers.bind(this)
   }
 
   componentDidMount() {
@@ -135,14 +137,50 @@ class ChipsArray extends Component {
   handleDelete = name => event => {
     var newChips = this.state.chipData.filter((chip) => chip.key !== name)
     this.setState({chipData: newChips})
+
+    var data = {
+      'type': 'typing_bubble',
+      'fieldName': this.props.fieldName,
+      'value': newChips,
+      'published': this.state.published,
+      'publishers': this.state.publishers,
+      'indexValue': this.props.indexValue
+    }
+    this.props.onDataChange(data)
   }
 
   addToChips = () => {
     var oldChips = this.state.chipData
-    console.log(oldChips)
 
     oldChips.push({key: oldChips.length, label: this.state.newChipText, name: this.state.newChipText})
     this.setState({chipData: oldChips})
+
+    var data = {
+      'type': 'typing_bubble',
+      'fieldName': this.props.fieldName,
+      'value': oldChips,
+      'published': this.state.published,
+      'publishers': this.state.publishers,
+      'indexValue': this.props.indexValue
+    }
+    this.props.onDataChange(data)
+  }
+
+  updatePublishers(e) {
+    if (typeof e === "boolean") {
+        console.log("published")
+        this.setState({published: e})
+        data['published'] = e
+    }
+    else if (e.hasOwnProperty('target')) {
+      this.setState({value: e.target.value})
+      data['value'] = e.target.value
+    } else {
+      this.setState({publishers: e})
+      data['publishers'] = e
+    }
+
+    this.props.onDataChange(data)
   }
 
   render() {
@@ -162,10 +200,6 @@ class ChipsArray extends Component {
     })
     
     return (
-      <Grid container direction="row" justify="center" alignItems="center" className={classes.container_grid}>
-        <Grid item xs={12}>
-          <Typography>{this.props.label}</Typography>
-        </Grid>
         <Grid container direction="row" justify="flex-start">
           {currentChips}
           <FormControl className={classes.text_field_add_chip}>
@@ -186,7 +220,6 @@ class ChipsArray extends Component {
             />
           </FormControl>
         </Grid>
-      </Grid>
     )
   }
 }

@@ -49,7 +49,7 @@ class PublishMenu extends React.Component  {
 
   componentDidMount() {
     if(Object.keys(this.props.publishers).length === 0 && this.props.publishers.constructor === Object) {
-      this.setState({checkedItems: {'Who am I': false}})
+      this.setState({checkedItems: {'Public Profile': false, 'Universal': false}})
     }
     else {
       this.setState({checkedItems: this.props.publishers})

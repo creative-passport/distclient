@@ -19,8 +19,6 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import ImageLoading from './ImageLoading'
-import ChipsArray from './ChipsArray'
-import UniqueList from './UniqueList'
 import ProfileRow from './ProfileRow'
 import { Auth } from 'aws-amplify'
 
@@ -168,22 +166,47 @@ class Profile extends Component {
         let actualKey = 0
         if (Object.keys(detailed_fields).length > 0) {
           subfields = Object.keys(detailed_fields).map(subfield => {
-            if (detailed_fields[subfield]['type'] === 'bubble') {
+            if (detailed_fields[subfield]['type'] === 'typing_bubble') {
               let currentKey = actualKey
               actualKey ++
-              return <ChipsArray key={currentKey} indexValue={currentKey} textValue={this.props.artist_data[subfield]} fieldName={subfield} label={detailed_fields[subfield].label} name={detailed_fields[subfield].name} onDataChange={this.addData} />
+              return <ProfileRow
+                key={currentKey} indexValue={currentKey}
+                textValue={this.props.artist_data[subfield]}
+                fieldName={subfield}
+                label={detailed_fields[subfield].label}
+                name={detailed_fields[subfield].name}
+                onDataChange={this.addData} 
+                type='typing_bubble'/>
             }
-            else if (detailed_fields[subfield]['type'] == 'typing_bubble') {
+            else if (detailed_fields[subfield]['type'] == 'multiple_bubble_list') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return (<ProfileRow key={currentKey} indexValue={currentKey} textValue={this.props.artist_data[subfield]} fieldName={subfield} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
+              return (<ProfileRow
+                key={currentKey}
+                indexValue={currentKey}
+                textValue={this.props.artist_data[subfield]} 
+                fieldName={subfield} required={false}
+                label={field.label}
+                name={field.name}
+                onDataChange={this.addData}
+                type='multiple_bubble_list'/>)
             }
             else if (detailed_fields[subfield]['type'] == 'long_text') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return (<ProfileRow key={currentKey} indexValue={currentKey} textValue={this.props.artist_data[subfield]} fieldName={subfield} required={false} label={field.label} name={field.name} onDataChange={this.addData} longText={true}/>)
+              return (<ProfileRow 
+                key={currentKey}
+                indexValue={currentKey}
+                textValue={this.props.artist_data[subfield]}
+                fieldName={subfield}
+                required={false}
+                label={field.label}
+                name={field.name}
+                onDataChange={this.addData}
+                longText={true}
+                type='long_text'/>)
             }
             else if (detailed_fields[subfield]['type'] == 'single_text') {
               let field = detailed_fields[subfield]
@@ -198,13 +221,22 @@ class Profile extends Component {
                 label={field.label}
                 name={field.name}
                 onDataChange={this.addData}
-                longText={false}/>
+                longText={false}
+                type='single_text'/>
             }
             else if (detailed_fields[subfield]['type'] == 'unique_list') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
-              return <UniqueList key={currentKey} indexValue={currentKey} fieldName={subfield} label={field.label} name={field.name} onDataChange={this.addData}/>
+              return <ProfileRow
+                key={currentKey}
+                textValue={this.props.artist_data[subfield]}
+                indexValue={currentKey}
+                fieldName={subfield}
+                label={field.label}
+                name={field.name}
+                onDataChange={this.addData}
+                type='unique_list'/>
             }
           })
         }

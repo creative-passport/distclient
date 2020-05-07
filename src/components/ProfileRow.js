@@ -5,7 +5,10 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import CPSwitch from './CPSwitch'
-import LongText from './LongText'
+import ChipsArray from './ChipsArray'
+import UniqueList from './UniqueList'
+import MultipleBubbleList from './MultipleBubbleList'
+import Typography from '@material-ui/core/Typography'
 
 import PublishMenu from './PublishMenu'
 
@@ -48,6 +51,10 @@ class ProfileRow extends Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
+
+    this.inputProps = {
+      step: 300,
+    }
   }
 
   componentDidMount() {
@@ -64,93 +71,215 @@ class ProfileRow extends Component {
   }
 
   handleChange = (e) => {
+    var data = {
+      'fieldName': this.props.fieldName,
+      'value': this.state.value,
+      'published': this.state.published,
+      'publishers': this.state.publishers,
+      'indexValue': this.props.indexValue
+    }
 
-      var data = {
-        'fieldName': this.props.fieldName,
-        'value': this.state.value,
-        'published': this.state.published,
-        'publishers': this.state.publishers,
-        'indexValue': this.props.indexValue
-      }
-      if (typeof e === "boolean") {
-          console.log("published")
-          this.setState({published: e})
-          data['published'] = e
-      }
-      else if (e.hasOwnProperty('target')) {
-        this.setState({value: e.target.value})
-        data['value'] = e.target.value
-      } else {
-        this.setState({publishers: e})
-        data['publishers'] = e
-      }
+    if(e.type == 'typing_bubble') {
+      data = e
+      this.setState({value: e.value})
+    }
+    else if (typeof e === "boolean") {
+        this.setState({published: e})
+        data['published'] = e
+        data['value'] = this.state.value
+    }
+    else if (e.hasOwnProperty('target')) {
+      this.setState({value: e.target.value})
+      data['value'] = e.target.value
+    } else {
+      this.setState({publishers: e})
+      data['publishers'] = e
+    }
 
-      this.props.onDataChange(data)
+    this.props.onDataChange(data)
   }
 
+  getComponent(classes) {
+    let comp
+    if (this.props.type == 'single_text') {
+      if (this.props.required) {
+        comp = <Grid container direction="row" justify="flex-start"> 
+          <Grid item xs={9}> <TextField
+            ref={(ref) => this.text = ref}
+            required
+            fullWidth
+            id="standard-basic"
+            label={this.props.label}
+            name={this.props.name}
+            onChange={this.handleChange}
+            margin="normal"
+            helperText={this.props.helper_text}
+            inputProps={inputProps}
+            value={this.state.value} />
+            </Grid>
+            <Grid item  xs={3}>
+              <Grid container direction="row" justify="flex-start"> 
+                <CPSwitch 
+                  name='publish_switch'
+                  checked={this.state.published}
+                  onChange={this.handleChange}>
+                </CPSwitch>
+                <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+              </Grid>
+            </Grid>
+          </Grid> 
+      } else {
+        comp = <Grid container direction="row" justify="flex-start"> 
+          <Grid item xs={9}> <TextField
+            ref={(ref) => this.text = ref}
+            fullWidth
+            multiline
+            id="standard-basic"
+            label={this.props.label}
+            name={this.props.name}
+            rowsMax="10"
+            onChange={this.handleChange}
+            margin="normal"
+            helperText={this.props.helper_text}
+            inputProps={this.inputProps}
+            value={this.state.value}/>
+            </Grid>
+            <Grid item  xs={3}>
+              <Grid container direction="row" justify="flex-start"> 
+                <CPSwitch 
+                  name='publish_switch'
+                  checked={this.state.published}
+                  onChange={this.handleChange}>
+                </CPSwitch>
+                <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+              </Grid>
+            </Grid>
+          </Grid>
+      }
+    }
+    else if (this.props.type == 'long_text') {
+      comp = <Grid container direction="row" justify="flex-start"> 
+        <Grid item xs={9} className={classes.container_grid}>
+          <TextField
+            ref={(ref) => this.text = ref}
+            id="outlined-multiline-flexible"
+            label={this.props.label}
+            fullWidth
+            multiline
+            rowsMax={4}
+            variant="outlined"
+            onChange={this.handleChange}
+            helperText={this.props.helper_text}
+            inputProps={this.inputProps}
+            value={this.state.value}/>
+          </Grid>
+        <Grid item xs={3}>
+            <Grid container direction="row" justify="flex-start"> 
+              <CPSwitch 
+                name='publish_switch'
+                checked={this.state.published}
+                onChange={this.handleChange}>
+              </CPSwitch>
+              <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+            </Grid>
+        </Grid>
+      </Grid>
+    }
+    else if (this.props.type == 'unique_list') {
+      comp = <Grid container direction="row" justify="flex-start"> 
+        <Grid item xs={12}>
+          <Typography>{this.props.label}</Typography>
+        </Grid>
+        <Grid item xs={9} className={classes.container_grid}>
+          <UniqueList
+            key = {this.props.key}
+            indexValue = {this.props.indexValue}
+            textValue = {this.props.textValue}
+            fieldName = {this.props.fieldName}
+            label = {this.props.label}
+            name = {this.props.name}
+            onDataChange={this.handleChange}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Grid container direction="row" justify="flex-start"> 
+            <CPSwitch 
+              name='publish_switch'
+              checked={this.state.published}
+              onChange={this.handleChange}>
+            </CPSwitch>
+            <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+          </Grid>
+        </Grid>
+      </Grid>
+    }
+    else if (this.props.type == 'multiple_bubble_list') {
+      comp = <Grid container direction="row" justify="flex-start"> 
+        <Grid item xs={12}>
+          <Typography>{this.props.label}</Typography>
+        </Grid>
+        <Grid item xs={9} className={classes.container_grid}>
+        <MultipleBubbleList
+          key = {this.props.key}
+          indexValue = {this.props.indexValue}
+          textValue = {this.props.textValue}
+          fieldName = {this.props.fieldName}
+          label = {this.props.label}
+          name = {this.props.name}
+          onDataChange={this.handleChange}
+        />
+        </Grid>
+        <Grid item  xs={3}>
+          <Grid container direction="row" justify="flex-start"> 
+            <CPSwitch 
+              name='publish_switch'
+              checked={this.state.published}
+              onChange={this.handleChange}>
+            </CPSwitch>
+            <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+          </Grid>
+        </Grid>
+      </Grid>
+    }
+    else if (this.props.type == 'typing_bubble') {
+      comp = <Grid container direction="row" justify="flex-start"> 
+        <Grid item xs={12}>
+          <Typography>{this.props.label}</Typography>
+        </Grid>
+        <Grid item xs={9} className={classes.container_grid}>
+          <ChipsArray
+            key = {this.props.key}
+            indexValue = {this.props.indexValue}
+            textValue = {this.props.textValue}
+            fieldName = {this.props.fieldName}
+            label = {this.props.label}
+            name = {this.props.name}
+            onDataChange={this.handleChange}
+          />
+          </Grid>
+          <Grid item xs={3}>
+            <Grid container direction="row" justify="flex-start"> 
+              <CPSwitch 
+                name='publish_switch'
+                checked={this.state.published}
+                onChange={this.handleChange}>
+              </CPSwitch>
+              <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+            </Grid>
+          </Grid>
+        </Grid>
+    }
+
+    return comp
+  }
 
   render() {
     const { classes } = this.props
-    const inputProps = {
-      step: 300,
-    }
-
-    const SwitchItem = <CPSwitch 
-        name='publish_switch'
-        checked={this.state.published}
-        onChange={this.handleChange}>
-    </CPSwitch>  
-
-    const ValueItem = (this.props.longText) ? 
-    <Grid item xs={9} className={classes.container_grid}>
-      <TextField
-        ref={(ref) => this.text = ref}
-        id="outlined-multiline-flexible"
-        label={this.props.label}
-        fullWidth
-        multiline
-        rowsMax={4}
-        variant="outlined"
-        onChange={this.handleChange}
-        helperText={this.props.helper_text}
-        inputProps={inputProps}
-        value={this.state.value}/>
-      </Grid>
-      : (this.props.required) ? 
-      <Grid item xs={9}> <TextField
-      ref={(ref) => this.text = ref}
-      required
-      fullWidth
-      id="standard-basic"
-      label={this.props.label}
-      name={this.props.name}
-      onChange={this.handleChange}
-      margin="normal"
-      helperText={this.props.helper_text}
-      inputProps={inputProps}
-      value={this.state.value}
-    />
-    </Grid> : <Grid item xs={9}> <TextField
-      ref={(ref) => this.text = ref}
-      fullWidth
-      multiline
-      id="standard-basic"
-      label={this.props.label}
-      name={this.props.name}
-      rowsMax="10"
-      onChange={this.handleChange}
-      margin="normal"
-      helperText={this.props.helper_text}
-      inputProps={inputProps}
-      value={this.state.value}
-    />
-    </Grid>
+    const ValueItem = this.getComponent(classes)
 
     return (
-      <Grid container name={this.props.fieldName} value={this.props.indexValue}>
-        {ValueItem}
-        {SwitchItem}
-        <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+      <Grid container direction='row' name={this.props.fieldName} value={this.props.indexValue}>
+        {ValueItem}    
       </Grid>
     )
   }
