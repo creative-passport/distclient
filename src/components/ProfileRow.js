@@ -111,7 +111,7 @@ class ProfileRow extends Component {
             onChange={this.handleChange}
             margin="normal"
             helperText={this.props.helper_text}
-            inputProps={inputProps}
+            inputProps={this.inputProps}
             value={this.state.value} />
             </Grid>
             <Grid item  xs={3}>

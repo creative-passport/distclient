@@ -17,14 +17,14 @@ import * as api from '../scripts'
 const styles = theme => ({
   root: {
     display: 'flex',
-    margin: '0 auto',
+    margin: '-3em auto 0 auto',
     '& > *': {
       margin: '0 auto',
     },
   },
   large: {
-    width: theme.spacing(10),
-    height: theme.spacing(10),
+    width: theme.spacing(15),
+    height: theme.spacing(15),
   }
 })
 
@@ -85,21 +85,19 @@ class ProfileImage extends Component {
       const inputID = 'profile-photo'
 
       return (
-        <div style={{margin:'0 auto'}}>
-          <div className={classes.root}>
-            <input
-              id={inputID}
-              type="file"
-              accept='image/*'
-              style={{ display: "none" }}
-              onChange={this.updateImage}
-            />
-            <label htmlFor={inputID}>
-              <IconButton size='medium' component="span">
-                <Avatar src={this.state.imageSrc} alt={this.state.imageAltName} className={classes.large}/>
-              </IconButton>
-            </label>
-          </div>
+        <div className={classes.root}>
+          <input
+            id={inputID}
+            type="file"
+            accept='image/*'
+            style={{ display: "none" }}
+            onChange={this.updateImage}
+          />
+          <label htmlFor={inputID}>
+            <IconButton size='medium' component="span">
+              <Avatar src={this.state.imageSrc} alt={this.state.imageAltName} className={classes.large}/>
+            </IconButton>
+          </label>
         </div>
       ) 
     }

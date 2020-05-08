@@ -27,9 +27,7 @@ class UniqueList extends Component {
     this.state = {
       values: [],
       value: '',
-      name: '',
-      published: false,
-      publishers: {'Public Profile': false},
+      name: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.getOptions = this.getOptions.bind(this)
@@ -53,8 +51,6 @@ class UniqueList extends Component {
     var data = {
       'fieldName': this.props.fieldName,
       'value': name,
-      'published': this.state.published,
-      'publishers': this.state.publishers,
       'indexValue': this.props.indexValue
     }
     this.props.onDataChange(data)
@@ -67,23 +63,6 @@ class UniqueList extends Component {
       const key = this.props.fieldName
       this.setState({values: avs[key].values})
     }
-  }
-
-  updatePublishers(e) {
-    if (typeof e === "boolean") {
-        console.log("published")
-        this.setState({published: e})
-        data['published'] = e
-    }
-    else if (e.hasOwnProperty('target')) {
-      this.setState({value: e.target.value})
-      data['value'] = e.target.value
-    } else {
-      this.setState({publishers: e})
-      data['publishers'] = e
-    }
-
-    this.props.onDataChange(data)
   }
 
   render() {

@@ -40,7 +40,7 @@ const styles = theme => ({
     padding: theme.spacing(1)
   },
   cardcontent: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(3),
     alignItems: 'center',
     justifyContent: "center"
   },
@@ -77,7 +77,7 @@ const styles = theme => ({
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '50%',
-    margin: '0 auto'
+    margin: '-5em auto 0 auto'
   }
 });
 
@@ -150,6 +150,21 @@ class SideBar extends React.Component {
     const mobile = this.state.mobile
     const email = this.state.email
 
+    // <Fab size='small' className={classes.cardcontent} style={{boxShadow: 'none', marginLeft:'42%', marginTop:'1em', marginBottom:'1.5em'}}>
+    //         <CropFreeOutlinedIcon />
+    //       </Fab>
+
+      //     <Card className={classes.card}>
+      //   <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}></CardHeader>
+      //   <CardContent className={classes.cardcontent}>
+          
+      //   </CardContent>
+      // </Card>
+
+                // <Fab size='small' className={classes.saveDataButton}>
+          //   <SaveIcon onClick={this.saveData}/>
+          // </Fab>
+
     return (
       <Drawer
         className={classes.drawer}
@@ -163,24 +178,13 @@ class SideBar extends React.Component {
         <CardHeader className={classes.cardHeaderStyle}/>
         <ProfileImage className={classes.profileImage} walletId={this.state.walletId}/>
         <CardContent className={classes.cardcontent}>
-          <Typography component="h5" variant="h5" className={classes.realName}>{realName}</Typography>
+          <Typography component="h6" variant="h6" className={classes.realName}>Real Name</Typography>
+          <Typography component="h6" variant="h6" className={classes.dob}>{this.state.real_name}</Typography>
           <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
-          <Typography component="h5" variant="h5" className={classes.dob}>{this.state.date_of_birth}</Typography>
-          <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'1em', color:'grey', marginBottom:'0'}}> This information is not made public </Typography>
-          <Fab size='small' className={classes.cardcontent} style={{boxShadow: 'none', marginLeft:'42%', marginTop:'1em', marginBottom:'1.5em'}}>
-            <CropFreeOutlinedIcon />
-          </Fab>
-        </CardContent>
-        <Divider/>
-      </Card>
-      <Card className={classes.card}>
-        <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}></CardHeader>
-        <CardContent className={classes.cardcontent}>
+          <Typography component="h6" variant="h6" className={classes.dob}>{this.state.date_of_birth}</Typography>
           <TextField fullWidth label="Email" value={email} />
           <TextField fullWidth label="Mobile" value={mobile} onChange={this.changeMobile}/>
-          <Fab size='small' className={classes.saveDataButton}>
-            <SaveIcon onClick={this.saveData}/>
-          </Fab>
+          <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'2em', color:'grey', marginBottom:'1em'}}> This information is not made public </Typography>
         </CardContent>
       </Card>
     </Drawer>

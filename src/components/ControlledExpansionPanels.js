@@ -30,23 +30,22 @@ import './App.css'
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+    boxShadow: 'none',
+    borderRadius: 10,
   },
   public_switch: {
+    float: 'right',
     width: 36,
     height: 16,
     marginLeft: '2em'
   },
   expand_panel: {
     border: 0,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
+    borderRadius: 10,
     color: 'white',
     boxShadow: 'none',
     height: 35,
     backgroundColor: '#02d1a8'
-  },
-  expand_group: {
-    boxShadow: 'none',
   },
   expand_children: {
     backgroundColor: '#02d1a8',
@@ -71,7 +70,7 @@ export const ControlledExpansionPanels = ({all_profiles}) => {
     const artist_name = keyName
     let singleProfile
     if (isMobile) {
-      singleProfile =   <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
+      singleProfile =   <ExpansionPanel key={i} className={classes.root} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
         <ExpansionPanelSummary
           className={classes.expand_panel}
           expandIcon={<ExpandMoreIcon />}
@@ -94,7 +93,7 @@ export const ControlledExpansionPanels = ({all_profiles}) => {
     }
     else {
       singleProfile = 
-        <ExpansionPanel key={i} className={classes.expand_group} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
+        <ExpansionPanel key={i} className={classes.root} expanded={expanded === currentPanel} onChange={handleChange(currentPanel)}>
           <ExpansionPanelSummary
             className={classes.expand_panel}
             expandIcon={<ExpandMoreIcon />}

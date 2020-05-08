@@ -107,7 +107,7 @@ const styles = theme => ({
 
 // MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedEnd
 
-class ChipsArray extends Component {
+class ChipsWithSubFields extends Component {
 
   static propTypes = {
     key: PropTypes.number,
@@ -170,8 +170,6 @@ class ChipsArray extends Component {
   render() {
     const { classes } = this.props
 
-    const SwitchItem = <CPSwitch name='publish_switch' checked={this.state.published} onChange={this.handleChange} ></CPSwitch>
-
     const currentChips = this.state.chipData.map((data, index) => {
       return (
         <Chip
@@ -180,6 +178,9 @@ class ChipsArray extends Component {
           onDelete={this.handleDelete(data.key)}
           className={classes.chip}
         />
+        <TextField fullWidth label="Contact" value={data.contact_name} />
+        <TextField fullWidth label="Email" value={data.contact_email} />
+        <TextField fullWidth label="Note" value={data.contact_note} />
       )
     })
 
@@ -210,5 +211,5 @@ class ChipsArray extends Component {
   }
 }
 
-export default withStyles(styles)(ChipsArray)
+export default withStyles(styles)(ChipsWithSubFields)
 
