@@ -134,29 +134,29 @@ class ImageLoading extends Component {
     listFiles = async () => {
       const files = await Storage.list(this.props.artist_name)
 
-      var images = files.filter(function(file){
-        var extension = file.key.split('.')[1]
-        return (extension.indexOf('jpg') > -1 || extension.indexOf('png') > -1 || extension.indexOf('jpeg') > -1)
-      })
+      // var images = files.filter(function(file){
+      //   var extension = file.key.split('.')[1]
+      //   return (extension.indexOf('jpg') > -1 || extension.indexOf('png') > -1 || extension.indexOf('jpeg') > -1)
+      // })
 
-      let signedFiles = images.map(f => Storage.get(f.key))
-      signedFiles = await Promise.all(signedFiles)
+      // let signedFiles = images.map(f => Storage.get(f.key))
+      // signedFiles = await Promise.all(signedFiles)
 
-      var combinedImagesSource = {};
-      images.forEach((image, i) => combinedImagesSource[image.key] = signedFiles[i])
+      // var combinedImagesSource = {};
+      // images.forEach((image, i) => combinedImagesSource[image.key] = signedFiles[i])
 
-      if (Object.keys(combinedImagesSource).length > 0) {
-        var that = this
-        this.currentImages = Object.keys(combinedImagesSource).map(function(image, i) {
-          const imageId = "image" + i
-          const file = combinedImagesSource[image]
-          return (<SingleImageGroup key={i} id={imageId} src={file} alt={image} fileName={image} handleDelete={that.handleDelete} className={that.props.classes.large}/>)
-        })
-      }
-      else {
-        this.currentImages = []
-      }
-      this.setState({ files: signedFiles, combinedImagesSource: combinedImagesSource })
+      // if (Object.keys(combinedImagesSource).length > 0) {
+      //   var that = this
+      //   this.currentImages = Object.keys(combinedImagesSource).map(function(image, i) {
+      //     const imageId = "image" + i
+      //     const file = combinedImagesSource[image]
+      //     return (<SingleImageGroup key={i} id={imageId} src={file} alt={image} fileName={image} handleDelete={that.handleDelete} className={that.props.classes.large}/>)
+      //   })
+      // }
+      // else {
+      //   this.currentImages = []
+      // }
+      // this.setState({ files: signedFiles, combinedImagesSource: combinedImagesSource })
     }
 
     render() {
