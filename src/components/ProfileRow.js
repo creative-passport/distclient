@@ -4,11 +4,13 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
+
 import CPSwitch from './CPSwitch'
 import ChipsArray from './ChipsArray'
 import UniqueList from './UniqueList'
 import MultipleBubbleList from './MultipleBubbleList'
-import Typography from '@material-ui/core/Typography'
+import RepresentativesWithSubFields from './RepresentativesWithSubFields'
 
 import PublishMenu from './PublishMenu'
 
@@ -37,7 +39,7 @@ class ProfileRow extends Component {
     super(props);
     this.state = {
       published: false,
-      publishers: {'Who am I': false},
+      publishers: {'Public Profile': false, 'Universal': false, 'Streemliner': false},
       fieldName: '',
       value: ''
     }
@@ -72,12 +74,21 @@ class ProfileRow extends Component {
       'indexValue': this.props.indexValue
     }
 
-    if(e.type == 'typing_bubble') {
+    if(e.type === 'typing_bubble') {
       data = e
       this.setState({value: e.value})
     }
-    else if (e.type == 'multiple_bubble_list'){
+    else if (e.type === 'multiple_bubble_list'){
       data['value'] = e.value
+      this.setState({value: e.value})
+    }
+    else if (e.type === 'bubble_with_subfields') {
+      data['value'] = e.value
+      this.setState({value: e.value})
+    }
+    else if (e.type === 'single_text_with_subcategories') {
+      data['value'] = e.value
+      data['indexValue'] = parseInt(data['indexValue'])
       this.setState({value: e.value})
     }
     else if (typeof e === "boolean") {
@@ -98,7 +109,7 @@ class ProfileRow extends Component {
 
   getComponent(classes) {
     let comp
-    if (this.props.type == 'single_text') {
+    if (this.props.type === 'single_text') {
       if (this.props.required) {
         comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
           <Grid item xs={9}> <TextField
@@ -154,7 +165,7 @@ class ProfileRow extends Component {
           </Grid>
       }
     }
-    else if (this.props.type == 'long_text') {
+    else if (this.props.type === 'long_text') {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={9} className={classes.container_grid}>
           <TextField
@@ -182,7 +193,7 @@ class ProfileRow extends Component {
         </Grid>
       </Grid>
     }
-    else if (this.props.type == 'unique_list') {
+    else if (this.props.type === 'unique_list') {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
@@ -211,7 +222,7 @@ class ProfileRow extends Component {
         </Grid>
       </Grid>
     }
-    else if (this.props.type == 'multiple_bubble_list') {
+    else if (this.props.type === 'multiple_bubble_list') {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
@@ -240,7 +251,7 @@ class ProfileRow extends Component {
         </Grid>
       </Grid>
     }
-    else if (this.props.type == 'typing_bubble') {
+    else if (this.props.type === 'typing_bubble') {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
@@ -257,6 +268,35 @@ class ProfileRow extends Component {
             onDataChange={this.handleChange}
           />
           </Grid>
+          <Grid item xs={3}>
+            <Grid container direction="row" justify="flex-start"> 
+              <CPSwitch 
+                name='publish_switch'
+                checked={this.state.published}
+                onChange={this.handleChange}>
+              </CPSwitch>
+              <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
+            </Grid>
+          </Grid>
+        </Grid>
+    }
+    else if (this.props.type === 'single_text_with_subcategories') {
+      comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
+        <Grid item xs={12}>
+          <Typography>{this.props.label}</Typography>
+        </Grid>
+        <Grid item xs={9} className={classes.container_grid}>
+          <RepresentativesWithSubFields 
+            key = {this.props.key}
+            indexValue = {this.props.indexValue}
+            textValue = {this.props.textValue}
+            fieldName = {this.props.fieldName}
+            label = {this.props.label}
+            name = {this.props.name}
+            value = {this.state.value}
+            onDataChange={this.handleChange}
+        />
+        </Grid>
           <Grid item xs={3}>
             <Grid container direction="row" justify="flex-start"> 
               <CPSwitch 

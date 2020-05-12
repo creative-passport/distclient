@@ -62,7 +62,6 @@ const styles = theme => ({
     margin: 'auto 2em'
   },
   helptext: {
-    margin: 'auto',
     color: '#9e9e9e',
     alignSelf: 'center',
     textAlign: 'center',

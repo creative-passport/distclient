@@ -1,28 +1,16 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { isMobile } from 'react-device-detect'
 
-import { loadCSS } from 'fg-loadcss'
-import { withStyles, makeStyles } from '@material-ui/core/styles'
-import * as api from '../scripts'
-
+import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import InputBase from '@material-ui/core/InputBase'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import ImageLoading from './ImageLoading'
 
-import { isMobile } from 'react-device-detect'
-
-import Layout from './Layout'
 import Profile from './Profile'
-import MobileProfile from './MobileProfile'
-import CPButton from './CPButton'
 import { Switch } from 'antd'
-import { Auth } from 'aws-amplify'
 
 import 'antd/dist/antd.css'
 import './App.css'
@@ -32,20 +20,43 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     boxShadow: 'none',
     borderRadius: 10,
+    '& .MuiPaper-root & .MuiPaper-root:before & .MuiExpansionPanel-root:before': {
+      borderRadius: 10,
+      backgroundColor: 'transparent'
+    }, 
+    '& .MuiExpansionPanel-rounded': {
+      borderRadius: 10,
+    },
+    '& .MuiExpansionPanelDetails-root': {
+      borderRadius: 10,
+    }
+  },
+  heading: {
+    flexGrow: 1
   },
   public_switch: {
-    float: 'right',
+    margin: '0 0 0 auto',
     width: 36,
     height: 16,
-    marginLeft: '2em'
   },
   expand_panel: {
+    display: 'flex',
     border: 0,
     borderRadius: 10,
     color: 'white',
     boxShadow: 'none',
     height: 35,
-    backgroundColor: '#02d1a8'
+    backgroundColor: '#02d1a8',
+    '& .MuiPaper-root:before': {
+      borderRadius: 10,
+      backgroundColor: 'transparent'
+    }, 
+    '& .MuiExpansionPanel-rounded:before': {
+      borderRadius: 10,
+    },
+    '& .MuiExpansionPanelDetails-root': {
+      borderRadius: 10,
+    }
   },
   expand_children: {
     backgroundColor: '#02d1a8',
@@ -77,10 +88,9 @@ export const ControlledExpansionPanels = ({all_profiles}) => {
           aria-controls={ariaContent}
           id={panelId}
         >
-          <Typography className={classes.heading}>{artist_name}</Typography>
+          <Typography className={classes.heading} flexGrow={1}>{artist_name}</Typography>
           <FormControlLabel
             aria-label="Acknowledge"
-            className={classes.heading}
             onClick={event => event.stopPropagation()}
             onFocus={event => event.stopPropagation()}
             control={<Switch size="small" className={classes.public_switch}/>}
@@ -103,7 +113,6 @@ export const ControlledExpansionPanels = ({all_profiles}) => {
           <Typography className={classes.heading}>{artist_name}</Typography>
             <FormControlLabel
               aria-label="Acknowledge"
-              className={classes.heading}
               onClick={event => event.stopPropagation()}
               onFocus={event => event.stopPropagation()}
               control={<Switch size="small" className={classes.public_switch}/>}

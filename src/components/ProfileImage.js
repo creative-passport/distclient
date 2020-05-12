@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import Amplify, { Analytics, Storage } from 'aws-amplify'
-import { withAuthenticator, S3Album } from 'aws-amplify-react'
+import { Storage } from 'aws-amplify'
 
-import Grid from '@material-ui/core/Grid'
 import Avatar from '@material-ui/core/Avatar'
-import Fab from '@material-ui/core/Fab'
-import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
-import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
 

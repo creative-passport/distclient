@@ -1,25 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Fab from '@material-ui/core/Fab'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import { loadCSS } from 'fg-loadcss'
 import { withStyles } from '@material-ui/core/styles'
 import { red } from '@material-ui/core/colors'
 
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
-import TextField from '@material-ui/core/TextField'
+import Grid from '@material-ui/core/Grid'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import ImageLoading from './ImageLoading'
 import ProfileRow from './ProfileRow'
+import RepresentativesSection from './RepresentativesSection'
 import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
@@ -29,8 +24,7 @@ import {text_fields} from '../text_fields'
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-    zIndex: 100,
+    overflow: 'auto',
     margin: 0,
     '& .MuiExpansionPanel-root': {
       marginLeft: theme.spacing(2),
@@ -97,16 +91,6 @@ class Profile extends Component {
             console.log(error);
       })
 
-      // var streemlinerRoot = 'https://streemliner.com/app/proCP/contributor.php?u='
-      // var stlUsername = 'imogen%20heap'
-      // console.log(user.username)
-      // if(user.username === 'imogenheap') {
-      //   stlUsername = 'imogen%20heap'
-      // }
-      // else {
-      //   stlUsername = user.username.replace('_','%20')
-      // }
-      // this.setState({src: streemlinerRoot + stlUsername})
       this.setState({currentData: this.props.artist_data})
       this.getDataFields()
     }
@@ -116,7 +100,6 @@ class Profile extends Component {
 
       Object.keys(text_fields).map(item => {
         main_category_labels.push(text_fields[item].label)
-        var detailed_fields = text_fields[item].data_fields
       })
 
       this.setState({main_category_labels: main_category_labels})
@@ -124,7 +107,6 @@ class Profile extends Component {
 
     addData(event) {
       var currentData = this.state.currentData
-      var fieldName = event['fieldName']
 
       if ('fieldName' in event && event['fieldName'] !== undefined) {
         currentData[event['fieldName']] = event
@@ -156,7 +138,6 @@ class Profile extends Component {
       //         <div style={{width:'100%', height:'auto', overflow:'auto'}}>
       //           <Iframe source={this.state.src} style={{width:'100%', border: 'none', height:'600px', position:'relative'}}/>
       //         </div>
-
       const main_categories = Object.keys(text_fields).map((row, index) => {
         const panelId="profile-main-section"+{index}+"-header"
         var detailed_fields = text_fields[row].data_fields
@@ -165,7 +146,19 @@ class Profile extends Component {
         let actualKey = 0
         if (Object.keys(detailed_fields).length > 0) {
           subfields = Object.keys(detailed_fields).map(subfield => {
-            if (detailed_fields[subfield]['type'] === 'typing_bubble') {
+            if(subfield === 'list_of_representatives') {
+              let currentKey = actualKey
+              actualKey ++
+              return <RepresentativesSection
+                key={currentKey}
+                indexValue={currentKey}
+                name={subfield} 
+                data={detailed_fields[subfield]} 
+                artist_data={this.props.artist_data}
+                onDataChange={this.addData}
+              />
+            }
+            else if (detailed_fields[subfield]['type'] === 'typing_bubble') {
               let currentKey = actualKey
               actualKey ++
               return <ProfileRow
@@ -177,7 +170,7 @@ class Profile extends Component {
                 onDataChange={this.addData} 
                 type='typing_bubble'/>
             }
-            else if (detailed_fields[subfield]['type'] == 'multiple_bubble_list') {
+            else if (detailed_fields[subfield]['type'] === 'multiple_bubble_list') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
@@ -191,7 +184,7 @@ class Profile extends Component {
                 onDataChange={this.addData}
                 type='multiple_bubble_list'/>)
             }
-            else if (detailed_fields[subfield]['type'] == 'long_text') {
+            else if (detailed_fields[subfield]['type'] === 'long_text') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
@@ -207,7 +200,7 @@ class Profile extends Component {
                 longText={true}
                 type='long_text'/>)
             }
-            else if (detailed_fields[subfield]['type'] == 'single_text') {
+            else if (detailed_fields[subfield]['type'] === 'single_text') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
@@ -223,14 +216,14 @@ class Profile extends Component {
                 longText={false}
                 type='single_text'/>
             }
-            else if (detailed_fields[subfield]['type'] == 'unique_list') {
+            else if (detailed_fields[subfield]['type'] === 'unique_list') {
               let field = detailed_fields[subfield]
               let currentKey = actualKey
               actualKey ++
               return <ProfileRow
                 key={currentKey}
-                textValue={this.props.artist_data[subfield]}
                 indexValue={currentKey}
+                textValue={this.props.artist_data[subfield]}
                 fieldName={subfield}
                 label={field.label}
                 name={field.name}
@@ -254,7 +247,7 @@ class Profile extends Component {
 
       return (
         <Box className={classes.root} display="flex" flexWrap="wrap"> 
-          <Grid container direction="row" justify="center" alignItems="center" style={{marginRight: '2em'}}>
+          <Grid container direction="row" justify="center" alignItems="center" style={{marginRight: '2em', marginTop: '1em'}}>
             <ImageLoading artist_id={this.props.profile_id} artist_name={this.props.artist_name}/>
           </Grid>
           {main_categories}

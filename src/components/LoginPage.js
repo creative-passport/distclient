@@ -105,7 +105,8 @@ class LoginPage extends React.Component {
       super(props);
       this.state = {
         email: '',
-        password: ''
+        password: '',
+        error: ''
       }
     }
 
@@ -144,7 +145,7 @@ class LoginPage extends React.Component {
     }
 
     changePassword = (event) => {
-      this.setState({ password: event.target.value });
+      this.setState({ password: event.target.value, error: '' });
     }
 
     componentWillUnmount = () => {
@@ -152,6 +153,11 @@ class LoginPage extends React.Component {
 
     render() {
       const { classes, history } = this.props
+
+      var error
+      if(this.state.error.hasOwnProperty('message')){
+        error = this.state.error.message
+      } 
 
       return (
         <div className={classes.root}>
@@ -188,9 +194,9 @@ class LoginPage extends React.Component {
               <Divider/>
                 <div style={{margin:'0 auto'}}>
                   <Link className={classes.extraLinks} to="/register">New User</Link>
-                  <Link className={classes.extraLinks2} to="/reset">Reset Password</Link>
+                  <Link className={classes.extraLinks2} to="/reset_password">Reset Password</Link>
                 </div>
-                <div>{this.props.error}</div>
+                <div style={{margin:'5px auto'}}> {error} </div>
             </Grid>
           </Paper>
         </div>

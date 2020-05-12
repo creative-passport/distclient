@@ -19,6 +19,7 @@ import CPButton from './CPButton'
 import store from '../reducers/store'
 
 import logo from '../logo.png'
+import cp_mail_icon from '../images/cp_mail_icon.svg'
 
 const styles = theme => ({
   root: {
@@ -88,6 +89,10 @@ const styles = theme => ({
     verticalAlign: 'middle',
     width: '10em',
     borderRadius: '0.5em'
+  },
+  mailIcon: {
+    maxWidth: '100px',
+    margin: '0 25%'
   }
 })
 
@@ -169,7 +174,6 @@ class ConfirmPage extends React.Component {
   }
 
   render() {
-    const attributes = this.attributes
     const { classes } = this.props
 
     return (
@@ -184,6 +188,9 @@ class ConfirmPage extends React.Component {
               <Card style={{margin: '0 auto', border: 'none', boxShadow: 'none'}}>
               <div>
                 <Typography component='h5' variant='h5'> We have sent you an email! </Typography>
+                <div style={{margin: '0 auto', width: '130px'}}>
+                  <img src={cp_mail_icon} style={{verticalAlign: 'middle',}} className="mailIcon" alt="mail" />
+                </div>
                 <Typography variant='body1'> Please complete your registration by entering your code below </Typography>
                 <form onSubmit={this.onSubmit}>
                     <TextField

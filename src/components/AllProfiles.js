@@ -1,35 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-
 import { loadCSS } from 'fg-loadcss'
-import { withStyles, makeStyles } from '@material-ui/core/styles'
-import * as api from '../scripts'
+import { isMobile } from 'react-device-detect'
+import { Auth } from 'aws-amplify'
 
+import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import InputBase from '@material-ui/core/InputBase'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-
-import { isMobile } from 'react-device-detect'
+import Fab from '@material-ui/core/Fab'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import Layout from './Layout'
-import Profile from './Profile'
-import MobileProfile from './MobileProfile'
-import CPButton from './CPButton'
-import Fab from '@material-ui/core/Fab'
-import IconButton from '@material-ui/core/IconButton'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
-import { Switch } from 'antd'
-import { Auth } from 'aws-amplify'
 import { ControlledExpansionPanels } from './ControlledExpansionPanels'
+import CPButton from './CPButton'
+import * as api from '../scripts'
 
-import 'antd/dist/antd.css'
 import './App.css'
-
 
 const styles = theme => ({
   root: {
@@ -173,8 +160,8 @@ class AllProfiles extends Component {
             </Grid>
           </Grid>
           { this.state.show_add_profile ? 
-            <Grid container spacing={1} direction="row" justify="flex-end" alignItems="center">
-              <Grid item xs={8}>
+            <Grid container spacing={1} direction="row" justify="stretch" alignItems="center">
+              <Grid item xs={10}>
                 <InputBase
                   fullWidth
                   className={classes.input}
@@ -183,8 +170,8 @@ class AllProfiles extends Component {
                   onChange={this.handleNewProfileName}
                 />
               </Grid>
-              <Grid item xs>
-                <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'30px', height:'30px', marginRight: '5%'}}> Add </CPButton>
+              <Grid item>
+                <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'100%', height:'30px', marginLeft: '16px'}}> Add </CPButton>
               </Grid>
             </Grid>
           : null }

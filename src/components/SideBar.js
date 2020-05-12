@@ -4,32 +4,32 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 
 import Drawer from '@material-ui/core/Drawer'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Divider from '@material-ui/core/Divider'
 import TextField from '@material-ui/core/TextField'
-import Fab from '@material-ui/core/Fab'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
-import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
-import SaveIcon from '@material-ui/icons/Save'
-import CropFreeOutlinedIcon from '@material-ui/icons/CropFreeOutlined'
 
 import * as api from '../scripts'
 import { Auth } from 'aws-amplify'
+import './App.css'
 
 import ProfileImage from './ProfileImage'
 
+const drawerWidth = 310;
+
 const styles = theme => ({
   drawer: {
-    marginRight: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    padding: theme.spacing(0),
     position: 'relative',
     background: 'none',
-    border: 'none'
+    border: 'none',
+    width: drawerWidth,
+    flexShrink: 0,
+    margin: '0 auto',
+    '& .MuiDrawer-paper': {
+      position: 'relative'
+    }
   },
   realName: {
     textAlign: 'center',
@@ -42,12 +42,47 @@ const styles = theme => ({
   cardcontent: {
     padding: theme.spacing(3),
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: "center",
+    '& .MuiTextField-root': {
+      marginTop: theme.spacing(3),
+      width: '32ch',
+    },
+    '& .MuiInputBase-input': {
+      paddingTop: '1em',
+      paddingTop: theme.spacing(1),
+      paddingLeft: theme.spacing(1)
+    },
+    '& .MuiInputLabel-shrink': {
+      transform: 'none',
+      position: 'absolute',
+      top: '5pt'
+    },
+    '& .MuiInput-underline:after': {
+      borderBottom: 'none'
+    },
+    '& .MuiInput-underline:before': {
+      marginTop: '2em',
+      borderRadius: '5em',
+      transition: 'none'
+    },
+    '& .MuiFormLabel-root': {
+      fontSize: '10pt',
+      position: 'absolute',
+      top: '-10pt'
+    },
+    '& .MuiTypography-root': {
+      margin: theme.spacing(2),
+      color: '#9e9e9e',
+      alignItems:'center',
+      alignSelf: 'center',
+      textAlign: 'center'
+    }
   },
   card: {
     maxWidth: 345,
     root: { padding: 0},
-    borderRadius: '5%',
+    borderRadius: '20px',
+    boxShadow: 'none',
     marginBottom: '1em'
   },
   cardHeaderStyle: {
@@ -150,40 +185,21 @@ class SideBar extends React.Component {
     const mobile = this.state.mobile
     const email = this.state.email
 
-    // <Fab size='small' className={classes.cardcontent} style={{boxShadow: 'none', marginLeft:'42%', marginTop:'1em', marginBottom:'1.5em'}}>
-    //         <CropFreeOutlinedIcon />
-    //       </Fab>
-
-      //     <Card className={classes.card}>
-      //   <CardHeader title='CONTACT' className={classes.secondCardHeaderStyle}></CardHeader>
-      //   <CardContent className={classes.cardcontent}>
-          
-      //   </CardContent>
-      // </Card>
-
-                // <Fab size='small' className={classes.saveDataButton}>
-          //   <SaveIcon onClick={this.saveData}/>
-          // </Fab>
-
     return (
       <Drawer
         className={classes.drawer}
         variant="permanent"
-        classes={{
-          paper: classes.drawer,
-        }}
       >
-      <CssBaseline />
       <Card className={classes.card}>
         <CardHeader className={classes.cardHeaderStyle}/>
         <ProfileImage className={classes.profileImage} walletId={this.state.walletId}/>
         <CardContent className={classes.cardcontent}>
-          <Typography component="h6" variant="h6" className={classes.realName}>Real Name</Typography>
-          <Typography component="h6" variant="h6" className={classes.dob}>{this.state.real_name}</Typography>
-          <Typography component="h6" variant="h6" className={classes.dob}>Date of Birth</Typography>
-          <Typography component="h6" variant="h6" className={classes.dob}>{this.state.date_of_birth}</Typography>
-          <TextField fullWidth label="Email" value={email} />
-          <TextField fullWidth label="Mobile" value={mobile} onChange={this.changeMobile}/>
+          <Typography component="h6" variant="h6">Real Name</Typography>
+          <Typography component="h6" variant="h6">{this.state.real_name}</Typography>
+          <Typography component="h6" variant="h6">Date of Birth</Typography>
+          <Typography component="h6" variant="h6">{this.state.date_of_birth}</Typography>
+          <TextField label="Email" value={email} />
+          <TextField label="Mobile" value={mobile} />
           <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'2em', color:'grey', marginBottom:'1em'}}> This information is not made public </Typography>
         </CardContent>
       </Card>

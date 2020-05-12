@@ -11,6 +11,7 @@ import RegisterPage from './RegisterPage'
 import LoginPage from './LoginPage'
 import ConfirmPage from './ConfirmPage'
 import ChangePasswordPage from './ChangePasswordPage'
+import PasswordResetPage from './PasswordResetPage'
 
 import Amplify, { Storage } from 'aws-amplify'
 
@@ -18,6 +19,7 @@ import awsmobile from '../aws-exports'
 import store from '../reducers/store'
 
 import './App.css'
+import 'antd/dist/antd.css'
 
 Amplify.configure(awsmobile)
 
@@ -38,6 +40,7 @@ class App extends Component {
             <Route exact path="/settings" component={Settings} />
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/confirm" component={ConfirmPage} />
+            <Route exact path="/reset_password" component={PasswordResetPage} />
             <Route exact path="*" component={PageNotFound} />
           </Switch>
       </Router>

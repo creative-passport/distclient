@@ -3,19 +3,12 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl'
-import TextField from '@material-ui/core/TextField'
 import Chip from '@material-ui/core/Chip'
-import Paper from '@material-ui/core/Paper'
-import TagFacesIcon from '@material-ui/icons/TagFaces'
-import Typography from '@material-ui/core/Typography'
 import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 
-import { TextFieldWithAddButton } from './TextFieldWithAddButton'
-import CPSwitch from './CPSwitch'
 
 const styles = theme => ({
   root: {
@@ -32,8 +25,6 @@ const styles = theme => ({
     backgroundColor: 'white',
     marginRight: theme.spacing(0.5),
     height: '22px',
-    // paddingTop: theme.spacing(0.1),
-    // paddingBottom: theme.spacing(0.1),
     fontSize: '8pt',
     '& .MuiChip-root': {
       height: '28px'
@@ -105,7 +96,6 @@ const styles = theme => ({
   }
 })
 
-// MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedEnd
 
 class ChipsArray extends Component {
 
@@ -169,8 +159,6 @@ class ChipsArray extends Component {
 
   render() {
     const { classes } = this.props
-
-    const SwitchItem = <CPSwitch name='publish_switch' checked={this.state.published} onChange={this.handleChange} ></CPSwitch>
 
     const currentChips = this.state.chipData.map((data, index) => {
       return (
