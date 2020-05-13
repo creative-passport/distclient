@@ -24,7 +24,14 @@ const styles = theme => ({
     marginTop: theme.spacing(0.5),
   },
   formControl: {
-    width: '100%',
+    width: '100%'
+  },
+  menu: {
+    opacity: 0,
+    '& .MuiMenu-paper .MuiPopover-paper': {
+      opacity: 0,
+      backgroundColor: 'red'
+    }
   }
 })
 

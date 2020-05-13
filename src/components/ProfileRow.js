@@ -45,6 +45,7 @@ class ProfileRow extends Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
+    this.handlePublishing = this.handlePublishing.bind(this)
 
     this.inputProps = {
       step: 300,
@@ -91,11 +92,6 @@ class ProfileRow extends Component {
       data['indexValue'] = parseInt(data['indexValue'])
       this.setState({value: e.value})
     }
-    else if (typeof e === "boolean") {
-        this.setState({published: e})
-        data['published'] = e
-        data['value'] = this.state.value
-    }
     else if (e.hasOwnProperty('target')) {
       this.setState({value: e.target.value})
       data['value'] = e.target.value
@@ -107,12 +103,27 @@ class ProfileRow extends Component {
     this.props.onDataChange(data)
   }
 
+  handlePublishing(e) {
+    this.setState({published: e})
+
+    var data = {
+      'fieldName': this.props.fieldName,
+      'type': e.type,
+      'value': this.state.value,
+      'published': e,
+      'publishers': this.state.publishers,
+      'indexValue': this.props.indexValue
+    }
+
+    this.props.onDataChange(data)
+  }
+
   getComponent(classes) {
     let comp
     if (this.props.type === 'single_text') {
       if (this.props.required) {
         comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
-          <Grid item xs={9}> <TextField
+          <Grid item xs={10}> <TextField
             ref={(ref) => this.text = ref}
             required
             fullWidth
@@ -125,12 +136,12 @@ class ProfileRow extends Component {
             inputProps={this.inputProps}
             value={this.state.value} />
             </Grid>
-            <Grid item  xs={3}>
+            <Grid item  xs={2}>
               <Grid container direction="row" justify="flex-start"> 
                 <CPSwitch 
                   name='publish_switch'
                   checked={this.state.published}
-                  onChange={this.handleChange}>
+                  onChange={this.handlePublishing}>
                 </CPSwitch>
                 <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
               </Grid>
@@ -138,7 +149,7 @@ class ProfileRow extends Component {
           </Grid> 
       } else {
         comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
-          <Grid item xs={9}> <TextField
+          <Grid item xs={10}> <TextField
             ref={(ref) => this.text = ref}
             fullWidth
             multiline
@@ -152,12 +163,12 @@ class ProfileRow extends Component {
             inputProps={this.inputProps}
             value={this.state.value}/>
             </Grid>
-            <Grid item  xs={3}>
+            <Grid item  xs={2}>
               <Grid container direction="row" justify="flex-start"> 
                 <CPSwitch 
                   name='publish_switch'
                   checked={this.state.published}
-                  onChange={this.handleChange}>
+                  onChange={this.handlePublishing}>
                 </CPSwitch>
                 <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
               </Grid>
@@ -167,7 +178,7 @@ class ProfileRow extends Component {
     }
     else if (this.props.type === 'long_text') {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
-        <Grid item xs={9} className={classes.container_grid}>
+        <Grid item xs={10} className={classes.container_grid}>
           <TextField
             ref={(ref) => this.text = ref}
             id="outlined-multiline-flexible"
@@ -181,12 +192,12 @@ class ProfileRow extends Component {
             inputProps={this.inputProps}
             value={this.state.value}/>
           </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
             <Grid container direction="row" justify="flex-start"> 
               <CPSwitch 
                 name='publish_switch'
                 checked={this.state.published}
-                onChange={this.handleChange}>
+                onChange={this.handlePublishing}>
               </CPSwitch>
               <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
             </Grid>
@@ -198,7 +209,7 @@ class ProfileRow extends Component {
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
-        <Grid item xs={9} className={classes.container_grid}>
+        <Grid item xs={10} className={classes.container_grid}>
           <UniqueList
             key = {this.props.key}
             indexValue = {this.props.indexValue}
@@ -210,12 +221,12 @@ class ProfileRow extends Component {
             onDataChange={this.handleChange}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Grid container direction="row" justify="flex-start"> 
             <CPSwitch 
               name='publish_switch'
               checked={this.state.published}
-              onChange={this.handleChange}>
+              onChange={this.handlePublishing}>
             </CPSwitch>
             <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
           </Grid>
@@ -227,7 +238,7 @@ class ProfileRow extends Component {
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
-        <Grid item xs={9} className={classes.container_grid}>
+        <Grid item xs={10} className={classes.container_grid}>
         <MultipleBubbleList
           key = {this.props.key}
           indexValue = {this.props.indexValue}
@@ -239,12 +250,12 @@ class ProfileRow extends Component {
           onDataChange={this.handleChange}
         />
         </Grid>
-        <Grid item  xs={3}>
+        <Grid item  xs={2}>
           <Grid container direction="row" justify="flex-start"> 
             <CPSwitch 
               name='publish_switch'
               checked={this.state.published}
-              onChange={this.handleChange}>
+              onChange={this.handlePublishing}>
             </CPSwitch>
             <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
           </Grid>
@@ -256,7 +267,7 @@ class ProfileRow extends Component {
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
-        <Grid item xs={9} className={classes.container_grid}>
+        <Grid item xs={10} className={classes.container_grid}>
           <ChipsArray
             key = {this.props.key}
             indexValue = {this.props.indexValue}
@@ -268,12 +279,12 @@ class ProfileRow extends Component {
             onDataChange={this.handleChange}
           />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <Grid container direction="row" justify="flex-start"> 
               <CPSwitch 
                 name='publish_switch'
                 checked={this.state.published}
-                onChange={this.handleChange}>
+                onChange={this.handlePublishing}>
               </CPSwitch>
               <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
             </Grid>
@@ -285,7 +296,7 @@ class ProfileRow extends Component {
         <Grid item xs={12}>
           <Typography>{this.props.label}</Typography>
         </Grid>
-        <Grid item xs={9} className={classes.container_grid}>
+        <Grid item xs={10} className={classes.container_grid}>
           <RepresentativesWithSubFields 
             key = {this.props.key}
             indexValue = {this.props.indexValue}
@@ -297,12 +308,12 @@ class ProfileRow extends Component {
             onDataChange={this.handleChange}
         />
         </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <Grid container direction="row" justify="flex-start"> 
               <CPSwitch 
                 name='publish_switch'
                 checked={this.state.published}
-                onChange={this.handleChange}>
+                onChange={this.handlePublishing}>
               </CPSwitch>
               <PublishMenu onCheckedChange={this.handleChange} publishers={this.state.publishers}/>
             </Grid>

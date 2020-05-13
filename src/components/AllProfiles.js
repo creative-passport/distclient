@@ -119,6 +119,9 @@ class AllProfiles extends Component {
 
         currentProfiles['artist_profiles'][artist_name] = {'artist_name': artist_name}
         this.setState({profiles: currentProfiles})
+
+        currentProfiles['email'] = this.state.email
+        api.updateProfileData(this.state.walletId, currentProfiles, this.state.jwtToken)
       }
     }
 

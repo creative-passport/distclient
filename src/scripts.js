@@ -3,12 +3,10 @@ import awsmobile from './aws-exports'
 import { Storage } from 'aws-amplify'
 
 const proxyurl = "https://cors-anywhere.herokuapp.com/"
-const urldev = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
-const urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
-// const bucket = 'amplify-cp-dev-devtwo-214019-deployment'
+const urldev = proxyurl + 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
+const urlprod = proxyurl + 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
 
-
-let dev = false
+let dev = true
 let url
 if (dev) {
     url = urldev
@@ -19,7 +17,7 @@ else {
 
 export async function getProfileData(walletId, artist_name=null) {
     const querystring = '?PassportDataID=' + walletId
-    return axios.get(proxyurl + url + 'getpassportdata' + querystring)
+    return axios.get(url + 'getpassportdata' + querystring)
 }
 
 export function updateProfileData(walletId, data, jwtToken) {
@@ -29,7 +27,7 @@ export function updateProfileData(walletId, data, jwtToken) {
         'Authorization': jwtToken
     }
 
-    axios.post(proxyurl + url + 'storepassportdata',
+    axios.post(url + 'storepassportdata',
         {"PassportId": walletId, "PassportData": data},
         {headers: headers}
     ).then(

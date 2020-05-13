@@ -6,9 +6,8 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
 import Checkbox from '@material-ui/core/Checkbox'
-import ArrowRightAltOutlinedIcon from '@material-ui/icons/ArrowRightAltOutlined'
-
-import CPButton from './CPButton'
+import ShareRoundedIcon from '@material-ui/icons/ShareRounded'
+import Fab from '@material-ui/core/Fab'
 
 
 const styles = theme => ({
@@ -18,15 +17,13 @@ const styles = theme => ({
   },
   button: {
     border: 'none',
-    padding: 0,
     backgroundColor: '#02d1a8',
     color: '#fff',
     textAlign: 'center',
-    verticalAlign: 'middle',
-    borderRadius: 10,
     boxShadow: 'none',
     marginBottom:'-1.4em',
-    marginLeft: '-1em'
+    height: '25px',
+    width: '35px'
   }
 })
 
@@ -38,8 +35,7 @@ class PublishMenu extends React.Component  {
     super(props)
     this.state = {
       anchorEl: null,
-      checkedItems: {},
-      publishers: {}
+      checkedItems: {'Public Profile': false, 'Universal': false, 'Streemliner': false},
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -48,10 +44,7 @@ class PublishMenu extends React.Component  {
   }
 
   componentDidMount() {
-    if(Object.keys(this.props.publishers).length === 0 && this.props.publishers.constructor === Object) {
-      this.setState({checkedItems: {'Public Profile': false, 'Universal': false, 'Streemliner': false}})
-    }
-    else {
+    if(Object.keys(this.props.publishers).length > 0 && this.props.publishers.constructor === Object) {
       this.setState({checkedItems: this.props.publishers})
     }
   }
@@ -78,26 +71,20 @@ class PublishMenu extends React.Component  {
   render() {
 
     const { classes } = this.props
-    const menuItems = Object.keys(this.props.publishers).map((publisher, i) => {
+
+    const menuItems = Object.keys(this.state.checkedItems).map((publisher, i) => {
       return <MenuItem key={i}>
-        <Checkbox label={publisher} name={publisher} onChange={this.handleChange} checked={this.props.publishers[publisher]}/>{publisher}
+        <Checkbox label={publisher} name={publisher} onChange={this.handleChange} checked={this.state.checkedItems[publisher]}/>{publisher}
       </MenuItem>
     })
-
-    const smallButton = <CPButton
-      variant="contained"
-      aria-controls="customized-menu"
-      aria-haspopup="true"
-      className={classes.button}
-      onClick={this.handleClick}>
-      <ArrowRightAltOutlinedIcon/>
-    </CPButton>
 
     const checkedValue = Boolean(this.state.anchorEl)
 
     return (
       <Grid item xs={1} className={classes.root}>
-      {smallButton}
+      <Fab size='small' component="span" className={classes.button} onClick={this.handleClick}>
+        <ShareRoundedIcon fontSize='small'/>
+      </Fab>
       <Menu
         id="customized-menu"
         anchorEl={this.state.anchorEl}
