@@ -6,7 +6,6 @@ COPY package*.json ./
 
 RUN npm install
 RUN npm ci -qy
-RUN npm i aws-sdk
 RUN npm install -g @aws-amplify/cli
 
 COPY . .

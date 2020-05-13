@@ -65,10 +65,9 @@ class SingleImageGroup extends Component {
             vertical: 'top',
             horizontal: 'right',
           }}
-          badgeContent={<IconButton aria-label="delete" size="small" onClick={this.handleDelete} style={{backgroundColor: '#fff'}}><CloseIcon fontSize="small"/></IconButton>}
-        >
+          badgeContent={<IconButton aria-label="delete" size="small" onClick={this.handleDelete} style={{backgroundColor: '#fff'}}><CloseIcon fontSize="small"/></IconButton>}>
           <Avatar id={this.props.id} src={this.props.src} alt={this.props.alt} className={this.props.className} style={{width: '3em', height: '3em'}}/>
-        </Badge>
+        // </Badge>
       )
     }
 }
@@ -95,10 +94,11 @@ class ImageLoading extends Component {
       this.listFiles = this.listFiles.bind(this)
     }
 
-    async componentDidMount() {
+    componentDidMount() {
       api.SetS3Config("cp-dev08c815b6f3ca4c47a72f5018de38d419devtwo-devtwo", "private")
-      this.createFolder()
-      this.listFiles()
+      this.createFolder().then(
+        this.listFiles()
+      )
     }
 
     addImage(e) {
@@ -110,7 +110,7 @@ class ImageLoading extends Component {
       .catch(err => console.log(err))
     }
 
-    createFolder() {
+    createFolder = async () => {
       var today = new Date()
       var f = new File(["1"], "mock_file_for_folder.txt", {type: "text/plain"})
       Storage.put(this.props.artist_name +'/'+ f.name, f)
@@ -122,41 +122,40 @@ class ImageLoading extends Component {
       Storage.remove(fileName)
       .then (() => {
         console.log("Removed file "+ fileName)
-        // var newImages = oldImages.pop(file)
-        // this.setState({images: newImages})
         this.listFiles()
       })
       .catch(err => console.log(err))
-      //const images = this.state.images.filter(image => image.id !== item);
-      //this.setState({ images: images });
+    }
+
+    async getFile(name) {
+      const access = { level: "private" };
+      let fileUrl = await Storage.get(name, access);
+      return fileUrl
     }
     
-    listFiles = async () => {
-      const files = await Storage.list(this.props.artist_name)
+    listFiles() {
+      Storage.list(this.props.artist_name).then(files => {
+        let images = []
 
-      // var images = files.filter(function(file){
-      //   var extension = file.key.split('.')[1]
-      //   return (extension.indexOf('jpg') > -1 || extension.indexOf('png') > -1 || extension.indexOf('jpeg') > -1)
-      // })
+        files.map(f => {
+          var extension = f.key.split('.')[1]
+          if (extension.indexOf('jpg') > -1 || extension.indexOf('png') > -1 || extension.indexOf('jpeg') > -1) {
+            images.push(f)
+          }
+        })
 
-      // let signedFiles = images.map(f => Storage.get(f.key))
-      // signedFiles = await Promise.all(signedFiles)
+        var combinedImagesSource = {}
+        if (images.length > 0) {
+          images.map(image => {
+            this.getFile(image.key).then(path => {
+              combinedImagesSource[image.key] = path
+              this.setState({ combinedImagesSource: combinedImagesSource })
+            }).catch(error => console.log(error))
+          })
+        }
 
-      // var combinedImagesSource = {};
-      // images.forEach((image, i) => combinedImagesSource[image.key] = signedFiles[i])
-
-      // if (Object.keys(combinedImagesSource).length > 0) {
-      //   var that = this
-      //   this.currentImages = Object.keys(combinedImagesSource).map(function(image, i) {
-      //     const imageId = "image" + i
-      //     const file = combinedImagesSource[image]
-      //     return (<SingleImageGroup key={i} id={imageId} src={file} alt={image} fileName={image} handleDelete={that.handleDelete} className={that.props.classes.large}/>)
-      //   })
-      // }
-      // else {
-      //   this.currentImages = []
-      // }
-      // this.setState({ files: signedFiles, combinedImagesSource: combinedImagesSource })
+        this.setState({ combinedImagesSource: combinedImagesSource })
+      })
     }
 
     render() {
@@ -164,10 +163,25 @@ class ImageLoading extends Component {
 
       const inputID = "raised-button-file-"+this.props.artist_id
 
+      var that = this
+      var imageSources = this.state.combinedImagesSource
+      var currentImages = Object.keys(this.state.combinedImagesSource).map(function(image, i) {
+        const imageId = "image" + i
+        const file = imageSources[image]
+        return (<SingleImageGroup 
+            key={i} 
+            id={imageId}
+            src={file} 
+            alt={image} 
+            fileName={image} 
+            handleDelete={that.handleDelete} 
+            className={classes.large}/>)
+      })
+
       return (
         <Grid container spacing={2} direction="row" justify="flex-end" alignItems="center">
             <div className={classes.root}>
-              {this.currentImages}
+              {currentImages}
             </div>
 
             <input

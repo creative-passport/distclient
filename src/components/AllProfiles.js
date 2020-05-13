@@ -160,7 +160,7 @@ class AllProfiles extends Component {
             </Grid>
           </Grid>
           { this.state.show_add_profile ? 
-            <Grid container spacing={1} direction="row" justify="stretch" alignItems="center">
+            <Grid container spacing={1} direction="row" alignItems="center">
               <Grid item xs={10}>
                 <InputBase
                   fullWidth
