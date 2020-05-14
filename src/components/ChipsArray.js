@@ -111,7 +111,7 @@ class ChipsArray extends Component {
     this.state = {
       fieldName: '',
       chipData : [],
-      newChipText: null
+      newChipText: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -147,7 +147,7 @@ class ChipsArray extends Component {
     var oldChips = this.state.chipData
 
     oldChips.push({key: oldChips.length, label: this.state.newChipText, name: this.state.newChipText})
-    this.setState({chipData: oldChips})
+    this.setState({chipData: oldChips, newChipText: ''})
 
     var data = {
       'type': 'typing_bubble',
@@ -176,8 +176,9 @@ class ChipsArray extends Component {
       <FormControl className={classes.text_field_add_chip}>
         <Input
           id="adornment-add"
-          defaultValue="Add New"
+          placeholder="Add New"
           onChange={this.handleChange}
+          value={this.state.newChipText}
           endAdornment={
             <InputAdornment position="end">
               <IconButton

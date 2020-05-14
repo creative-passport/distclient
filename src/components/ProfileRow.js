@@ -17,7 +17,6 @@ import PublishMenu from './PublishMenu'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    zIndex: 2500,
     marginTop: theme.spacing(2)
   },
   container_grid: {

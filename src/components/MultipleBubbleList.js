@@ -13,25 +13,39 @@ import Chip from '@material-ui/core/Chip'
 
 import { avs } from '../text_fields'
 
-const styles = theme => ({
-  formControl: {
-    minWidth: 300,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-})
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 40;
+const ITEM_PADDING_TOP = 6;
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
+      backgroundColor: 'white'
     },
   },
 };
+
+const styles = theme => ({
+  grid: {
+    zIndex: 1000
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 250,
+    zIndex: 1000
+  },
+  selectMenu: {
+    zIndex: 1000,
+    width: 250,
+    maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+    '& .Mui-selected': {
+      backgroundColor: '#d9fffc'
+    }
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+})
 
 class MultipleBubbleList extends Component {
 
@@ -92,36 +106,36 @@ class MultipleBubbleList extends Component {
     if (this.props.value != null) {
       result = <Grid container name={this.props.fieldName}>
         <FormControl className={classes.formControl}>
-        <InputLabel id="demo-mutiple-chip-label">{this.props.label}</InputLabel>
-        <Select
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
-          multiple
-          name={this.state.name}
-          value={this.state.selected_values}
-          onChange={this.handleChange}
-          input={<Input id="select-multiple-chip" />}
-          renderValue = {(selected) => (
-            <div className={classes.chips}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} className={classes.chip} />
-              ))}
-            </div>
-          )}
-          MenuProps={MenuProps}
-        >
-          {this.state.values.map((name) => (
-            <MenuItem key={name} value={name}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Grid>
+          <InputLabel id="demo-mutiple-chip-label">{this.props.label}</InputLabel>
+          <Select
+            labelId="demo-mutiple-chip-label"
+            id="demo-mutiple-chip"
+            multiple
+            name={this.state.name}
+            value={this.state.selected_values}
+            onChange={this.handleChange}
+            input={<Input id="select-multiple-chip" />}
+            renderValue = {(selected) => (
+              <div className={classes.chips}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {this.state.values.map((name) => (
+              <MenuItem className={classes.selectMenu} key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
     }
 
     return (
-    <div>
+    <div className={classes.grid}>
       { result }
     </div>
     )

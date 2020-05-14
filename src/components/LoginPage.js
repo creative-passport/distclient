@@ -169,12 +169,12 @@ class LoginPage extends React.Component {
                   <span className={classes.title}> THE CREATIVE PASSPORT</span>
                 </div>
                   <form className={classes.inputForm} onSubmit={this.onSubmit}>
-                    <Typography align="center" variant="body1"> Login to the Creative Passport</Typography>
+                    <Typography align="center" variant="body1"> LOGIN TO THE CREATIVE PASSPORT </Typography>
                     <TextField
                       required
                       fullWidth
                       value={this.state.email}
-                      label='email'
+                      label='EMAIL'
                       name='email'
                       onChange={this.changeEmail}
                       margin="normal"
@@ -183,11 +183,10 @@ class LoginPage extends React.Component {
                       required
                       fullWidth
                       type="password"
-                      label='password'
+                      label='PASSWORD'
                       name='password'
                       onChange={this.changePassword}
                       margin="normal"
-                      placeholder="Password"
                     />
                   </form>
                   <CPButton fullWidth className={classes.submitButton} onClick={this.onSubmit}>Sign in</CPButton>
