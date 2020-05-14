@@ -4,7 +4,7 @@ import { Storage } from 'aws-amplify'
 
 const proxyurl = "https://cors-anywhere.herokuapp.com/"
 const urldev = proxyurl + 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
-const urlprod = proxyurl + 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
+const urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
 
 let dev = true
 let url
