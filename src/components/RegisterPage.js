@@ -144,6 +144,7 @@ class RegisterPage extends React.Component {
     }
 
     changePassword = (event) => {
+      this.setState({'error': ''})
       this.setState({ password: event.target.value });
     }
 
@@ -158,6 +159,7 @@ class RegisterPage extends React.Component {
     }
 
     changeEmail = (event) => {
+      this.setState({'error': ''})
       this.setState({ email: event.target.value });
     }
 
@@ -174,12 +176,12 @@ class RegisterPage extends React.Component {
                 <span className={classes.title}> THE CREATIVE PASSPORT</span>
               </div>
                 <form className={classes.inputForm}>
-                  <Typography align="center"  variant="body1">Register New User</Typography>
+                  <Typography align="center"  variant="body1"> REGISTER NEW USER </Typography>
                   <TextField
                     required
                     fullWidth
                     type="email"
-                    label='E-MAIL'
+                    label='EMAIL'
                     name='email'
                     className={classes.inputField}
                     onChange={this.changeEmail}

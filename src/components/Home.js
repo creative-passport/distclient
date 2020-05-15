@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import jwt_decode from 'jwt-decode'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import { Auth } from 'aws-amplify'
 
 import './Home.css'
-import store from '../reducers/store'
 import Layout from './Layout'
 import Grid from '@material-ui/core/Grid'
 
@@ -29,21 +28,13 @@ class ConnectedHome extends Component {
     }
 
     componentDidMount() {
-        try {
-            var token = window.location.href.match(/#(?:id_token)=([\S\s]*?)&/)[1]
-            var token_decoded = jwt_decode(token);
-            var user_name = token_decoded['cognito:username']
-            var email = token_decoded['email']
-            this.setState({current_token: token_decoded, fullName: user_name, email: email})
 
-            store.dispatch({
-                type: "LOGIN_USER_SUCCESS",
-                response: user_name
-            })
-        }
-        catch(err) {
-            console.log("no auth token returned")
-        }
+        Auth.currentAuthenticatedUser().then(
+        user => {
+          this.setState({walletId: user.attributes.sub})
+          this.setState({email: user.attributes.email})
+          this.setState({jwtToken: user.signInUserSession.idToken.jwtToken})
+        }).catch(error => console.log(error))
 
         try {
             var yoti_token = window.location.href.split('?token=')[1];

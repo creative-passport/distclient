@@ -19,7 +19,6 @@ import Button from '@material-ui/core/Button'
 import store from '../reducers/store'
 
 import { createTempProfile } from '../actions/authenticationActions'
-import UpdateEmailForm from './UpdateEmailForm'
 
 import logo from '../logo.png'
 
@@ -124,7 +123,7 @@ class UpdateEmailPage extends React.Component {
               </div>
               <Card style={{margin: '0 auto', border: 'none', boxShadow: 'none'}}>
               <div>
-                <UpdateEmailForm/>
+               "UPDATE EMAIL HERE"
               </div>
               </Card>
               <Link style={{marginTop:'1.5em'}} to="/">Home</Link>

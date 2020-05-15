@@ -4,8 +4,6 @@ import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router'
 import { Redirect } from 'react-router-dom'
 
-import CssBaseline from '@material-ui/core/CssBaseline'
-
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -120,7 +118,6 @@ class Verify extends Component {
         <div className={classes.root}>
           <Paper className={classes.paper}>
             <Grid container>
-              <CssBaseline />
               <div style={{margin:'1.5em auto 1.5em auto'}}>
                 <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
                 <span className={classes.title}> THE CREATIVE PASSPORT</span>

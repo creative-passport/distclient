@@ -60,6 +60,9 @@ const styles = theme => ({
       fontSize: '14pt',
       fontWeight: 'bold',
       marginBottom: '2em'
+    },
+    '& .MuiTypography-body2': {
+      fontSize: '8pt'
     }
   },
   paper: {
@@ -192,6 +195,7 @@ class ConfirmPage extends React.Component {
                   <img src={cp_mail_icon} style={{verticalAlign: 'middle',}} className="mailIcon" alt="mail" />
                 </div>
                 <Typography variant='body1'> Please complete your registration by entering your code below </Typography>
+                <Typography variant='body2'> Check your spam folder if needed </Typography>
                 <form onSubmit={this.onSubmit}>
                     <TextField
                         required

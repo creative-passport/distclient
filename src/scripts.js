@@ -6,9 +6,8 @@ const proxyurl = "https://cors-anywhere.herokuapp.com/"
 const urldev = proxyurl + 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/dev/'
 const urlprod = 'https://vd5e0pnn7i.execute-api.eu-west-2.amazonaws.com/prod/'
 
-let dev = false
 let url
-if (dev) {
+if (process.env.REACT_APP_HOST_ENV === 'dev') {
     url = urldev
 }
 else {

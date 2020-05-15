@@ -7,7 +7,6 @@ import EmailVerificationForm from './EmailVerificationForm'
 import NewPasswordRequiredForm from './NewPasswordRequiredForm'
 import AllProfiles from './AllProfiles'
 import ConfirmPage from './ConfirmPage'
-import Layout from './Layout'
 
 
 const loggedInProfile = (user, attributes) => (

@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
+
 import Home from './Home'
 import AllProfiles from './AllProfiles'
 import Verify from './Verify'
@@ -13,15 +16,37 @@ import ConfirmPage from './ConfirmPage'
 import ChangePasswordPage from './ChangePasswordPage'
 import PasswordResetPage from './PasswordResetPage'
 
-import Amplify, { Storage } from 'aws-amplify'
+import Amplify from 'aws-amplify'
 
 import awsmobile from '../aws-exports'
-import store from '../reducers/store'
 
 import './App.css'
 import 'antd/dist/antd.css'
 
 Amplify.configure(awsmobile)
+
+const mainTheme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    h6:{
+      textTransform: 'uppercase'
+    },
+    body1: {
+      fontSize: 13,
+    },
+  }
+})
 
 class App extends Component {
 
@@ -29,6 +54,8 @@ class App extends Component {
     const { history } = this.props
 
     return (
+      <ThemeProvider theme={mainTheme}>
+      <CssBaseline /> 
       <Router>
           <Switch>
             <Route exact path="/register" component={RegisterPage}/>
@@ -44,6 +71,7 @@ class App extends Component {
             <Route exact path="*" component={PageNotFound} />
           </Switch>
       </Router>
+      </ThemeProvider>
     )
   }
 }

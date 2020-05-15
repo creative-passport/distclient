@@ -111,7 +111,6 @@ class ImageLoading extends Component {
     }
 
     createFolder = async () => {
-      var today = new Date()
       var f = new File(["1"], "mock_file_for_folder.txt", {type: "text/plain"})
       Storage.put(this.props.artist_name +'/'+ f.name, f)
       .then (() => console.log("check new empty file"))
@@ -138,7 +137,7 @@ class ImageLoading extends Component {
         let images = []
 
         files.map(f => {
-          var extension = f.key.split('.')[1]
+          var extension = f.key.split('.')[1].toLowerCase()
           if (extension.indexOf('jpg') > -1 || extension.indexOf('png') > -1 || extension.indexOf('jpeg') > -1) {
             images.push(f)
           }
