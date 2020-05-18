@@ -31,6 +31,16 @@ const styles = theme => ({
     marginLeft: theme.spacing(3),
     height: 0,
     width: 0
+  },
+  top_grid: {
+    margin: 0
+  },
+  persona_title: {
+    fontWeight:'bold',
+    fontSize: '12pt',
+    verticalAlign: 'middle',
+    textAlign: 'center',
+    marginTop: '0.25em'
   }
 })
 
@@ -152,19 +162,15 @@ class AllProfiles extends Component {
 
       return (
         <Layout>
-          <Grid container spacing={1} direction="row" justify="flex-start" alignItems="flex-start">
-            <Grid item xs={2}>
-              <Typography gutterBottom variant="h5" component="h5"> PERSONAS </Typography>
-            </Grid>
-            <Grid item>
-              <Fab size='small' component="span" onClick={this.showAddProfile} className={classes.show_profile_button}>
-                <AddCircleIcon style={{ color:'#02d1a8', marginTop: '-0.2em'}}/>
-              </Fab>
-            </Grid>
+          <Grid container direction="row" justify="flex-start" alignItems="flex-start" className={classes.top_grid}>
+            <Typography variant="h6" component="h6" className={classes.persona_title}> PERSONAS </Typography>
+            <Fab size='small' component="span" onClick={this.showAddProfile} className={classes.show_profile_button}>
+              <AddCircleIcon style={{ color:'#02d1a8', marginTop: '-0.2em'}}/>
+            </Fab>
           </Grid>
           { this.state.show_add_profile ? 
-            <Grid container spacing={1} direction="row" alignItems="center">
-              <Grid item xs={10}>
+            <Grid container direction="row" alignItems="center">
+              <Grid item xs={11}>
                 <InputBase
                   fullWidth
                   className={classes.input}
@@ -174,7 +180,7 @@ class AllProfiles extends Component {
                 />
               </Grid>
               <Grid item>
-                <CPButton variant="contained" onClick={this.addNewProfile} style={{width:'100%', height:'30px', marginLeft: '16px'}}> Add </CPButton>
+                <CPButton variant="contained" onClick={this.addNewProfile} style={{width: '60px', height:'30px'}}> Add </CPButton>
               </Grid>
             </Grid>
           : null }

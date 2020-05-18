@@ -23,7 +23,6 @@ import ProfileRow from './ProfileRow'
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     zIndex: 100,
   },
   indicator: {

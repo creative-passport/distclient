@@ -16,10 +16,8 @@ import * as api from '../scripts'
 const styles = theme => ({
     root: {
       display: 'flex',
-      '& > *': {
-        margin: theme.spacing(1),
-      },
-    },
+      margin: theme.spacing(2),
+    },  
     large: {
       width: theme.spacing(6),
       height: theme.spacing(6),
@@ -67,7 +65,7 @@ class SingleImageGroup extends Component {
           }}
           badgeContent={<IconButton aria-label="delete" size="small" onClick={this.handleDelete} style={{backgroundColor: '#fff'}}><CloseIcon fontSize="small"/></IconButton>}>
           <Avatar id={this.props.id} src={this.props.src} alt={this.props.alt} className={this.props.className} style={{width: '3em', height: '3em'}}/>
-        // </Badge>
+        </Badge>
       )
     }
 }
@@ -178,7 +176,7 @@ class ImageLoading extends Component {
       })
 
       return (
-        <Grid container spacing={2} direction="row" justify="flex-end" alignItems="center">
+        <Grid container direction="row" justify="flex-end" alignItems="center" style={{paddingRight: '2em'}}>
             <div className={classes.root}>
               {currentImages}
             </div>

@@ -17,7 +17,12 @@ import PublishMenu from './PublishMenu'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
+    '& .MuiTypography-body1': {
+      color: 'grey',
+      fontSize: '9pt',
+      marginLeft: '0.5em'
+    }
   },
   container_grid: {
     marginTop: theme.spacing(0.5),

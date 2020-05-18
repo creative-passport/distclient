@@ -11,7 +11,7 @@ export const text_fields = {
     'hardware_used': {'key': 8, 'label': 'HARDWARE USED', 'type': 'typing_bubble'},
     'software_used': {'key': 9, 'label': 'SOFTWARE USED' , 'type': 'typing_bubble'},
     'endorsement': {'key': 10, 'label': 'ENDORSEMENT', 'type': 'long_text'}, //TO CHANGE LATER TO multiple_single_entry_points
-    'interests_inspiration': {'key': 11, 'label': 'INTERESTS / INSPIRATION', 'type': 'typing_bubble'},
+    'interests_inspiration': {'key': 11, 'label': 'INTERESTS / INSPIRATIONS', 'type': 'typing_bubble'},
     'current_projects': {'key': 12, 'label': 'CURRENT PROJECTS', 'type': 'long_text'}, //TO CHANGE LATER TO multiple_single_entry_points
     'favourite_music_makers': {'key': 13, 'label': 'FAVOURITE MUSIC MAKERS', 'type': 'typing_bubble'},
     'charities_supported': {'key': 14, 'label': 'CHARITIES SUPPORTED', 'type': 'typing_bubble'},
@@ -24,7 +24,7 @@ export const text_fields = {
       'ipi' : {'key': 2, 'label': 'IPI', 'type': 'single_text'},
       'cp_id': {'key': 3, 'label': 'CP ID', 'type': 'single_text'},
       'other_proprietary_id': {'key': 4, 'label': 'OTHER PROPRIETARY ID', 'type': 'single_text'},
-      'system' : {'key': 5, 'label': 'SYSTEM', 'type': 'single_text'},
+      'universal_artist_id' : {'key': 5, 'label': 'UMG ARTIST ID ', 'type': 'single_text'},
       'id_number' : {'key': 6, 'label': 'ID NUMBER', 'type': 'single_text'}
     }
   },
@@ -50,7 +50,9 @@ export const text_fields = {
     'genius' : {'key': 15, 'label': 'GENIUS', 'type': 'single_text'}
     }
   },
-  'external_data': {'key': 4, 'label': 'EXTERNAL DATA', 'data_fields': {}
+  'external_services': {'key': 4, 'label': 'EXTERNAL SERVICES', 'data_fields': {
+      'youtube' : {'key': 0, 'label': 'youtube', 'type': 'single_text'},
+    }
   },
   'music_services': {'key': 5, 'label': 'MUSIC SERVICES', 'data_fields': {}
   },

@@ -156,7 +156,7 @@ class Header extends React.Component {
               </Typography>
 
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.openMenu}>
-                <SettingsIcon />
+                <SettingsIcon style={{color: '#02d1a8'}}/>
               </IconButton>
               <Menu
                 id="simple-menu"

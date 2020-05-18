@@ -13,7 +13,7 @@ import Chip from '@material-ui/core/Chip'
 
 import { avs } from '../text_fields'
 
-const ITEM_HEIGHT = 40;
+const ITEM_HEIGHT = 36;
 const ITEM_PADDING_TOP = 6;
 const MenuProps = {
   PaperProps: {
@@ -32,12 +32,14 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 250,
-    zIndex: 1000
+    '& .MuiSelect-root': {
+      whiteSpace: 'pre-wrap'
+    }
   },
   selectMenu: {
-    zIndex: 1000,
-    width: 250,
+    zIndex: 100,
     maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+    minWidth: 250,
     '& .Mui-selected': {
       backgroundColor: '#d9fffc'
     }
@@ -45,6 +47,21 @@ const styles = theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  chip: {
+    border: 'solid 0.5px',
+    borderColor: 'black',
+    backgroundColor: 'white',
+    marginRight: theme.spacing(0.3),
+    marginBottom: theme.spacing(0.2),
+    height: '22px',
+    fontSize: '8pt',
+    '& .MuiChip-root': {
+      height: '28px'
+    },
+    '& .MuiChip-label': {
+      textTransform: 'capitalize'
+    }
+  }
 })
 
 class MultipleBubbleList extends Component {

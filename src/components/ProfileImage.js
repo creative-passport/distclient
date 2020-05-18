@@ -11,6 +11,7 @@ import * as api from '../scripts'
 const styles = theme => ({
   root: {
     display: 'flex',
+    backgroundColor: '#f2f2f2',
     margin: '-3em auto 0 auto',
     '& > *': {
       margin: '0 auto',
@@ -19,6 +20,7 @@ const styles = theme => ({
   large: {
     width: theme.spacing(15),
     height: theme.spacing(15),
+    marginTop: '-2em'
   }
 })
 

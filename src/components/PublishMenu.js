@@ -22,8 +22,12 @@ const styles = theme => ({
     textAlign: 'center',
     boxShadow: 'none',
     marginBottom:'-1.4em',
-    height: '25px',
-    width: '35px'
+    marginLeft: '-1em',
+    width: '35px',
+    height: '30px'
+  },
+  icon: {
+    fontSize: '1rem'
   }
 })
 
@@ -82,8 +86,8 @@ class PublishMenu extends React.Component  {
 
     return (
       <Grid item xs={1} className={classes.root}>
-      <Fab size='small' component="span" className={classes.button} onClick={this.handleClick}>
-        <ShareRoundedIcon fontSize='small'/>
+      <Fab component="span" className={classes.button} onClick={this.handleClick}>
+        <ShareRoundedIcon className={classes.icon}/>
       </Fab>
       <Menu
         id="customized-menu"

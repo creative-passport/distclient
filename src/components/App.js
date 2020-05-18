@@ -39,12 +39,19 @@ const mainTheme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    h3: {
+      textTransform: 'uppercase'
+    },
     h6:{
       textTransform: 'uppercase'
     },
     body1: {
       fontSize: 13,
+      textTransform: 'uppercase'
     },
+    body2: {
+      fontSize: 10
+    }
   }
 })
 

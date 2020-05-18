@@ -15,6 +15,7 @@ import Box from '@material-ui/core/Box'
 import ImageLoading from './ImageLoading'
 import ProfileRow from './ProfileRow'
 import RepresentativesSection from './RepresentativesSection'
+import ExternalServices from './ExternalServices'
 import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
@@ -25,6 +26,7 @@ import {text_fields} from '../text_fields'
 const styles = theme => ({
   root: {
     overflow: 'auto',
+    paddingBottom: theme.spacing(2),
     margin: 0,
     '& .MuiExpansionPanel-root': {
       marginLeft: theme.spacing(2),
@@ -40,23 +42,14 @@ const styles = theme => ({
       color: red[800],
     },
   },
-  inactive_tab: {
-    backgroundColor: '#009678',
-    color: '#c9c9c9',
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5,
-    marginRight: '0.5em',
-    padding: theme.spacing(1)
-  },
   tab_content: {
     backgroundColor: '#ffffff',
   },
-  active_tab: {
-    backgroundColor: '#ffffff',
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5,
-    marginRight: '0.5em',
-    padding: theme.spacing(1)
+  expand_panel: {
+    '& .MuiTypography-root': {
+      color: '#02d1a8',
+      fontWeight: 'bold'
+    }
   }
 })
 
@@ -146,7 +139,19 @@ class Profile extends Component {
         let actualKey = 0
         if (Object.keys(detailed_fields).length > 0) {
           subfields = Object.keys(detailed_fields).map(subfield => {
-            if(subfield === 'list_of_representatives') {
+            if (row === 'external_services') {
+              let currentKey = actualKey
+              actualKey ++
+              return <ExternalServices
+                key={currentKey} indexValue={currentKey}
+                textValue={this.props.artist_data[subfield]}
+                fieldName={subfield}
+                label={detailed_fields[subfield].label}
+                name={detailed_fields[subfield].name}
+                onDataChange={this.addData} 
+                type='multiple_bubble_list'/>
+            }
+            else if(subfield === 'list_of_representatives') {
               let currentKey = actualKey
               actualKey ++
               return <RepresentativesSection
@@ -247,9 +252,7 @@ class Profile extends Component {
 
       return (
         <Box className={classes.root} display="flex" flexWrap="wrap"> 
-          <Grid container direction="row" justify="center" alignItems="center" style={{marginRight: '2em', marginTop: '1em'}}>
-            <ImageLoading artist_id={this.props.profile_id} artist_name={this.props.artist_name}/>
-          </Grid>
+          <ImageLoading artist_id={this.props.profile_id} artist_name={this.props.artist_name}/>
           {main_categories}
         </Box>
       )

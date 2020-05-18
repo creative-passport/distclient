@@ -12,8 +12,8 @@ const useStyles = makeStyles(theme => ({
   },
   public_switch: {
     width: 36,
-    height: 16,
-    marginLeft: '2em',
+    height: 14,
+    marginLeft: '1.5em',
     border: 'none'
   }
 }))

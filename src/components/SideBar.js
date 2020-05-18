@@ -17,18 +17,18 @@ import './App.css'
 
 import ProfileImage from './ProfileImage'
 
-const drawerWidth = 310;
-
 const styles = theme => ({
   drawer: {
     position: 'relative',
     background: 'none',
     border: 'none',
-    width: drawerWidth,
+    minWidth: 100,
+    maxWidth: 345,
     flexShrink: 0,
-    margin: '0 auto',
+    margin: '0 2em 0 0',
     '& .MuiDrawer-paper': {
-      position: 'relative'
+      position: 'relative',
+      border: 'none'
     }
   },
   realName: {
@@ -41,11 +41,12 @@ const styles = theme => ({
   },
   cardcontent: {
     padding: theme.spacing(3),
+    backgroundColor: '#f2f2f2',
     alignItems: 'center',
     justifyContent: "center",
     '& .MuiTextField-root': {
-      marginTop: theme.spacing(3),
-      width: '32ch',
+      marginTop: theme.spacing(2),
+      width: '100%',
     },
     '& .MuiInputBase-input': {
       paddingTop: '1em',
@@ -87,24 +88,7 @@ const styles = theme => ({
   },
   cardHeaderStyle: {
       background:'-webkit-linear-gradient(180deg, #ff00b4, #82b4dc, #00ffcc)',
-      height: '80px',
-  },
-  essentialFields: {
-    paddingBottom: '15%'
-  },
-  secondCardHeaderStyle: {
-    backgroundColor: '#cccccc',
-    color: '#000',
-    margin: '0 auto',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    fontSize: '14pt',
-    fontWeight: '500'
-  },
-  saveDataButton: {
-    float:'right',
-    margin: '10px',
-    boxShadow: 'none'
+      height: '130px',
   },
   profileImage: {
     width: '5em',
@@ -112,7 +96,7 @@ const styles = theme => ({
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '50%',
-    margin: '-5em auto 0 auto'
+    margin: '0 auto'
   }
 });
 
@@ -194,10 +178,10 @@ class SideBar extends React.Component {
         <CardHeader className={classes.cardHeaderStyle}/>
         <ProfileImage className={classes.profileImage} walletId={this.state.walletId}/>
         <CardContent className={classes.cardcontent}>
-          <Typography component="h6" variant="h6">Real Name</Typography>
-          <Typography component="h6" variant="h6">{this.state.real_name}</Typography>
-          <Typography component="h6" variant="h6">Date of Birth</Typography>
-          <Typography component="h6" variant="h6">{this.state.date_of_birth}</Typography>
+          <Typography component="h6" variant="body1">Name</Typography>
+          <Typography component="h6" variant="h3">{this.state.real_name}</Typography>
+          <Typography component="h6" variant="body1">Date of Birth</Typography>
+          <Typography component="h6" variant="body2">{this.state.date_of_birth}</Typography>
           <TextField label="Email" value={email} />
           <TextField label="Mobile" value={mobile} />
           <Typography component="p" variant="body1" style={{textAlign: 'center', marginTop:'2em', color:'grey', marginBottom:'1em'}}> This information is not made public </Typography>

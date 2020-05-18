@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { isMobile } from 'react-device-detect'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -20,15 +20,17 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     boxShadow: 'none',
     borderRadius: 10,
-    '& .MuiPaper-root & .MuiPaper-root:before & .MuiExpansionPanel-root:before': {
+    '& .MuiPaper-root & .MuiPaper-root:before': {
       borderRadius: 10,
-      backgroundColor: 'transparent'
     }, 
     '& .MuiExpansionPanel-rounded': {
       borderRadius: 10,
     },
     '& .MuiExpansionPanelDetails-root': {
       borderRadius: 10,
+    },
+    '& .MuiExpansionPanel-root:before': {
+      backgroundColor: 'rgba(0, 0, 0, 0)'
     }
   },
   heading: {
@@ -56,6 +58,10 @@ const useStyles = makeStyles(theme => ({
     },
     '& .MuiExpansionPanelDetails-root': {
       borderRadius: 10,
+    },
+    '& .MuiTypography-root': {
+      fontWeight: 'bold',
+      fontSize: '12pt'
     }
   },
   expand_children: {
