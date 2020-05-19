@@ -38,7 +38,10 @@ const styles = theme => ({
     }
   },
   sub_categories: {
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+    '& .MuiFormControl-root': {
+      marginTop: '0.7em'
+    }
   }
 })
 
@@ -169,7 +172,7 @@ export class RepresentativesWithSubFields extends Component {
         <TextField 
           fullWidth
           value={this.state.value}
-          label={this.props.label}
+          label="NAME"
           name={this.props.label}
           onChange={this.handleChange}
           margin="normal"/>

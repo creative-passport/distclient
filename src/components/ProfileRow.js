@@ -22,6 +22,15 @@ const styles = theme => ({
       color: 'grey',
       fontSize: '9pt',
       marginLeft: '0.5em'
+    },
+    '& .MuiInput-underline:before': {
+      borderRadius: '5em'
+    },
+    '& .MuiInput-input': {
+      paddingLeft: '0.5em'
+    },
+    '& .MuiInputLabel-formControl': {
+      marginLeft: '0.5em'
     }
   },
   container_grid: {
@@ -161,7 +170,6 @@ class ProfileRow extends Component {
           <Grid item xs={10}> <TextField
             ref={(ref) => this.text = ref}
             fullWidth
-            multiline
             id="standard-basic"
             label={this.props.label}
             name={this.props.name}

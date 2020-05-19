@@ -167,37 +167,37 @@ class LoginPage extends React.Component {
           <Paper className={classes.paper}>
             <Grid container>
               <CssBaseline />
-                <div style={{margin:'1.5em auto 1.5em auto'}}>
-                  <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
-                  <span className={classes.title}> THE CREATIVE PASSPORT</span>
-                </div>
-                  <form className={classes.inputForm} onSubmit={this.onSubmit}>
-                    <Typography align="center" variant="body1"> LOGIN TO THE CREATIVE PASSPORT </Typography>
-                    <TextField
-                      required
-                      fullWidth
-                      value={this.state.email}
-                      label='EMAIL'
-                      name='email'
-                      onChange={this.changeEmail}
-                      margin="normal"
-                    />
-                    <TextField
-                      required
-                      fullWidth
-                      type="password"
-                      label='PASSWORD'
-                      name='password'
-                      onChange={this.changePassword}
-                      margin="normal"
-                    />
-                  </form>
-                  <CPButton fullWidth className={classes.submitButton} onClick={this.onSubmit}>Sign in</CPButton>
-                <div style={{margin:'0 auto', alignSelf: 'center', marginLeft: '12%'}}>
-                  <Link className={classes.extraLinks} to="/register">New User</Link>
-                  <Link className={classes.extraLinks2} to="/reset_password">Reset Password</Link>
-                </div>
-                <div style={{margin:'5px auto 5px auto'}}> {error} </div>
+              <div style={{margin:'1.5em auto 1.5em auto'}}>
+                <img src={logo} style={{verticalAlign: 'middle', marginBottom:'0.5em', marginLeft: '20%'}} className="App-logo" alt="logo" />
+                <span className={classes.title}> THE CREATIVE PASSPORT</span>
+              </div>
+              <form className={classes.inputForm} onSubmit={this.onSubmit}>
+                <Typography align="center" variant="body1"> LOGIN TO THE CREATIVE PASSPORT </Typography>
+                <TextField
+                  required
+                  fullWidth
+                  value={this.state.email}
+                  label='EMAIL'
+                  name='email'
+                  onChange={this.changeEmail}
+                  margin="normal"
+                />
+                <TextField
+                  required
+                  fullWidth
+                  type="password"
+                  label='PASSWORD'
+                  name='password'
+                  onChange={this.changePassword}
+                  margin="normal"
+                />
+              </form>
+              <CPButton fullWidth className={classes.submitButton} onClick={this.onSubmit}>Sign in</CPButton>
+              <div style={{margin:'0 auto', alignSelf: 'center', marginLeft: '12%'}}>
+                <Link className={classes.extraLinks} to="/register">New User</Link>
+                <Link className={classes.extraLinks2} to="/reset_password">Reset Password</Link>
+              </div>
+              <div style={{margin:'5px auto 5px auto'}}> {error} </div>
             </Grid>
           </Paper>
         </div>

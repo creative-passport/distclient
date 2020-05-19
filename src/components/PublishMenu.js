@@ -23,8 +23,8 @@ const styles = theme => ({
     boxShadow: 'none',
     marginBottom:'-1.4em',
     marginLeft: '-1em',
-    width: '35px',
-    height: '25px'
+    width: '36px',
+    height: '24px'
   },
   icon: {
     fontSize: '1rem'
