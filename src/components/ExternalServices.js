@@ -102,7 +102,7 @@ class RepresentativesSection extends Component {
         <Typography variant="body1" display='block' className={classes.text}> Connected Services</Typography>
         <Typography variant="body2" display='block' className={classes.text}> YouTube</Typography>
         <Typography variant="body2" display='block' className={classes.text}> Spotify</Typography>
-        <Typography variant="body1" display='block' className={classes.text}> Optoinal Services</Typography>
+        <Typography variant="body1" display='block' className={classes.text}> Optional Services</Typography>
         <Paper elevation={1} className={classes.paper}>
           <Typography variant="h6" display='block' className={classes.title}> Streemliner</Typography>
           <img src={streemliner_logo} alt="streemliner logo" className={classes.image} />

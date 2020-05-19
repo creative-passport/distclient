@@ -26,6 +26,11 @@ const styles = theme => ({
   },
   container_grid: {
     marginTop: theme.spacing(0.5),
+  },
+  long_text: {
+    '& .MuiOutlinedInput-root':{
+      borderRadius: 25
+    }
   }
 });
 
@@ -184,6 +189,7 @@ class ProfileRow extends Component {
       comp = <Grid container direction="row" justify="flex-start" className={classes.root}> 
         <Grid item xs={10} className={classes.container_grid}>
           <TextField
+            className={classes.long_text}
             ref={(ref) => this.text = ref}
             id="outlined-multiline-flexible"
             label={this.props.label}

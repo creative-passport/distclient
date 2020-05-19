@@ -24,13 +24,35 @@ const styles = theme => ({
     marginTop: theme.spacing(0.5),
   },
   formControl: {
-    width: '100%'
+    width: '100%',
+    '& .MuiSelect-root': {
+      whiteSpace: 'pre-wrap'
+    }
+  },
+  selectMenu: {
+    '& .Mui-selected': {
+      backgroundColor: '#d9fffc'
+    }
+  },
+  chip: {
+    border: 'solid 0.5px',
+    borderColor: 'black',
+    backgroundColor: 'white',
+    marginRight: theme.spacing(0.3),
+    marginBottom: theme.spacing(0.2),
+    height: '22px',
+    fontSize: '8pt',
+    '& .MuiChip-root': {
+      height: '28px'
+    },
+    '& .MuiChip-label': {
+      textTransform: 'capitalize'
+    }
   },
   menu: {
     opacity: 0,
     '& .MuiMenu-paper .MuiPopover-paper': {
       opacity: 0,
-      backgroundColor: 'red'
     }
   }
 })
@@ -144,7 +166,7 @@ class RepresentativesSection extends Component {
             )}
             MenuProps={MenuProps}>
             {this.state.values.map((name) => (
-              <MenuItem key={name} value={name}>
+              <MenuItem className={classes.selectMenu} key={name} value={name}>
                 {name}
               </MenuItem>
             ))}

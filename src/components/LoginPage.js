@@ -18,38 +18,7 @@ import logo from '../logo.png'
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-    '& .MuiTextField-root': {
-      margin: theme.spacing(2),
-      width: '32ch',
-    },
-    '& .MuiInput-underline': {
-      borderRadius: '25%'
-    },
-    '& .MuiInput-underline:before': {
-      marginTop: '2em',
-      borderRadius: '5em'
-    },
-    '& .MuiInputBase-input': {
-      paddingTop: '1em'
-    },
-    '& .MuiFormLabel-root': {
-      fontSize: '10pt',
-      position: 'absolute',
-      top: '-10pt'
-    },
-    '& .MuiInputLabel-shrink': {
-      transform: 'none',
-      position: 'absolute',
-      top: '5pt'
-    },
-    '& .MuiTypography-root': {
-      margin: theme.spacing(2),
-      color: '#9e9e9e',
-      alignItems:'center',
-      alignSelf: 'center',
-      textAlign: 'center'
-    }
+    flexGrow: 1
   },
   disableTransition: {
     transition: 'none',
@@ -73,13 +42,47 @@ const styles = theme => ({
     WebkitTextFillColor: 'transparent',
   },
   inputForm: {
-    padding: '2em'
+    padding: '2em',
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '42ch',
+      alignSelf: 'center',
+    },
+    '& .MuiInput-underline': {
+      borderRadius: '25%'
+    },
+    '& .MuiInput-underline:before': {
+      borderRadius: '5em'
+    },
+    '& .MuiInputBase-input': {
+      paddingTop: '1em'
+    },
+    '& .MuiInput-input': {
+      paddingLeft: '0.5em'
+    },
+    '& .MuiFormLabel-root': {
+      fontSize: '10pt',
+      position: 'absolute',
+      top: '-10pt'
+    },
+    '& .MuiInputLabel-shrink': {
+      transform: 'none',
+      position: 'absolute',
+      top: '5pt'
+    },
+    '& .MuiTypography-root': {
+      margin: theme.spacing(2),
+      color: '#9e9e9e',
+      alignItems:'center',
+      alignSelf: 'center',
+      textAlign: 'center'
+    }
   },
   submitButton: {
     color:'#fff', 
     boxShadow: 'none', 
     backgroundColor: '#02d1a8',
-    margin:'1.5em auto 1.5em auto',
+    margin:'0 auto',
     verticalAlign: 'middle',
     width: '10em',
     borderRadius: '0.5em'
@@ -190,12 +193,11 @@ class LoginPage extends React.Component {
                     />
                   </form>
                   <CPButton fullWidth className={classes.submitButton} onClick={this.onSubmit}>Sign in</CPButton>
-              <Divider/>
-                <div style={{margin:'0 auto'}}>
+                <div style={{margin:'0 auto', alignSelf: 'center', marginLeft: '12%'}}>
                   <Link className={classes.extraLinks} to="/register">New User</Link>
                   <Link className={classes.extraLinks2} to="/reset_password">Reset Password</Link>
                 </div>
-                <div style={{margin:'5px auto'}}> {error} </div>
+                <div style={{margin:'5px auto 5px auto'}}> {error} </div>
             </Grid>
           </Paper>
         </div>

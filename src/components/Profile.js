@@ -26,14 +26,12 @@ import {text_fields} from '../text_fields'
 const styles = theme => ({
   root: {
     overflow: 'auto',
-    paddingBottom: theme.spacing(2),
-    margin: 0,
     '& .MuiExpansionPanel-root': {
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
-      marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
       width: '100%',
+      borderRadius: 15
     }
   },
   iconHover: {
@@ -239,7 +237,7 @@ class Profile extends Component {
         }
 
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={index} className={classes.root}>
             <ExpansionPanelSummary className={classes.expand_panel} expandIcon={<ExpandMoreIcon />} id={panelId}>
               <Typography className={classes.heading}>{text_fields[row].label}</Typography>
             </ExpansionPanelSummary>

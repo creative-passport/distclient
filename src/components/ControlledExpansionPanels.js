@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   },
   expand_children: {
     backgroundColor: '#02d1a8',
-    padding: 0,
+    padding: '0 0 1em 0',
   }
 }))
 

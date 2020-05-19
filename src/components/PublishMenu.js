@@ -24,7 +24,7 @@ const styles = theme => ({
     marginBottom:'-1.4em',
     marginLeft: '-1em',
     width: '35px',
-    height: '30px'
+    height: '25px'
   },
   icon: {
     fontSize: '1rem'
