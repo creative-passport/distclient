@@ -53,114 +53,44 @@ export class RepresentativesWithSubFields extends Component {
       contact_email: ' ',
       contact_name: ' ',
       contact_note: ' ',
-      value: ' ',
+      rep_name: ' ',
       detailed_data: {
-        'name': ' ',
-        'value': ' ',
-        'contact_email': ' ',
-        'contact_name': ' ',
-        'contact_note': ' ',
+        'fieldName': this.props.fieldName,
+        'type': 'single_text_with_subcategories',
+        'rep_name': '',
+        'contact_name': '',
+        'contact_email': '',
+        'contact_note': ''
       }
     }
 
     this.handleChange = this.handleChange.bind(this)
-    this.handleSubChange = this.handleSubChange.bind(this)
   }
 
   componentDidMount() {
-    if (this.props.value !== null && this.props.value !== '') {
+    if (this.props.value !== null && this.props.value !== '') { 
       this.setState({detailed_data: this.props.value})
     }
-    else {
-      this.setState({ detailed_data : {
-          'name': this.props.fieldName,
-          'value': this.state.value,
-          'contact_name': this.state.contact_name,
-          'contact_email': this.state.contact_email,
-          'contact_note': this.state.contact_note
-      }})
-
-      if (this.props.textValue !== undefined && 'fieldName' in this.props.textValue) {
-
-        var data = {
-          'type': 'single_text_with_subcategories',
-          'fieldName': this.props.fieldName,
-          'textValue': this.props.textValue,
-          'value': {
-            'name': this.props.fieldName,
-            'value': this.props.textValue.value.value,
-            'contact_name': this.props.textValue.value.contact_name,
-            'contact_email': this.props.textValue.value.contact_email,
-            'contact_note': this.props.textValue.value.contact_note
-          }
-        }
-
-        this.setState({
-          value: this.props.textValue.value.value,
-          contact_email: this.props.textValue.value.contact_email,
-          contact_name: this.props.textValue.value.contact_name,
-          contact_note: this.props.textValue.value.contact_note
-        })
-      }
-      else {
-        var data = {
-          'type': 'single_text_with_subcategories',
-          'fieldName': this.props.fieldName,
-          'textValue': this.props.textValue,
-          'value': {
-            'name': this.props.fieldName,
-            'value': this.state.value,
-            'contact_name': this.state.contact_name,
-            'contact_email': this.state.contact_email,
-            'contact_note': this.state.contact_note
-          }
-        }
-      }
-
-      this.props.onDataChange(data)
+    else if (this.props.textValue !== undefined && this.props.textValue.value !== undefined) {
+      // Load previous saved data from artist_profiles representatives section
+      this.setState({
+        detailed_data: this.props.textValue.value,
+        rep_name: this.props.textValue.value.rep_name,
+        contact_email: this.props.textValue.value.contact_email,
+        contact_name: this.props.textValue.value.contact_name,
+        contact_note: this.props.textValue.value.contact_note
+      })
     }
   }
   
   handleChange = (event) => {
-    this.setState({value: event.target.value})
-
-    this.setState({ detailed_data : {
-      'name': this.props.fieldName,
-      'value': event.target.value,
-      'contact_name': this.state.contact_name,
-      'contact_email': this.state.contact_email,
-      'contact_note': this.state.contact_note
-    }})
-
-    var data = {
-      'type': 'single_text_with_subcategories',
-      'fieldName': this.props.fieldName,
-      'value': {
-        'name': this.props.fieldName,
-        'value': event.target.value,
-        'contact_name': this.state.contact_name,
-        'contact_email': this.state.contact_email,
-        'contact_note': this.state.contact_note
-      }
-    }
-
-    this.props.onDataChange(data)
-  }
-
-  handleSubChange = (event) => {
-    
     this.setState({[event.target.name]: event.target.value})
-
-    var name = event.target.name
-    var detailed_data = this.state.detailed_data
-    detailed_data[name] = event.target.value
-
-    var data = {
-      'type': 'single_text_with_subcategories',
-      'fieldName': this.props.fieldName,
-      'value': detailed_data
-    }
-
+    
+    var name_to_change = event.target.name
+    var data = this.state.detailed_data
+    data[name_to_change] = event.target.value
+    
+    this.setState({ detailed_data : data })
     this.props.onDataChange(data)
   }
 
@@ -169,17 +99,11 @@ export class RepresentativesWithSubFields extends Component {
 
     return (
       <div>
-        <TextField 
-          fullWidth
-          value={this.state.value}
-          label="NAME"
-          name={this.props.label}
-          onChange={this.handleChange}
-          margin="normal"/>
+        <TextField fullWidth label="Name" name="rep_name" value={this.state.rep_name} onChange={this.handleChange} margin="normal"/>
         <div className={classes.sub_categories}>
-          <TextField fullWidth label="Contact" name="contact_name" value={this.state.contact_name} onChange={this.handleSubChange}/>
-          <TextField fullWidth label="Email" name="contact_email" value={this.state.contact_email} onChange={this.handleSubChange}/>
-          <TextField fullWidth label="Note" name="contact_note" value={this.state.contact_note} onChange={this.handleSubChange}/>
+          <TextField fullWidth label="Contact" name="contact_name" value={this.state.contact_name} onChange={this.handleChange}/>
+          <TextField fullWidth label="Email" name="contact_email" value={this.state.contact_email} onChange={this.handleChange}/>
+          <TextField fullWidth label="Note" name="contact_note" value={this.state.contact_note} onChange={this.handleChange}/>
         </div>
       </div>
     )

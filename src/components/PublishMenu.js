@@ -39,7 +39,7 @@ class PublishMenu extends React.Component  {
     super(props)
     this.state = {
       anchorEl: null,
-      checkedItems: {'Public Profile': false, 'Universal': false, 'Streemliner': false},
+      checkedItems: this.props.publishers
     }
 
     this.handleChange = this.handleChange.bind(this)

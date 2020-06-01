@@ -27,18 +27,7 @@ Amplify.configure(awsmobile)
 
 const mainTheme = createMuiTheme({
   typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
+    fontFamily: ['Roboto', 'sans-serif'].join(','),
     h3: {
       textTransform: 'uppercase'
     },
@@ -58,8 +47,6 @@ const mainTheme = createMuiTheme({
 class App extends Component {
 
   render() {
-    const { history } = this.props
-
     return (
       <ThemeProvider theme={mainTheme}>
       <CssBaseline /> 

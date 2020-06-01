@@ -57,7 +57,7 @@ class ProfileRow extends Component {
     super(props);
     this.state = {
       published: false,
-      publishers: {'Public Profile': false, 'Universal': false, 'Streemliner': false},
+      publishers: {'LABEL': false, 'PUBLISHER': false, 'DSP': false, 'Music service 1': false, 'Music service 2': false },
       fieldName: '',
       value: ''
     }
@@ -106,9 +106,8 @@ class ProfileRow extends Component {
       this.setState({value: e.value})
     }
     else if (e.type === 'single_text_with_subcategories') {
-      data['value'] = e.value
-      data['indexValue'] = parseInt(data['indexValue'])
-      this.setState({value: e.value})
+      data['value'] = e
+      this.setState({value: e})
     }
     else if (e.hasOwnProperty('target')) {
       this.setState({value: e.target.value})

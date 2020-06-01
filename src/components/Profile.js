@@ -19,7 +19,7 @@ import ExternalServices from './ExternalServices'
 import { Auth } from 'aws-amplify'
 
 import * as api from '../scripts'
-import Iframe from './iframe.js'
+// import Iframe from './iframe.js'
 import {text_fields} from '../text_fields'
 
 
@@ -156,7 +156,6 @@ class Profile extends Component {
                 key={currentKey}
                 indexValue={currentKey}
                 name={subfield} 
-                data={detailed_fields[subfield]} 
                 artist_data={this.props.artist_data}
                 onDataChange={this.addData}
               />
@@ -170,7 +169,7 @@ class Profile extends Component {
                 fieldName={subfield}
                 label={detailed_fields[subfield].label}
                 name={detailed_fields[subfield].name}
-                onDataChange={this.addData} 
+                onDataChange={this.addData}
                 type='typing_bubble'/>
             }
             else if (detailed_fields[subfield]['type'] === 'multiple_bubble_list') {
