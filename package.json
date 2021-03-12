@@ -24,7 +24,7 @@
     "react-avatar": "^3.9.3",
     "react-avatar-editor": "^12.0.0-beta.0",
     "react-cognito": "^1.5.4",
-    "react-dev-utils": "^10.0.0",
+    "react-dev-utils": "^11.0.4",
     "react-device-detect": "^1.11.14",
     "react-dom": "^16.10.1",
     "react-iframe": "^1.8.0",
